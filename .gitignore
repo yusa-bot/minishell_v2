@@ -1,0 +1,7 @@
+a.out
+minishell
+*.o
+*.d
+memo.txt
+.gitmodules
+libft
