@@ -65,13 +65,5 @@ make fclean
 ## AI Usage
 
 In this project, AI (Claude code, Gemini) was used for the following tasks:
-- Explanation of man pages and operational characteristics for each function (pthread_*, gettimeofday, printf).
-- Cause analysis of the death detection problem related to the combination of log output and functions.
-- Proposals for accuracy improvement methods to output the death message within time_to_die.
-- Specification design of ft_usleep and explanation of busy-waiting methods.
-- Explanation of the characteristics of printf and gettimeofday, along with methods for improving accuracy.
-- Proposals for function naming conventions and file splitting design.
-- Pre-review assuming peer review (norminette inspection and behavior testing).
-- Proposals for validation design of command-line arguments.
-- Explanation of the necessity of error branching and implementation policies.
-- Review of this file.
+- 最初に、課題要件の機能を理解するための多種多様なshell ppromptをもらう
+- また、使用許可関数の簡単なサンプルコードをもらい、自分で動かして理解する。
