@@ -5,3 +5,4 @@
 memo.txt
 .gitmodules
 **/libft
+.devcontainer
