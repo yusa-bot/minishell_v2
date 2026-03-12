@@ -102,6 +102,16 @@
 │   └── redirect.c
 ├── expander
 │   ├── expand.c
+            // 展開系util
+            // str: args[i], redir->filename を expand_stringに渡す
+            void	expand_node(t_node *node, t_env *env_list);
+            // 	str: args[i] か redir->filename の $, クォート を適切に展開する
+            char *expand_string(char *str, t_env *env_list);
+            //　$と、それに続く文字(2個目の$まで) を返す
+            //		* 環境変数は連続出力にも対応する, valueが無い時は空文字扱い
+            static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list);
+            // 文字列の末尾に1文字を追加し、元の文字列を解放
+            static char	*append_char(char *str, char c);
 │   └── wildcard.c
 ├── lexer
 │   └── lexer.c
