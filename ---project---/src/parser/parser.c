@@ -6,12 +6,13 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:49 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/12 13:13:57 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/12 14:20:01 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// parse
 // 構文解析の入り口
 t_node *parse(t_token **tokens);
 // 最も優先順位の低い && と || を処理
@@ -21,6 +22,7 @@ t_node *parse_pipeline(t_token **tokens);
 // 最も優先順位が高い「単一のコマンド」または「サブシェル ()」を処理
 t_node *parse_command(t_token **tokens);
 
+// helper
 // ASTの新しいノードを作成し、初期化
 ** t_node *new_node(t_node_type type, t_node *left, t_node *right);
 // tokenがリダイレクト演算子かどうかを判定
