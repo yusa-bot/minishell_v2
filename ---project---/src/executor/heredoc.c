@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:10 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/12 13:45:30 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/12 14:13:26 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,11 @@ t_redirect 構造体の filenameを、作成した一時ファイルのパスに
 int	process_heredoc(t_node *node, t_env *env_list);
 // 実際に readline を回して一時ファイルに書き込む。ここでは、一時ファイルに書き込むまで
 static int	read_heredoc(t_redirect *redir, t_env *env_list);
-// 一意な一時ファイル名を生成
-//		簡易的な実装例。実際は静的変数等で連番を管理するか、ポインタアドレス等を使う
+
+// suffix取得し一意のfilename作成
 static char	*generate_tmp_filename(void);
+// /dev/urandom から乱数を読み取り、8文字の16進数文字列を生成する
+static char	*get_random_suffix(void);
 
 
 // AST全体からheredocがあれば、入力し、、一時ファイルに書き込むまでを行う ---------------------------------------------
@@ -149,17 +151,68 @@ static int	read_heredoc(t_redirect *redir, t_env *env_list)
 	return (0);
 }
 
-// 一意な一時ファイル名を生成
-//		簡易的な実装例。実際は静的変数等で連番を管理するか、ポインタアドレス等を使う
+// 一意な一時ファイル名を生成 ---------------------------------------------
+
+// suffix取得し一意のfilename作成
 static char	*generate_tmp_filename(void)
 {
-	static int	i = 0; // 一意を担保
-	char		*num_str;
-	char		*filename;
+	char	*suffix;
+	char	*filename;
 
-	num_str = ft_itoa(i++);
-	filename = ft_strjoin("/tmp/.minishell_heredoc_", num_str);
-	free(num_str);
+	while (1)
+	{
+		// suffix取得
+		suffix = get_random_suffix();
+		if (!suffix)
+			return (NULL);
+
+		// 一意のfilename作成
+		filename = ft_strjoin("/tmp/.minishell_heredoc_", suffix);
+		free(suffix);
+		if (!filename)
+			return (NULL);
+
+		if (access(filename, F_OK) == -1)
+			break ; // -1=存在しないので、一意なファイル名として採用
+
+		// 既に存在した場合、再生成ループ
+		free(filename);
+	}
 	return (filename);
 }
 
+// /dev/urandom から乱数を読み取り、8文字の16進数文字列を生成する
+static char	*get_random_suffix(void)
+{
+	int				fd;
+	char			*hex = "0123456789abcdef";
+	char			*suffix;
+	unsigned char	buf[4]; // 4バイト = 8文字の16進数
+	int				i;
+
+	suffix = (char *)malloc(sizeof(char) * 9);
+	if (!suffix)
+		return (NULL);
+
+	// 乱数を読み込み
+	fd = open("/dev/urandom", O_RDONLY);
+	if (fd < 0)
+	{
+		free(suffix);
+		return (NULL);
+	}
+	read(fd, buf, 4);
+	close(fd);
+
+	// 乱数からsuffixを生成
+	i = 0;
+	while (i < 4)
+	{
+		suffix[i * 2] = hex[buf[i] / 16];
+		suffix[i * 2 + 1] = hex[buf[i] % 16];
+		i++;
+	}
+	suffix[8] = '\0';
+
+	return (suffix);
+}
