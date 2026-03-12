@@ -66,7 +66,33 @@
             // NODE_SUBSHELL (()) を処理.
             //		forkで子プロ生成 -> 子プロでexec_ast() -> 親プロが子プロのステータスを返す
             int exec_subshell(t_node *node, t_env **env_list);
-│   ├── exec_cmd.c
+│   ├── exec_cmd.c -> 外部コマンドのパス展開で env_utils.c を使用
+            // コマンド実行
+            // 展開 -> リダイレクト適用 -> 実行分岐
+            int exec_cmd(t_node *node, t_env **env_list);
+
+            // ビルトインコマンド
+            // ビルトインコマンドか判定
+            int is_builtin(char *cmd);
+            // ビルトインコマンドの実装関数を呼び出す
+            int exec_builtin(char **args, t_env **env_list);
+
+            // 外部コマンド
+            // 子プロでexecve()
+            int exec_external(char **args, t_env **env_list);
+            // 実行可能ファイルのフルパスを取得
+            char *get_cmd_path(char *cmd, t_env *env_list);
+│   ├── expand.c
+            // 展開系util
+            // str: args[i], redir->filename を expand_stringに渡す
+            void	expand_node(t_node *node, t_env *env_list);
+            // 	str: args[i] か redir->filename の $, クォート を適切に展開する
+            char *expand_string(char *str, t_env *env_list);
+            //　$と、それに続く文字(2個目の$まで) を返す
+            //		* 環境変数は連続出力にも対応する, valueが無い時は空文字扱い
+            static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list);
+            // 文字列の末尾に1文字を追加し、元の文字列を解放
+            static char	*append_char(char *str, char c);
 │   ├── heredoc.c
             // AST全体を走査し、TK_HEREDOC があれば入力を処理する（再帰）
             int	process_heredoc(t_node *node, t_env *env_list);
