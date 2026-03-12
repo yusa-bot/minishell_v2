@@ -6,3 +6,5 @@ memo.txt
 .gitmodules
 **/libft
 .devcontainer
+prc.c
+
