@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:43 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/11 23:25:20 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/12 11:54:31 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,11 @@ t_token *tokenize(char *line)
 		token_add_back(&head, new_node);
 	}
 	return (head);
+
+	//空白があれば読み飛ばす。
+	//対象文字が演算子（|, <, >, &, (, )）であれば consume_operator を呼ぶ。
+	//それ以外であれば consume_word を呼ぶ。
+	//切り出したトークンをリストの末尾に繋ぐ。
 }
 
 // 文字が |, <, >, &, (, ) -> &&, ||, <<, >>
@@ -117,6 +122,12 @@ t_token *consume_operator(char **line_ptr)
 	*line_ptr += len;
 
 	return (new_token(type, value));
+
+	//「次の1文字」を先読みするロジックが必要
+	//現在の文字が < の場合、次が < なら TK_HEREDOC として2文字進め、
+	// 違えば TK_REDIR_IN として1文字進める
+	//現在の文字が & の場合、次が & なら TK_AND。次が & でなければ、
+	// 未定義の構文としてエラーまたは単なる文字として処理する
 }
 
 // 演算子でも空白でもない連続した文字列 -> TK_WORD
@@ -156,6 +167,10 @@ t_token *consume_word(char **line_ptr)
 	value = ft_substr(start, 0, *line_ptr - start);
 
 	return (new_token(TK_WORD, value));
+
+	//クォートの処理: ' または " が出現した場合、対応する閉じクォートが見つかるまで、
+	// その中にある空白や演算子は「すべて単なる文字列の一部」として扱い、切り出しを続行
+	// クォートの除去はこの段階ではしない
 }
 
 // util ----------------------------------------------
