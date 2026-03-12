@@ -52,6 +52,19 @@
             // シェル終了時にリスト全体のメモリ（key, value, ノード自体）を解放
             void free_env_list(t_env *env_list);
 │   └── env_utils.c
+            // 実行時の配列変換（Executor）
+            // リスト構造の環境変数を、再び char ** の配列（KEY=VALUE の形式）に逆変換
+            char **env_list_to_array(t_env *env_list);
+
+            // 変数の検索と更新（Expander / Builtins 用）
+            // 指定されたキーを持つ変数を探し、その value のポインタを返す
+            char *get_env_value(t_env *env_list, char *key)
+            // 指定されたキーが存在すれば value を上書きし、存在しなければ新規ノードとして追加
+            void set_env_value(t_env **env_list, char *key, char *value)
+            // リストの末尾に新しいノードを追加する
+            void	env_add_back(t_env **env_list, t_env *new_node)
+            // 指定されたキーを持つノードをリストから切り離して free する
+            void remove_env_node(t_env **env_list, char *key)
 ├── executor
 │   ├── exec_ast.c (処理分岐) -> pipe.c, exec_cmd.c
             // AST -> &&, ||, () に振り分け
