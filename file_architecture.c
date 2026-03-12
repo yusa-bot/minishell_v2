@@ -53,7 +53,19 @@
             void free_env_list(t_env *env_list);
 │   └── env_utils.c
 ├── executor
-│   ├── exec_ast.c
+│   ├── exec_ast.c (処理分岐) -> pipe.c, exec_cmd.c
+            // AST -> &&, ||, () に振り分け
+            // AST評価 -> type に応じて処理を分岐 -> $?を返す
+            int exec_ast(t_node *node, t_env **env_list);
+            // NODE_AND (&&)を処理.
+            //		左ノードを実行し、その終了ステータスが0であった場合のみ、右ノードを実行
+            int exec_and(t_node *node, t_env **env_list);
+            // NODE_OR (||) を処理.
+            //		左ノードを実行し、その終了ステータスが0以外であった場合のみ、右ノードを実行
+            int exec_or(t_node *node, t_env **env_list);
+            // NODE_SUBSHELL (()) を処理.
+            //		forkで子プロ生成 -> 子プロでexec_ast() -> 親プロが子プロのステータスを返す
+            int exec_subshell(t_node *node, t_env **env_list);
 │   ├── exec_cmd.c
 │   ├── heredoc.c
             // AST全体を走査し、TK_HEREDOC があれば入力を処理する（再帰）
