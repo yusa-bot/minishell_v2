@@ -45,6 +45,12 @@ typedef enum e_node_type {
     NODE_SUBSHELL   // 括弧によるサブシェル ()
 } t_node_type;
 
+typedef struct s_redirect {
+    t_token_type        type;       // リダイレクトの種類 (TK_REDIR_OUT, TK_HEREDOC など)
+    char                *filename;  // 対象のファイル名、または区切り文字(EOF)
+    struct s_redirect   *next;      // 次のリダイレクトへのポインタ
+} t_redirect;
+
 typedef struct s_node {
     t_node_type     type;
     struct s_node   *left;
