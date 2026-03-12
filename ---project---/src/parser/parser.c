@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:49 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/12 12:36:35 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/12 13:13:57 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,3 +319,6 @@ int  is_redirect(t_token_type type)
 		current = current->next;
 	current->next = new_redir;
 }
+
+//　リダイレクトが複数ある場合、最後のリダイレクトが適応されるため、
+//		t_redirect同士をnextで繋げる

@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/11 22:12:00 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/12 13:39:07 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv, char **envp)
 		{ // 失敗
             free_tokens(tokens);
             free(line);
-            continue;
+            continue; // Ctrl-Cでは、AST全体の実行をキャンセルし、新しいプロンプトに戻る
         }
 
 		// コマンド実行中のシグナルハンドラに切り替え
