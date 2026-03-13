@@ -158,7 +158,6 @@
             t_node *parse_pipeline(t_token **tokens);
             // 最も優先順位が高い「単一のコマンド」または「サブシェル ()」を処理
             t_node *parse_command(t_token **tokens);
-│   └── syntax_err.c
 └── signals
     └── signal.c
 
