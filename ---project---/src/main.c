@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/12 13:39:07 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/13 10:47:04 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int main(int argc, char **argv, char **envp)
 		set_executing_signals();
 
 		// Executor
-		exec_ast(ast, &env_list); //展開もする
+		exec_ast(ast, &env_list); // 展開 -> 実行
 
 		rl_on_new_line(); // readlineに次の入力へと伝える
 		rl_replace_line("", 0); // 現在の行を空に

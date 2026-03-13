@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 21:28:34 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/12 21:29:02 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/13 11:41:40 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,24 @@ static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list);
 // 文字列の末尾に1文字を追加し、元の文字列を解放
 static char	*append_char(char *str, char c);
 
+// wildcard util
+// 配列全体を再構築して、node->args 自体を上書き
+// 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
+char	**insert_matches_to_args(char **args, int index, char **matches, int match_count)
+
 
 // 展開系util ----------------------------------------------
 // str: args[i], redir->filename を expand_stringに渡す
 void	expand_node(t_node *node, t_env *env_list)
 {
 	int			i;
+	int has_wildcard;
 	char		*expanded_str;
 	t_redirect	*redir;
+	char	**sorted_matches;
+	int		match_count = 0;
+
+	has_wildcard = 0;
 
 	if (!node)
 		return ;
@@ -41,12 +51,37 @@ void	expand_node(t_node *node, t_env *env_list)
 	{
 		while (node->args[i])
 		{
-			// 展開
-			expanded_str = expand_string(node->args[i], env_list);
-			free(node->args[i]);
+			// 展開 ex.)node->args[i]: *.c
+			expanded_str = expand_string(node->args[i], env_list, &has_wildcard);
 
-			// 展開後の文字列で上書き
-			node->args[i] = expanded_str;
+			// wildcard.c の処理へ委譲し、引数配列を再構築する -------------------
+			if (has_wildcard == 1)
+			{
+				sorted_matches = expand_wildcard(expanded_str); // expanded_str: *.c
+				// sorted_matches: [init.c ,util.c, main.c]
+
+				// 挿入する要素数をカウント
+				while (sorted_matches && sorted_matches[match_count])
+					match_count++;
+
+				// 古い文字列を解放
+				free(node->args[i]);
+				free(expanded_str); // expanded_str: *.c
+
+				// 配列全体を再構築して、node->args 自体を上書き
+				node->args = insert_matches_to_args(node->args, i, sorted_matches, match_count);
+
+				// 追加した要素の分だけ i を進める (ループの最後で i++ されるため -1)
+				if (match_count > 0)
+					i += (match_count - 1);
+			}
+
+			// wildcardではない場合、上書き -------------------
+			else
+			{
+				free(node->args[i]);
+				node->args[i] = expanded_str;
+			}
 
 			i++;
 		}
@@ -70,7 +105,7 @@ void	expand_node(t_node *node, t_env *env_list)
 }
 
 // 	str: args[i] か redir->filename の $, クォート を適切に展開する
-char *expand_string(char *str, t_env *env_list);
+char *expand_string(char *str, t_env *env_list, int *has_wildcard);
 {
 	char	*res;
 	int		i;
@@ -84,6 +119,9 @@ char *expand_string(char *str, t_env *env_list);
 	in_dquote = 0;
 	i = 0;
 
+	if (has_wildcard)
+        *has_wildcard = 0;
+
 	while (str[i] != '\0')
 	{
 		// ' & クオート外 なら
@@ -96,8 +134,16 @@ char *expand_string(char *str, t_env *env_list);
 		// $ & '' の中ではない場合、展開
 		else if (str[i] == '$' && !in_squote)
 		{
-			res = handle_dollar(res, str, &i, env_list);
+			res = handle_dollar(res, str, &i, env_list, in_dquote, has_wildcard);
 			continue ; // '$HOME$?'の時など (iは加算済)
+		}
+
+		// *
+		else if (str[i] == '*' && !in_squote && !in_dquote)
+		{
+			if (has_wildcard)
+                *has_wildcard = 1;
+			res = append_char(res, str[i]);
 		}
 
 		// 通常の文字　"'$HOME'" の ' も文字
@@ -110,8 +156,8 @@ char *expand_string(char *str, t_env *env_list);
 }
 
 //　$と、それに続く文字(2個目の$まで) を返す
-//		* 環境変数は連続出力にも対応する, valueが無い時は空文字扱い
-static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list)
+//		環境変数は連続出力にも対応する, valueが無い時は空文字扱い
+static char *handle_dollar(char *res, char *str, int *i, t_env *env_list, int in_dquote, int *has_wildcard)
 {
 	int		start;
 	char	*var_name;
@@ -152,6 +198,10 @@ static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list)
 	// 取得したvalueを結果の文字列に結合する
 	if (val)
 	{
+		// wildcard: !in_dquote & 展開された値に '*' が含まれていれば フラグを立てる
+        if (!in_dquote && has_wildcard && ft_strchr(val, '*'))
+            *has_wildcard = 1;
+
 		new_res = ft_strjoin(res, val);
 		free(res);
 		return (new_res);
@@ -190,4 +240,44 @@ static char	*append_char(char *str, char c)
 
 	free(str);
 	return (new_str);
+}
+
+// wildcard util ----------------------------------------------
+// 配列全体を再構築して、node->args 自体を上書き
+// 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
+char	**insert_matches_to_args(char **args, int index, char **matches, int match_count)
+{
+	int		old_len = 0;
+	int		i = 0, j = 0, k = 0;
+	char	**new_args;
+
+	if (!args || !matches)
+		return (args);
+
+	// 元のargsの要素数
+	while (args[old_len])
+		old_len++;
+
+	// 新しいargsの配列
+	new_args = (char **)malloc(sizeof(char *) * (old_len + match_count));
+	if (!new_args)
+		return (NULL);
+
+	// indexより前(元のargs)をコピー
+	while (i < index)
+		new_args[k++] = args[i++];
+
+	// matchesの要素をすべて挿入
+	while (j < match_count)
+		new_args[k++] = matches[j++];
+
+	// indexより後(元のargs)をコピー
+	i++; // index番目の元の文字列は飛ばすためi++
+	while (i < old_len)
+		new_args[k++] = args[i++];
+	new_args[k] = NULL;
+
+	free(args);
+	free(matches);
+	return (new_args);
 }

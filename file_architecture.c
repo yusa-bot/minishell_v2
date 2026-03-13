@@ -45,7 +45,7 @@
             // リストの基本操作
             // **envp -> t_envの連結リスト
             t_env *init_env(char **envp);
-            // malloc を使用して新しいノードを作成
+            // malloc を使 用して新しいノードを作成
             t_env *env_new(char *key, char *value);
             // リストの末尾にノードを追加
             void env_add_back(t_env **env_list, t_env *new_node);
@@ -126,6 +126,17 @@
             // 文字列の末尾に1文字を追加し、元の文字列を解放
             static char	*append_char(char *str, char c);
 │   └── wildcard.c
+            // wildcard展開
+            // dir内の全ファイル取得 -> 一致判定 -> sort -> sorted_matches配列を返す
+            char	**expand_wildcard(char *pattern); // pattern:*.c
+            // パターンとファイル名が一致するか判定
+            // 		*があったら、patternとstrが不一致の間、match(*に対応するstr部分)に記録し、
+            //		patternとstrが一致し、双方が\0で終わったら、一致していると言える。
+            int	match_pattern(char *pattern, char *str); // pattern:*.c str:d_name
+            // 見つかったファイル名を配列に追加して拡張
+            static char	**append_match(char **matches, char *new_str, int *count);
+            // 文字列配列を辞書順(ASCII順)にバブルソートする
+            static void	sort_str_array(char **array, int count);
 ├── lexer
 │   └── lexer.c
             // tokenize
@@ -150,3 +161,15 @@
 │   └── syntax_err.c
 └── signals
     └── signal.c
+
+
+[AST解析 -> t_nodeを展開 -> コマンド実行]
+            ---------- ここの流れ
+
+exec_cmd()
+->  expand_node():展開開始
+	 │
+	expand_string() : $, クォートを展開 (wildcard必要有無flagを取得)
+	 ├── !has_wildcard: -> expand_node()で、node->argsを展開後の文字列で上書き
+	 └── has_wildcard
+				└── expand_wildcard() -> sorted_matchesリストを返す -> expand_node()で、node->argsを展開後の文字列で上書き
