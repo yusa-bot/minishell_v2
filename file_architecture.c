@@ -113,6 +113,14 @@
             static int	read_heredoc(t_redirect *redir, t_env *env_list);
 │   ├── pipe.c
 │   └── redirect.c
+            // redirect処理
+            // t_redirect->nextがある間リストを回し、リダイレクトの種類によって処理を振り分け
+            // 		複数t_redirectでも、最後のFDで上書き
+            int apply_redirects(t_redirect *redirects) // t_node->t_redirect (1nodeづつ)
+            // 入力 < とヒアドキュメント << の処理. open -> dup2 -(heredocメモ確認)
+            static int handle_input(t_redirect *redir)
+            // 出力 > と追記 >> の処理. open -> dup2
+            static int handle_output(t_redirect *redir)
 ├── expander
 │   ├── expand.c
             // 展開系util

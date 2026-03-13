@@ -6,39 +6,16 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:10 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/12 14:13:26 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/13 16:23:10 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// なぜ履歴でheredoc内容も出るのか?
+//一時ファイルに、入力読み込み
+//redirectでは通常のリダイレクト同様、一時ファイルをopenしてdup2して繋ぐ
+//コマンド実行時には、FDが入れ替わっている
 
-
-///tmp/heredoc_tmp 等に書き込み
-
-//int fd = open("/tmp/heredoc_tmp", O_RDONLY);
-//unlink("/tmp/heredoc_tmp"); // fd が生きているため、データの実体はメモリ/ディスク上に残り
-
-//親プロセスが fork した後、子プロセス内
-//子プロセスには fd（例: 番号 3）と、標準入力 STDIN_FILENO（番号 0）があります
-
-//dup2(fd, STDIN_FILENO) // 「番号 0（標準入力）を、番号 fd が指しているのと同じファイル実体に繋ぎかえろ」
-//close(fd);
-
-//execve("/bin/cat", ...)
-
-----
-
-process_heredoc でASTを巡回し、TK_HEREDOC を見つける
-readline("> ") で入力を受け付け、専用の一時ファイル（例: /tmp/.heredoc_tmp1）に書き込む
-t_redirect 構造体の filenameを、作成した一時ファイルのパスに書き換える
-
-実行時（exec_cmd.c）には、ただの一時ファイルの入力リダイレクト（< /tmp/.heredoc_tmp1）
-	として処理し、open した直後に unlink してファイルを削除
-
-
----
 
 // AST全体を走査し、TK_HEREDOC があれば入力を処理する（再帰）
 int	process_heredoc(t_node *node, t_env *env_list);
