@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/13 10:48:42 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/13 14:52:05 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ int exec_cmd(t_node *node, t_env **env_list);
 	int	saved_stdout;
 
 	// 変数展開とクォート除去, * 処理
-	expand_node(node, *env_list);
+	if (expand_node(node, *env_list) != 0)
+        return (1);
 	if (!node->args || !node->args[0]) // args(実行コマンド)が無い
 		return (0);
 

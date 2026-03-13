@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 21:28:34 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/13 11:41:40 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/13 14:48:06 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,48 @@ void	expand_node(t_node *node, t_env *env_list)
 		if (redir->type != TK_HEREDOC) // heredoc以外
 		{
 			// 展開
-			expanded_str = expand_string(redir->filename, env_list);
-			free(redir->filename);
+			expanded_str = expand_string(redir->filename, env_list, &has_wildcard);
 
-			// 展開後の文字列で上書き
-			redir->filename = expanded_str;
+			// wildcard
+			if (has_wildcard == 1)
+			{
+				sorted_matches = expand_wildcard(expanded_str);
+
+				// 要素数をカウント
+				match_count = 0;
+				while (sorted_matches && sorted_matches[match_count])
+					match_count++;
+
+				// 1個にマッチした or 0個マッチで*を含むそのままの文字列が返ってきた
+				if (match_count == 1)
+				{
+					// 上書き
+					free(redir->filename);
+					redir->filename = ft_strdup(sorted_matches[0]);
+
+					free_str_array(sorted_matches);
+					free(expanded_str);
+				}
+				}
+				else // match_count > 1
+				{
+					// エラー出力
+                    ft_putstr_fd("minishell: ", 2);
+                    ft_putstr_fd(redir->filename, 2); // 展開前(元の文字列)を出すのがBash準拠
+                    ft_putstr_fd(": ambiguous redirect\n", 2);
+
+                    free_str_array(sorted_matches);
+                    free(expanded_str);
+                    return (1);
+				}
+			}
+			// wildcardではない場合、上書き -------------------
+			else
+			{
+				free(redir->filename);
+				redir->filename = expanded_str;
+			}
+
 		}
 		redir = redir->next;
 	}
