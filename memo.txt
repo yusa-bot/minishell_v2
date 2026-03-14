@@ -1,0 +1,12 @@
+エラー動作
+エラー時処理
+
+signal理解
+*挙動理解
+
+zennと交えてコード理解
+
+env_init, env_util 関数重複
+
+util/ にする
+    ASCII, env_count

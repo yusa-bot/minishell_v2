@@ -2,7 +2,6 @@
 **/minishell
 **/*.o
 **/*.d
-memo.txt
 .gitmodules
 **/libft
 .devcontainer
