@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:10:26 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/14 19:22:02 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/14 19:30:41 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@
 //フォーマット   KEY=VALUE    declare -x KEY="VALUE", （VALUE）が必ずダブルクォート（"）
 //ソート   	  そのまま  	ASCIIコード順
 //値なし変数	   表示なし	  	 表示(declare -x ONLY_KEY)
-//_			 あり 		  なし
-
+//(_			 あり 		  なし）
 
 // 引数あり 引数なし に対応
 int	builtin_export(char **args, t_env **env_list)
