@@ -6,7 +6,7 @@ signal理解
 
 zennと交えてコード理解
 
-env_init, env_util 関数重複
+env_init, env_util ft_isnumeric　関数重複
 
 util/ にする
     ASCII, env_count
