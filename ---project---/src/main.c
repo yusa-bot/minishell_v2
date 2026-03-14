@@ -6,13 +6,14 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/13 10:47:04 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/14 21:57:00 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int g_sig = 0; // 受信したシグナルのみを示す
+// 受信したシグナルのみを示す
+volatile sig_atomic_t g_sig = 0;
 
 int main(int argc, char **argv, char **envp)
 {
@@ -30,7 +31,7 @@ int main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		// プロンプト待機中のシグナルハンドラを設定
-		set_interactive_signals();
+		set_signal_interactive();
 
 		line = readline("minishell$ ");
 
@@ -69,12 +70,13 @@ int main(int argc, char **argv, char **envp)
             continue; // Ctrl-Cでは、AST全体の実行をキャンセルし、新しいプロンプトに戻る
         }
 
-		// コマンド実行中のシグナルハンドラに切り替え
-		set_executing_signals();
+		// コマンド実行中のシグナルハンドラに切り替え (親プロでは無視)
+		set_signal_executing();
 
 		// Executor
 		exec_ast(ast, &env_list); // 展開 -> 実行
 
+		// いらない？
 		rl_on_new_line(); // readlineに次の入力へと伝える
 		rl_replace_line("", 0); // 現在の行を空に
 		rl_redisplay(); // 空にした後、$ で入力待機

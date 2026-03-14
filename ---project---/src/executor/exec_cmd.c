@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/13 14:52:05 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/14 21:54:56 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ int exec_external(char **args, t_env **env_list)
 	if (pid == 0) // 子プロセス
 	{
 		// シグナルハンドラをデフォルトに戻す -> 子プロは、Ctrl-Cで終了
-		set_default_signals();
+		set_signal_child();
 
 		// コマンドのフルパスを取得
 		path = get_cmd_path(args[0], *env_list);
@@ -156,7 +156,7 @@ int exec_external(char **args, t_env **env_list)
 	}
 
 	waitpid(pid, &status, 0);
-
+	
 	return (calculate_exit_status(status));
 
 	//fork() で子プロセスを生成
