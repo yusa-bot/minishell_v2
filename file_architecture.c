@@ -112,6 +112,13 @@
             // 実際に readline を回して一時ファイルに書き込む。ここでは、一時ファイルに書き込むまで
             static int	read_heredoc(t_redirect *redir, t_env *env_list);
 │   ├── pipe.c
+            // pipe
+            // pipe(2つのfdを繋ぐ) -> 左(書), 右(読)の子プロを作成 -> 実行関数へ -> 親プロで子プロを待つ
+            int	exec_pipeline(t_node *node, t_env **env_list);
+            // 左（書）の子プロセス で fd[1] に書き込み準備 -> node下層を呼び出し再帰
+            static void	exec_pipe_left(t_node *node, t_env **env_list, int fd[2]);
+            // 右（読）の子プロセス で fd[0] から読み取り -> node下層を呼び出し再帰
+            static void	exec_pipe_right(t_node *node, t_env **env_list, int fd[2]);
 │   └── redirect.c
             // redirect処理
             // t_redirect->nextがある間リストを回し、リダイレクトの種類によって処理を振り分け
