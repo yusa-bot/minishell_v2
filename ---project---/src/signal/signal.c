@@ -6,25 +6,25 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:55 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 14:55:35 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:57:26 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 // A: プロンプトで入力を待っている
 // SIGINT
-void handler_interactive(int signum)
-void set_signal_interactive(void)
+void handler_interactive(int signum);
+void set_signal_interactive(void);
 
 // B: コマンド実行中 (子プロセス)
 // 親プロ
-void set_signal_executing(void)
+void set_signal_executing(void);
 // 子プロ
-void set_signal_child(void)
+void set_signal_child(void);
 
 // C: heredoc
-void set_signal_heredoc(void)
+void set_signal_heredoc(void);
 
 
 // A: プロンプトで入力を待っている ---------------------------------------------

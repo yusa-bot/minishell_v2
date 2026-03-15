@@ -61,8 +61,6 @@
             char *get_env_value(t_env *env_list, char *key)
             // 指定されたキーが存在すれば value を上書きし、存在しなければ新規ノードとして追加
             void set_env_value(t_env **env_list, char *key, char *value)
-            // リストの末尾に新しいノードを追加する
-            void	env_add_back(t_env **env_list, t_env *new_node)
             // 指定されたキーを持つノードをリストから切り離して free する
             void remove_env_node(t_env **env_list, char *key)
 ├── executor
@@ -175,6 +173,19 @@
             t_node *parse_command(t_token **tokens);
 └── signals
     └── signal.c
+			// A: プロンプトで入力を待っている
+			// SIGINT
+			void handler_interactive(int signum)
+			void set_signal_interactive(void)
+
+			// B: コマンド実行中 (子プロセス)
+			// 親プロ
+			void set_signal_executing(void)
+			// 子プロ
+			void set_signal_child(void)
+
+			// C: heredoc
+			void set_signal_heredoc(void)
 
 
 [AST解析 -> t_nodeを展開 -> コマンド実行]
