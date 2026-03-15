@@ -50,6 +50,7 @@ typedef enum e_node_type {
 typedef struct s_redirect {
     t_token_type        type;       // リダイレクトの種類 (TK_REDIR_OUT, TK_HEREDOC など)
     char                *filename;  // 対象のファイル名、または区切り文字(EOF)
+    int                 quoted;     // heredoc区切り文字がクォートされていた場合1 (変数展開なし)
     struct s_redirect   *next;      // 次のリダイレクトへのポインタ
 } t_redirect;
 
@@ -136,6 +137,8 @@ void restore_fds(int saved_stdin, int saved_stdout);
 // expand.c
 // str: args[i], redir->filename を expand_stringに渡す
 void	expand_node(t_node *node, t_env *env_list);
+// heredocの各行を変数展開する (lineの所有権を受け取り、展開後の文字列を返す)
+char	*expand_heredoc_line(char *line, t_env *env_list);
 
 // wildcard.c
 // dir内の全ファイル取得 -> 一致判定 -> sort -> sorted_matches配列を返す

@@ -221,20 +221,33 @@ static void append_redirect(t_node *node, t_token_type type, char *filename)
 {
 	t_redirect	*new_redir;
 	t_redirect	*current;
+	char		*stripped;
+	int			len;
 
 	new_redir = (t_redirect *)malloc(sizeof(t_redirect));
 	if (!new_redir)
 		return ;
 
 	new_redir->type = type;
-	new_redir->filename = ft_strdup(filename);
+	new_redir->quoted = 0;
 	new_redir->next = NULL;
+
+	// heredocの区切り文字: クォートを検出して除去し、quotedフラグを立てる
+	if (type == TK_HEREDOC && (filename[0] == '\'' || filename[0] == '"'))
+	{
+		new_redir->quoted = 1;
+		len = ft_strlen(filename);
+		stripped = ft_substr(filename, 1, len - 2); // 先頭・末尾のクォートを除去
+		new_redir->filename = stripped;
+	}
+	else
+		new_redir->filename = ft_strdup(filename);
 
 	// t_nodeでt_redirectが初めての場合
 	if (node->redirects == NULL)
 	{
 		node->redirects = new_redir;
-			return ;
+		return ;
 	}
 
 	// t_nodeにt_redirectが既にある場合 -> リストの末尾を探して追加

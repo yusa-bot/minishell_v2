@@ -20,7 +20,7 @@
 // AST全体を走査し、TK_HEREDOC があれば入力を処理する（再帰）
 int	process_heredoc(t_node *node, t_env *env_list);
 // 実際に readline を回して一時ファイルに書き込む。ここでは、一時ファイルに書き込むまで
-static int	read_heredoc(t_redirect *redir);
+static int	read_heredoc(t_redirect *redir, t_env *env_list);
 
 // suffix取得し一意のfilename作成
 static char	*generate_tmp_filename(void);
@@ -46,7 +46,7 @@ int	process_heredoc(t_node *node, t_env *env_list)
 		{
 			if (redir->type == TK_HEREDOC)
 			{
-				if (read_heredoc(redir) != 0)
+				if (read_heredoc(redir, env_list) != 0)
 					return (1); // 失敗（Ctrl-Cなどで中断された場合）
 			}
 			redir = redir->next;
@@ -64,7 +64,7 @@ int	process_heredoc(t_node *node, t_env *env_list)
 }
 
 // 実際に readline を回して一時ファイルに書き込む。ここでは、一時ファイルに書き込むまで
-static int	read_heredoc(t_redirect *redir)
+static int	read_heredoc(t_redirect *redir, t_env *env_list)
 {
 	pid_t	pid;
 	int		status;
@@ -109,8 +109,9 @@ static int	read_heredoc(t_redirect *redir)
 				break ;
 			}
 
-			// 環境変数の展開 (デリミタにクオーとが無い場合、$は展開される)
-			//expand_heredoc_vars(&line, env_list);
+			// 環境変数の展開 (デリミタにクォートが無い場合、$は展開される)
+			if (!redir->quoted)
+				line = expand_heredoc_line(line, env_list);
 
 			// 一時ファイルに書き込む
 			ft_putendl_fd(line, fd);

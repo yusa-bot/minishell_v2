@@ -22,9 +22,23 @@ int	builtin_cd(char **args, t_env **env_list)
 
 	path = args[1];
 
+	// 引数が多すぎる
+	if (args[1] && args[2])
+	{
+		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
+		return (1);
+	}
+
 	// 引数なしは HOME へ
 	if (!path)
+	{
 		path = get_env_value(*env_list, "HOME");
+		if (!path)
+		{
+			ft_putendl_fd("minishell: cd: HOME not set", STDERR_FILENO);
+			return (1);
+		}
+	}
 
 	// cd - は OLDPWD へ
 	else if (ft_strcmp(path, "-") == 0)

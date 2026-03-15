@@ -24,6 +24,8 @@ int	builtin_export(char **args, t_env **env_list);
 static void	print_exported_env(t_env *env_list);
 // 1つの環境変数ノードを表示
 static void	print_single_export(t_env *node);
+// 有効な識別子か確認 (先頭: 英字or_, 以降: 英数字or_)
+static int	is_valid_identifier(char *name);
 
 
 // 引数あり 引数なし に対応
@@ -32,6 +34,7 @@ int	builtin_export(char **args, t_env **env_list)
 	int		i;
 	char	*sep;
 	char	*key;
+	int		ret;
 
 	// 引数なしだったら環境変数一覧表示
 	if (!args[1])
@@ -40,6 +43,7 @@ int	builtin_export(char **args, t_env **env_list)
 		return (0);
 	}
 
+	ret = 0;
 	// 複数の引数に対応
 	i = 1;
 	while (args[i])
@@ -51,17 +55,38 @@ int	builtin_export(char **args, t_env **env_list)
 		if (sep)
 		{
 			key = ft_substr(args[i], 0, sep - args[i]);
+			if (!is_valid_identifier(key))
+			{
+				ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+				ft_putstr_fd(args[i], STDERR_FILENO);
+				ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+				free(key);
+				ret = 1;
+				i++;
+				continue ;
+			}
 			set_env_value(env_list, key, sep + 1);
 			free(key);
 		}
 
 		// 値なし登録
 		else
+		{
+			if (!is_valid_identifier(args[i]))
+			{
+				ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+				ft_putstr_fd(args[i], STDERR_FILENO);
+				ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+				ret = 1;
+				i++;
+				continue ;
+			}
 			set_env_value(env_list, args[i], NULL);
+		}
 
 		i++;
 	}
-	return (0);
+	return (ret);
 }
 
 //　引数なしを処理
@@ -122,4 +147,23 @@ static void	print_single_export(t_env *node)
 		ft_putchar_fd('\"', STDOUT_FILENO);
 	}
 	ft_putchar_fd('\n', STDOUT_FILENO);
+}
+
+// 有効な識別子か確認 (先頭: 英字or_, 以降: 英数字or_)
+static int	is_valid_identifier(char *name)
+{
+	int	i;
+
+	if (!name || !name[0])
+		return (0);
+	if (!ft_isalpha(name[0]) && name[0] != '_')
+		return (0);
+	i = 1;
+	while (name[i])
+	{
+		if (!ft_isalnum(name[i]) && name[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }

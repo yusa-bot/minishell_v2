@@ -15,6 +15,8 @@
 // 展開系util
 // str: args[i], redir->filename を expand_stringに渡す
 void	expand_node(t_node *node, t_env *env_list);
+// heredocの各行を変数展開する (lineの所有権を受け取り、展開後の文字列を返す)
+char	*expand_heredoc_line(char *line, t_env *env_list);
 // 	str: args[i] か redir->filename の $, クォート を適切に展開する
 static char *expand_string(char *str, t_env *env_list, int *has_wildcard);
 //　$と、それに続く文字(2個目の$まで) を返す
@@ -270,4 +272,16 @@ static char	*append_char(char *str, char c)
 
 	free(str);
 	return (new_str);
+}
+
+// heredocの各行を変数展開する
+// lineの所有権を受け取り、$展開後の新しい文字列を返す
+char	*expand_heredoc_line(char *line, t_env *env_list)
+{
+	int		has_wildcard;
+	char	*result;
+
+	result = expand_string(line, env_list, &has_wildcard);
+	free(line);
+	return (result);
 }

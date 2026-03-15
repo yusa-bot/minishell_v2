@@ -113,10 +113,11 @@ static int exec_builtin(char **args, t_env **env_list)
 // 子プロでexecve()
 static int exec_external(char **args, t_env **env_list)
 {
-	pid_t	pid;
-	int		status;
-	char	*path;
-	char	**envp;
+	pid_t		pid;
+	int			status;
+	char		*path;
+	char		**envp;
+	struct stat	st;
 
 	pid = fork();
 
@@ -147,8 +148,13 @@ static int exec_external(char **args, t_env **env_list)
 		// execve でプロセスを上書き
 		execve(path, args, envp);
 
-		// execve が戻ってきた場合（実行権限がない等）はエラー処理
-		perror("minishell");
+		// execve が戻ってきた場合: ディレクトリか権限なしかを判別してエラー出力
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(args[0], 2);
+		if (stat(path, &st) == 0 && S_ISDIR(st.st_mode))
+			ft_putstr_fd(": Is a directory\n", 2);
+		else
+			ft_putstr_fd(": Permission denied\n", 2);
 		free(path);
 		free_str_array(envp);
 		exit(126);
@@ -181,11 +187,11 @@ static char *get_cmd_path(char *cmd, t_env *env_list)
 	// '/'を含んでいる場合、既にフルパスなのでreturn
 	if (ft_strchr(cmd, '/'))
 	{
-		// 実行できる
-		if (access(cmd, X_OK) == 0)
+		// ファイルが存在する場合はパスを返し、execveに権限判定を委ねる (126 vs 127 の分岐のため)
+		if (access(cmd, F_OK) == 0)
 			return (ft_strdup(cmd));
 
-		// 実行できない
+		// ファイル自体が存在しない
 		return (NULL);
 	}
 
