@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:00 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 14:36:16 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 // parser.cで格納されたt_nodeから、t_node_typeを判定し適切な実行処理へと振り分けるルーター
 //		-> exec_ast.c(&&, ||, ()), pipe.c, exec_cmd.c
@@ -20,19 +20,13 @@
 int exec_ast(t_node *node, t_env **env_list);
 // NODE_AND (&&)を処理.
 //		左ノードを実行し、その終了ステータスが0であった場合のみ、右ノードを実行
-int exec_and(t_node *node, t_env **env_list);
+static int exec_and(t_node *node, t_env **env_list);
 // NODE_OR (||) を処理.
 //		左ノードを実行し、その終了ステータスが0以外であった場合のみ、右ノードを実行
-int exec_or(t_node *node, t_env **env_list);
+static int exec_or(t_node *node, t_env **env_list);
 // NODE_SUBSHELL (()) を処理.
 //		forkで子プロ生成 -> 子プロでexec_ast() -> 親プロが子プロのステータスを返す
-int exec_subshell(t_node *node, t_env **env_list);
-
-// utils
-// waitpid のステータスマクロ(WIFEXITED等)を使って正確な終了コードを計算して返す
-int	calculate_exit_status(int status);
-// 環境変数の $? を更新
-void	update_exit_status(t_env **env_list, int status);
+static int exec_subshell(t_node *node, t_env **env_list);
 
 
 // AST -> &&, ||, () に振り分け ----------------------------------------------
@@ -67,7 +61,7 @@ int exec_ast(t_node *node, t_env **env_list)
 
 // NODE_AND (&&)を処理.
 //		左ノードを実行し、その終了ステータスが0であった場合のみ、右ノードを実行
-int exec_and(t_node *node, t_env **env_list)
+static int exec_and(t_node *node, t_env **env_list)
 {
 	int	status;
 
@@ -90,7 +84,7 @@ int exec_and(t_node *node, t_env **env_list)
 
 // NODE_OR (||) を処理.
 //		左ノードを実行し、その終了ステータスが0以外であった場合のみ、右ノードを実行
-int exec_or(t_node *node, t_env **env_list)
+static int exec_or(t_node *node, t_env **env_list)
 {
 	int	status;
 
@@ -113,7 +107,7 @@ int exec_or(t_node *node, t_env **env_list)
 
 // NODE_SUBSHELL (()) を処理.
 //		forkで子プロ生成 -> 子プロでexec_ast() -> 親プロが子プロのステータスを返す
-int exec_subshell(t_node *node, t_env **env_list)
+static int exec_subshell(t_node *node, t_env **env_list)
 {
 	pid_t	pid;
 	int		status;
@@ -139,61 +133,4 @@ int exec_subshell(t_node *node, t_env **env_list)
 
 	// waitpid のステータスマクロ(WIFEXITED等)を使って正確な終了コードを計算して返す
 	return (calculate_exit_status(status));
-}
-
-// utils ----------------------------------------------
-
-// waitpid のステータスマクロ(WIFEXITED等)を使って正確な終了コードを計算して返す
-int	calculate_exit_status(int status)
-{
-	// 正常終了した場合
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status)); // 番号を取得
-
-	// シグナルによって終了させられた場合
-	if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status)); // 128+終了させたシグナル番号
-
-	// 停止状態など、その他の場合はそのまま返す
-	return (status);
-}
-
-int calculate_exit_status_quit(int status)
-{
-    int term_sig;
-
-    // 正常終了した場合
-    if (WIFEXITED(status))
-        return (WEXITSTATUS(status)); // 番号を取得
-
-    // シグナルによって終了させられた場合
-    if (WIFSIGNALED(status))
-    {
-        term_sig = WTERMSIG(status); // 終了させたシグナル番号を取得
-
-        // シグナルに応じたメッセージの出力
-        if (term_sig == SIGQUIT)
-            printf("Quit (core dumped)\n");
-        else if (term_sig == SIGINT)
-            printf("\n"); // Ctrl-C の場合は改行のみ出力してプロンプトを整える
-
-        return (128 + term_sig); // 128 + 終了させたシグナル番号
-    }
-
-    // 停止状態など、その他の場合はそのまま返す
-    return (status);
-}
-
-// 環境変数の $? を更新
-void	update_exit_status(t_env **env_list, int status)
-{
-	char	*status_str;
-
-	status_str = ft_itoa(status); /// malloc
-	if (!status_str)
-		return ;
-
-	set_env_value(env_list, "?", status_str); // 内部で値をft_strdup
-
-	free(status_str);
 }

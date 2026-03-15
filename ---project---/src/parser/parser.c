@@ -6,31 +6,23 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:49 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/12 14:20:01 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 17:02:08 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 // parse
 // 構文解析の入り口
 t_node *parse(t_token **tokens);
 // 最も優先順位の低い && と || を処理
-t_node *parse_list(t_token **tokens);
+static t_node *parse_list(t_token **tokens);
 // 次に優先順位の低い |（パイプ）を処理
-t_node *parse_pipeline(t_token **tokens);
+static t_node *parse_pipeline(t_token **tokens);
 // 最も優先順位が高い「単一のコマンド」または「サブシェル ()」を処理
-t_node *parse_command(t_token **tokens);
-
-// helper
-// ASTの新しいノードを作成し、初期化
-** t_node *new_node(t_node_type type, t_node *left, t_node *right);
-// tokenがリダイレクト演算子かどうかを判定
-int  is_redirect(t_token_type type);
-//　char **args をメモリ再確保して追加
-** void append_arg(t_node *node, char *value);
+static t_node *parse_command(t_token **tokens);
 // t_redirectを作成してnodeに追加
-** void append_redirect(t_node *node, t_token_type type, char *filename);
+static void append_redirect(t_node *node, t_token_type type, char *filename);
 
 
 // parse ----------------------------------------------
@@ -62,7 +54,7 @@ t_node *parse(t_token **tokens)
 }
 
 // 最も優先順位の低い && と || を処理
-t_node *parse_list(t_token **tokens)
+static t_node *parse_list(t_token **tokens)
 {
 	t_node *node;
 	t_node *right;
@@ -99,7 +91,7 @@ t_node *parse_list(t_token **tokens)
 }
 
 // 次に優先順位の低い |（パイプ）を処理
-t_node *parse_pipeline(t_token **tokens)
+static t_node *parse_pipeline(t_token **tokens)
 {
 	t_node *node;
     t_node *right;
@@ -130,7 +122,7 @@ t_node *parse_pipeline(t_token **tokens)
 
 // 最も優先順位が高い「単一のコマンド」または「サブシェル ()」を処理
 // 		サブシェル内はlistから始まっているが、元promptからすればcmdと同じ扱い
-t_node *parse_command(t_token **tokens)
+static t_node *parse_command(t_token **tokens)
 {
 	t_node	*node;
 	t_node	*subshell_node;
@@ -224,78 +216,8 @@ t_node *parse_command(t_token **tokens)
 }
 
 
-// helper ----------------------------------------------
-
-// ASTの新しいノードを作成し、初期化
-// node->args, node->redirectsは、葉(NODE_CMD)以外は空
-** t_node *new_node(t_node_type type, t_node *left, t_node *right)
-{
-	t_node	*node;
-
-	node = (t_node *)malloc(sizeof(t_node));
-	if (!node)
-		return (NULL);
-
-	node->type = type;
-	node->left = left;
-	node->right = right;
-
-	node->args = NULL;       // NODE_CMD用初期化
-	node->redirects = NULL;  // NODE_CMD用初期化
-
-	return (node);
-}
-
-// tokenがリダイレクト演算子かどうかを判定
-int  is_redirect(t_token_type type)
-{
-	if (type == TK_REDIR_IN || type == TK_REDIR_OUT ||
-		type == TK_REDIR_APPEND || type == TK_HEREDOC)
-		return (1);
-	return (0);
-}
-
-//　char **args をメモリ再確保して追加
-** void append_arg(t_node *node, char *value)
-{
-	int		i;
-	char	**new_args;
-
-	i = 0;
-
-	// t_nodeに既にあるargsの数をカウント
-	//		parse_commandではtokenごとにparseするため、既にargs tokenがある場合
-	if (node->args)
-	{
-		while (node->args[i])
-			i++;
-	}
-
-	// 追加するargsも含めて再度メモリを確保
-	new_args = (char **)malloc(sizeof(char *) * (i + 2));
-	if (!new_args)
-		return ;
-
-	// 既存のポインタを新しい配列にコピーし、古い配列を解放
-	i = 0;
-	if (node->args)
-	{
-		while (node->args[i])
-		{
-			new_args[i] = node->args[i];
-			i++;
-		}
-		free(node->args);
-	}
-
-	// Lexer側のtokenと分離するため、複製して追加
-	new_args[i] = ft_strdup(value);
-	new_args[i + 1] = NULL;
-	node->args = new_args;
-}
-
 // t_redirectを作成してnodeに追加
-** void append_redirect(t_node *node, t_token_type type, char *filename)
+static void append_redirect(t_node *node, t_token_type type, char *filename)
 {
 	t_redirect	*new_redir;
 	t_redirect	*current;

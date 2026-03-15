@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/14 21:57:00 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:50 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../inc/minishell.h"
 
 // 受信したシグナルのみを示す
 volatile sig_atomic_t g_sig = 0;
@@ -25,7 +25,7 @@ int main(int argc, char **argv, char **envp)
 	(void)argc;
     (void)argv;
 
-	env_list = init_env(envp);
+	env_list = env_init(envp);
 	// (tcgetattr)
 
 	while (1)
@@ -82,12 +82,13 @@ int main(int argc, char **argv, char **envp)
 		rl_redisplay(); // 空にした後、$ で入力待機
 
 		// cleanup
-		free_ast(ast);
+		free_ast(node);
         free_tokens(tokens);
         free(line);
 	}
 
 	rl_clear_history(); // history削除
 	free_env(env_list);
-	return (get_last_exit_status(env_list));
+
+	return (get_env_value(env_list, "?"));
 }

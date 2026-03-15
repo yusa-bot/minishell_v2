@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:28:32 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/11 22:42:33 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 //char **envpは文字の配列で、export や unset によって変数は動的に増減するため、
 // 固定長の配列では管理が破綻する -> 連結リストにする
@@ -28,7 +28,7 @@ void free_env_list(t_env *env_list);
 
 // リストの基本操作 ----------------------------------------------
 // **envp -> t_envの連結リスト
-t_env *init_env(char **envp)
+t_env *env_init(char **envp)
 {
 	t_env   *env_list;
 	char    *key;
@@ -106,7 +106,7 @@ void env_add_back(t_env **env_list, t_env *new_node)
 }
 
 // シェル終了時にリスト全体のメモリ（key, value, ノード自体）を解放
-void free_env_list(t_env *env_list)
+void free_env(t_env *env_list)
 {
 	t_env	*current;
 	t_env	*next_node;

@@ -6,29 +6,23 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:43 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/12 11:54:31 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 // tokenize
 // 1prompt
 t_token *tokenize(char *line);
 // |, <, >, &, (, ) -> &&, ||, <<, >>
-t_token *consume_operator(char **line_ptr);
+static t_token *consume_operator(char **line_ptr);
 // 演算子でも空白でもない連続した文字列 -> TK_WORD
-t_token *consume_word(char **line_ptr);
+static t_token *consume_word(char **line_ptr);
 
-// util
-// スペースやタブの間ポインタを進める
-void skip_spaces(char **line_ptr);
-// malloc を使用して新しいトークンノードのメモリを確保し、種類と文字列をセット
-t_token *new_token(t_token_type type, char *value);
-// 作成したトークンを、トークンリストの末尾に追加します。
-void token_add_back(t_token **head, t_token *new_node);
-// 対象文字が演算子か
-int     is_operator(char c);
+// free tokens
+// トークンの連結リストを全て解放する
+void	free_tokens(t_token *tokens)
 
 
 // tokenize ----------------------------------------------
@@ -75,7 +69,7 @@ t_token *tokenize(char *line)
 }
 
 // 文字が |, <, >, &, (, ) -> &&, ||, <<, >>
-t_token *consume_operator(char **line_ptr)
+static t_token *consume_operator(char **line_ptr)
 {
 	t_token_type	type;
 	char			*value;
@@ -131,7 +125,7 @@ t_token *consume_operator(char **line_ptr)
 }
 
 // 演算子でも空白でもない連続した文字列 -> TK_WORD
-t_token *consume_word(char **line_ptr)
+static t_token *consume_word(char **line_ptr)
 {
 	char	*start;
 	char	*value;
@@ -145,7 +139,7 @@ t_token *consume_word(char **line_ptr)
 	while (**line_ptr != '\0')
 	{
 		// quoteの外にdelimiterがあったら、単語修了
-		if (!in_squote && !in_dquote && is_delimiter(**line_ptr))
+		if (!in_squote && !in_dquote && is_spaces_operator(**line_ptr))
 			break ;
 
 		if (**line_ptr == '\'' && !in_dquote)
@@ -173,66 +167,30 @@ t_token *consume_word(char **line_ptr)
 	// クォートの除去はこの段階ではしない
 }
 
-// util ----------------------------------------------
-// スペースやタブの間ポインタを進める
-void skip_spaces(char **line_ptr)
+// free tokens ----------------------------------------------
+// トークンの連結リストを全て解放する
+void	free_tokens(t_token *tokens)
 {
-	while (**line_ptr == ' ' || **line_ptr == '\t')
-		(*line_ptr)++;
-}
+	t_token	*tmp;
 
-// malloc を使用して新しいトークンノードのメモリを確保し、種類と文字列をセット
-t_token *new_token(t_token_type type, char *value)
-{
-	t_token	*node;
-
-	node = (t_token *)malloc(sizeof(t_token));
-	if (!node)
-		return (NULL);
-
-	node->type = type;
-	node->value = value;
-	node->next = NULL;
-
-	return (node);
-}
-
-// 作成したトークンを、トークンリストの末尾に追加します。
-void token_add_back(t_token **head, t_token *new_node)
-{
-	t_token	*current;
-
-	if (!head || !new_node)
-		return ;
-
-	// 先頭
-	if (*head == NULL)
+	while (tokens)
 	{
-		*head = new_node;
-		return ;
+		// 1. 次のノードのアドレスを安全な場所に退避
+		tmp = tokens->next;
+
+		// 2. トークンが保持している文字列（動的確保されている場合）を解放
+		// ※ 構造体のメンバ名が 'str', 'word', 'value' など実装によって異なるため、
+		// ご自身の minishell.h の定義に合わせて変更してほしい
+		if (tokens->value)
+		{
+			free(tokens->value);
+			tokens->value = NULL;
+		}
+
+		// 3. トークンのノード自体を解放
+		free(tokens);
+
+		// 4. 退避しておいた次のノードにポインタを進める
+		tokens = tmp;
 	}
-
-	// 通常の追加
-	current = *head;
-	while (current->next != NULL)
-		current = current->next;
-	current->next = new_node;
-}
-
-// 対象文字が演算子か
-int     is_operator(char c)
-{
-	if (c == '|' || c == '<' || c == '>' || c == '&' || c == '(' || c == ')')
-		return (1);
-	return (0);
-}
-
-// 文字が区切り文字（空白または演算子）かどうか
-static int	is_delimiter(char c)
-{
-	if (c == ' ' || c == '\t' || c == '\n')
-		return (1);
-	if (is_operator(c))
-		return (1);
-	return (0);
 }

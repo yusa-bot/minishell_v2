@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:10:26 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/14 19:30:41 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 //				env       export (引数なし)
 //フォーマット   KEY=VALUE    declare -x KEY="VALUE", （VALUE）が必ずダブルクォート（"）

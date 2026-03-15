@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:09:37 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/14 19:35:25 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 int	builtin_cd(char **args, t_env **env_list)
 {

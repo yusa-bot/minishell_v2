@@ -1,33 +1,61 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/03/15 15:34:32 by ayusa             #+#    #+#              #
+#    Updated: 2026/03/15 16:45:34 by ayusa            ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
+
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
+RLFLAGS     = -lreadline
+AR      = ar rcs
+RM      = rm -f
 
-SRCS =
+SRCDIR      = src
+OBJDIR      = obj
+LIBFTDIR    = libft
+INCDIR      = include
+
+SRCS = src/signal/signal.c \
+	src/parser/parser.c \
+	src/main.c  \
+	src/status.c \
+	src/lexer/lexer.c src/lexer/lexer_helpers.c\
+	src/expander/expand.c  src/expander/wildcard.c  \
+	src/executor/exec_ast.c  src/executor/exec_cmd.c  src/executor/heredoc.c  src/executor/pipe.c  src/executor/redirect.c \
+	src/env/env_init.c  src/env/env_util.c  \
+	src/builtins/cd.c  src/builtins/echo.c  src/builtins/env.c  src/builtins/exit.c  src/builtins/export.c  src/builtins/pwd.c  src/builtins/unset.c
 
 OBJS = $(SRCS:.c=.o)
 
-LIBFT_DIR = libft
-LIBFT = $(LIBFT_DIR)/libft.a
-LIBFT_INCLUDE = -I$(LIBFT_DIR)
-
-INCLUDE = -I./include
+LIBFT = $(LIBFTDIR)/libft.a
+INCLUDES    = -I $(INCDIR) -I $(LIBFTDIR)
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME)
+$(NAME): $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(RLFLAGS) -o $(NAME)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	mkdir -p $(OBJDIR)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):
-	make -C $(LIBFT_DIR)
-
-%.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDE) $(LIBFT_INCLUDE) -c $< -o $@
+	make -C $(LIBFTDIR)
 
 clean:
-	rm -f $(OBJS)
-	make fclean -C $(LIBFT_DIR)
+	make -C $(LIBFTDIR) clean
+	rm -rf $(OBJDIR)
 
 fclean: clean
+	make -C $(LIBFTDIR) fclean
 	rm -f $(NAME)
 
 re: fclean all

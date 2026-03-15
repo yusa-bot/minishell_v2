@@ -6,28 +6,22 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 21:28:34 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/13 14:48:06 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 // 展開系util
 // str: args[i], redir->filename を expand_stringに渡す
 void	expand_node(t_node *node, t_env *env_list);
 // 	str: args[i] か redir->filename の $, クォート を適切に展開する
-char *expand_string(char *str, t_env *env_list);
+static char *expand_string(char *str, t_env *env_list);
 //　$と、それに続く文字(2個目の$まで) を返す
 //		* 環境変数は連続出力にも対応する, valueが無い時は空文字扱い
 static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list);
 // 文字列の末尾に1文字を追加し、元の文字列を解放
 static char	*append_char(char *str, char c);
-
-// wildcard util
-// 配列全体を再構築して、node->args 自体を上書き
-// 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
-char	**insert_matches_to_args(char **args, int index, char **matches, int match_count)
-
 
 // 展開系util ----------------------------------------------
 // str: args[i], redir->filename を expand_stringに渡す
@@ -138,11 +132,10 @@ void	expand_node(t_node *node, t_env *env_list)
 
 		}
 		redir = redir->next;
-	}
 }
 
 // 	str: args[i] か redir->filename の $, クォート を適切に展開する
-char *expand_string(char *str, t_env *env_list, int *has_wildcard);
+static char *expand_string(char *str, t_env *env_list, int *has_wildcard);
 {
 	char	*res;
 	int		i;
@@ -277,44 +270,4 @@ static char	*append_char(char *str, char c)
 
 	free(str);
 	return (new_str);
-}
-
-// wildcard util ----------------------------------------------
-// 配列全体を再構築して、node->args 自体を上書き
-// 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
-char	**insert_matches_to_args(char **args, int index, char **matches, int match_count)
-{
-	int		old_len = 0;
-	int		i = 0, j = 0, k = 0;
-	char	**new_args;
-
-	if (!args || !matches)
-		return (args);
-
-	// 元のargsの要素数
-	while (args[old_len])
-		old_len++;
-
-	// 新しいargsの配列
-	new_args = (char **)malloc(sizeof(char *) * (old_len + match_count));
-	if (!new_args)
-		return (NULL);
-
-	// indexより前(元のargs)をコピー
-	while (i < index)
-		new_args[k++] = args[i++];
-
-	// matchesの要素をすべて挿入
-	while (j < match_count)
-		new_args[k++] = matches[j++];
-
-	// indexより後(元のargs)をコピー
-	i++; // index番目の元の文字列は飛ばすためi++
-	while (i < old_len)
-		new_args[k++] = args[i++];
-	new_args[k] = NULL;
-
-	free(args);
-	free(matches);
-	return (new_args);
 }

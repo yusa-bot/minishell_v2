@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 14:36:42 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 // コマンド実行
 // 展開 -> リダイレクト適用 -> 実行分岐
@@ -18,15 +18,15 @@ int exec_cmd(t_node *node, t_env **env_list);
 
 // ビルトインコマンド
 // ビルトインコマンドか判定
-int is_builtin(char *cmd);
+static int is_builtin(char *cmd);
 // ビルトインコマンドの実装関数を呼び出す
-int exec_builtin(char **args, t_env **env_list);
+static int exec_builtin(char **args, t_env **env_list);
 
 // 外部コマンド
 // 子プロでexecve()
-int exec_external(char **args, t_env **env_list);
+static int exec_external(char **args, t_env **env_list);
 // 実行可能ファイルのフルパスを取得
-char *get_cmd_path(ch	r *cmd, t_env *env_list);
+static char *get_cmd_path(ch	r *cmd, t_env *env_list);
 
 
 // コマンド実行 ----------------------------------------------
@@ -73,7 +73,7 @@ int exec_cmd(t_node *node, t_env **env_list);
 
 // ビルトインコマンド ----------------------------------------------
 // echo, cd, pwd, export, unset, env, exit か -> 親プロ
-int is_builtin(char *cmd)
+static int is_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
@@ -90,7 +90,7 @@ int is_builtin(char *cmd)
 }
 
 // ビルトインコマンドの実装関数を呼び出す -> 終了ステータスを返す
-int exec_builtin(char **args, t_env **env_list)
+static int exec_builtin(char **args, t_env **env_list)
 {
 	if (ft_strcmp(args[0], "echo") == 0)
 		return (builtin_echo(args));
@@ -112,7 +112,7 @@ int exec_builtin(char **args, t_env **env_list)
 
 // 外部コマンド ----------------------------------------------
 // 子プロでexecve()
-int exec_external(char **args, t_env **env_list)
+static int exec_external(char **args, t_env **env_list)
 {
 	pid_t	pid;
 	int		status;
@@ -168,7 +168,7 @@ int exec_external(char **args, t_env **env_list)
 }
 
 // 実行可能ファイルのフルパスを取得
-char *get_cmd_path(char *cmd, t_env *env_list)
+static char *get_cmd_path(char *cmd, t_env *env_list)
 {
 	char	**paths;
 	char	*path_env;

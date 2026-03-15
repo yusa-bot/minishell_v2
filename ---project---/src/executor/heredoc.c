@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:10 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 14:50:08 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
 
 //一時ファイルに、入力読み込み
 //redirectでは通常のリダイレクト同様、一時ファイルをopenしてdup2して繋ぐ
@@ -29,7 +29,6 @@ static char	*get_random_suffix(void);
 
 
 // AST全体からheredocがあれば、入力し、、一時ファイルに書き込むまでを行う ---------------------------------------------
-
 // AST全体を走査し、TK_HEREDOC があれば入力を処理する（再帰）
 int	process_heredoc(t_node *node, t_env *env_list)
 {

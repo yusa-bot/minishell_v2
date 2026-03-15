@@ -6,11 +6,13 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 19:29:58 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/14 19:44:13 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../inc/minishell.h"
+
+static int	ft_isnumeric(char *str);
 
 int	builtin_exit(char **args, t_env **env_list)
 {
