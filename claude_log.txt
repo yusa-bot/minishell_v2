@@ -164,3 +164,54 @@
   /tmp (ディレクトリ実行) / /etc/shadow (権限なし) / /tmp/noperm.sh (chmod
   000)
   unset PATH; ls / export PATH=/bin; ls
+
+ーーーーー
+
+● テスト結果を報告します。
+
+  ---
+  問題あり（5件）
+
+  1. env に ?=0 が漏れている（重要度: 中）
+
+  - bash: ?=0 は出力されない
+  - minishell: 内部管理用の ? キーが env に表示される
+
+  2. cd -（OLDPWD未設定時）（重要度: 低）
+
+  - bash: cd: OLDPWD not set、exit 1
+  - minishell: カレントディレクトリを表示して exit 0
+
+  3. $$（PID）展開未対応（重要度: 低）
+
+  - bash: PIDの数値
+  - minishell: $$ がリテラルのまま
+
+  4. A=hello 形式の変数代入未対応（重要度: 中）
+
+  - bash: シェル変数として設定
+  - minishell: command not found (exit 127)
+
+  5. サブシェル内セミコロンがパースできない（重要度: 高）
+
+  - (cd /tmp; pwd) → syntax error near unexpected token ';'
+  - (echo a; echo b) | cat → 正しく動作しない
+
+
+    ---
+  実行したプロンプト一覧（53件）
+
+  echo hello, echo -n hello, echo "hello world", echo 'hello world', echo
+  $HOME, echo "$HOME", echo '$HOME', echo $?, /bin/ls, pwd, export
+  TEST=hello; echo $TEST, export TEST=hello; export, unset TEST; echo $TEST,
+  env, export MULTI=a; export MULTI=b; echo $MULTI, cd /tmp; pwd, cd; pwd, cd
+   -（OLDPWD未設定）, cd /tmp; cd -; pwd, cd nonexistent, cd a b, exit, exit
+  42, exit abc, false; exit $?, echo hello > file; cat file, echo world >>
+  file; cat file, cat < file, echo a > f1 > f2; cat f1; cat f2, echo hello |
+  cat, ls | grep .c | head -3, echo hello | cat | cat, cat << EOF（基本）,
+  cat << 'EOF'（展開なし）, cat << EOF（$HOME展開あり）, ls /nonexistent;
+  echo $?, echo $$, echo $UNDEFINED, A=hello; echo $A, true && echo yes,
+  false && echo yes, false || echo yes, true || echo yes, (echo hello), (cd
+  /tmp; pwd); pwd, ls /nonexistent; echo $?, notacommand; echo $?, chmod
+  000ファイル実行, cat /etc/shadow; echo $?, echo *.c, echo src/*.c, echo
+  hello && echo world || echo fail, (echo a; echo b) | cat   
