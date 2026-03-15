@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:00 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/14 14:45:13 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 14:36:16 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,32 @@ int	calculate_exit_status(int status)
 
 	// 停止状態など、その他の場合はそのまま返す
 	return (status);
+}
+
+int calculate_exit_status_quit(int status)
+{
+    int term_sig;
+
+    // 正常終了した場合
+    if (WIFEXITED(status))
+        return (WEXITSTATUS(status)); // 番号を取得
+
+    // シグナルによって終了させられた場合
+    if (WIFSIGNALED(status))
+    {
+        term_sig = WTERMSIG(status); // 終了させたシグナル番号を取得
+
+        // シグナルに応じたメッセージの出力
+        if (term_sig == SIGQUIT)
+            printf("Quit (core dumped)\n");
+        else if (term_sig == SIGINT)
+            printf("\n"); // Ctrl-C の場合は改行のみ出力してプロンプトを整える
+
+        return (128 + term_sig); // 128 + 終了させたシグナル番号
+    }
+
+    // 停止状態など、その他の場合はそのまま返す
+    return (status);
 }
 
 // 環境変数の $? を更新

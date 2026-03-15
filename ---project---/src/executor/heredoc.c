@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:10 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/13 16:23:10 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 14:50:08 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,13 @@ int	process_heredoc(t_node *node, t_env *env_list)
 			}
 			redir = redir->next;
 		}
-		else // それ以外のノード（|, &&, ||, ()）は左右の子を再帰的に走査
-		{
-			if (process_heredoc(node->left, env_list) != 0)
-				return (1);
-			if (process_heredoc(node->right, env_list) != 0)
-				return (1);
-		}
+	}
+	else // それ以外のノード（|, &&, ||, ()）は左右の子を再帰的に走査
+	{
+		if (process_heredoc(node->left, env_list) != 0)
+			return (1);
+		if (process_heredoc(node->right, env_list) != 0)
+			return (1);
 	}
 
 	return (0);
@@ -74,45 +74,61 @@ static int	read_heredoc(t_redirect *redir, t_env *env_list)
 	// 一意な一時ファイルを生成
 	tmp_filename = generate_tmp_filename();
 
-	fd = open(tmp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-	if (fd < 0)
+	pid = fork();
+    if (pid < 0)
+        return (1);
+
+	if (pid == 0)
 	{
-		free(tmp_filename);
-		return (1); // 失敗
-	}
-
-	// heredoc読み込み
-	while (1)
-	{
-		line = readline("heredoc> ");
-
-		// heredoc読み込み中の、Ctrl-D (EOF) または Ctrl-C による中断
-		// 		-> Ctrl-C:perompt処理自体を中断, Ctrl-D:heredoc読み込みはそこで中断
-		if (line == NULL)
-			break ;
-
-		// デリミタと一致したら終了 (parserで、<<の横の単語を登録済)
-		if (ft_strcmp(line, redir->filename) == 0)
+		fd = open(tmp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+		if (fd < 0)
 		{
-			free(line);
-			break ;
+			free(tmp_filename);
+			return (1); // 失敗
 		}
 
-		// 環境変数の展開 (デリミタにクオーとが無い場合、$は展開される)
-		//expand_heredoc_vars(&line, env_list);
+		// heredoc用のsignalに。
+		set_signal_heredoc();
 
-		// 一時ファイルに書き込む
-		ft_putendl_fd(line, fd);
+		// heredoc読み込み
+		while (1)
+		{
 
-		free(line);
+			line = readline("heredoc> ");
+
+			// heredoc読み込み中の、Ctrl-D (EOF) または Ctrl-C による中断
+			// 		-> Ctrl-C:perompt処理自体を中断, Ctrl-D:heredoc読み込みはそこで中断
+			if (line == NULL)
+				break ;
+
+			// デリミタと一致したら終了 (parserで、<<の横の単語を登録済)
+			if (ft_strcmp(line, redir->filename) == 0)
+			{
+				free(line);
+				break ;
+			}
+
+			// 環境変数の展開 (デリミタにクオーとが無い場合、$は展開される)
+			//expand_heredoc_vars(&line, env_list);
+
+			// 一時ファイルに書き込む
+			ft_putendl_fd(line, fd);
+
+			free(line);
+		}
+
+		// ファイルへの書き込みは終わったので、書き込み口は不要
+		close(fd);
+
+		// 正常に読み終えたら子プロセスを終了
+		exit(0);
 	}
 
-	// ファイルへの書き込みは終わったので、書き込み口は不要
-	close(fd);
+	waitpid(pid, &status, 0);
 
 	// >読み込み中Ctrl-Cでは、g_sigにSIGINTが設定される
 	//		-> AST全体の実行をキャンセルし、新しいプロンプトに戻る
-	if (g_sig == SIGINT)
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 	{
 		unlink(tmp_filename);
 		free(tmp_filename);

@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/14 21:54:56 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 14:36:42 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,8 +156,9 @@ int exec_external(char **args, t_env **env_list)
 	}
 
 	waitpid(pid, &status, 0);
-	
-	return (calculate_exit_status(status));
+
+	// Quit print ver.
+	return (calculate_exit_status_quit(status));
 
 	//fork() で子プロセスを生成
 	//get_cmd_path() を呼び出し、実行可能ファイルのフルパスを取得
