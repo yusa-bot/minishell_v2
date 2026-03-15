@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 09:40:42 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 17:36:15 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 19:11:08 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,15 @@
 // wildcard展開
 // dir内の全ファイル取得 -> 一致判定 -> sort -> sorted_matches配列を返す
 char	**expand_wildcard(char *pattern); // pattern:*.c
+// パスを含むパターンのマッチ処理
+// 		slash が NULL の場合はカレントディレクトリを対象とする
+static char	**collect_matches(char *dir_path, char *fpat, char **matches, int *count);
 // パターンとファイル名が一致するか判定
 // 		*があったら、patternとstrが不一致の間、match(*に対応するstr部分)に記録し、
 //		patternとstrが一致し、双方が\0で終わったら、一致していると言える。
 static int	match_pattern(char *pattern, char *str); // pattern:*.c str:d_name
 // 見つかったファイル名を配列に追加して拡張
-static char	**append_match(char **matches, char *new_str, int *count);
+static char	**append_match(char **matches, char *prefix, char *new_str, int *count);
 // 文字列配列を辞書順(ASCII順)にバブルソートする
 void	sort_str_array(char **array, int count);
 // 配列全体を再構築して、node->args 自体を上書き
@@ -38,47 +41,72 @@ char	**insert_matches_to_args(char **args, int index, char **matches, int match_
 
 
 // dir内の全ファイル取得 -> 一致判定 -> sort -> sorted_matches配列を返す
-char	**expand_wildcard(char *pattern) // pattern:*.c
+// 		slash が含まれる場合はそのディレクトリ内を対象とする (例: src/*.c)
+char	**expand_wildcard(char *pattern) // pattern:*.c or src/*.c
 {
-	DIR				*dir;
-	struct dirent	*dp;
 	char			**matches;
 	int				count;
+	char			*slash;
 
 	matches = NULL;
 	count = 0;
 
-	dir = opendir(".");
-	if (!dir)
-		return (NULL);
+	// slash:'/'
+	slash = ft_strrchr(pattern, '/');
 
-	// ディレクトリ内の全エントリを1つずつ読み込む
-	while ((dp = readdir(dir)) != NULL)
+	if (slash) // patternに / を含む場合
 	{
-		// パターンが '.' で始まっていない限り、隠しファイルを除外
-		if (dp->d_name[0] == '.' && pattern[0] != '.')
-			continue ;
+		// src/*.c -> src
+		*slash = '\0';
 
-		// パターンとファイル名が一致するか判定
-		if (match_pattern(pattern, dp->d_name))
-			matches = append_match(matches, dp->d_name, &count);
+		matches = collect_matches(pattern, slash + 1, matches, &count);
+
+		// 元に戻す -> pattern:src/
+		*slash = '/';
 	}
-
-	closedir(dir);
+	else // 含まない場合
+		matches = collect_matches(NULL, pattern, matches, &count);
 
 	// 1つもマッチしなかった場合は、元のパターンをそのまま返す
 	if (count == 0)
-		matches = append_match(matches, pattern, &count);
+		matches = append_match(matches, NULL, pattern, &count);
 
 	// sort
 	else
 		sort_str_array(matches, count);
 
 	return (matches);
+}
 
-	//opendir(".") でカレントディレクトリを開く
-	//readdir() で全ファイルを取得し、"*.c" というパターンに一致するか判定
-	//一致したファイル名をリスト化して返す。例：["main.c", "parser.c"]
+// パスを含むパターンのマッチ処理 ex.) dir_path:src, fpat:*.c
+// 		slash が NULL の場合はカレントディレクトリを対象とする
+static char	**collect_matches(char *dir_path, char *fpat, char **matches, int *count)
+{
+	DIR				*dir;
+	struct dirent	*dp;
+
+	if (dir_path) // patternに / を含む場合
+		dir = opendir(dir_path);
+	else // 含まない場合
+		dir = opendir(".");
+
+	if (!dir)
+		return (matches);
+
+	while ((dp = readdir(dir)) != NULL)
+	{
+		// 隠しファイルはスキップ
+		if (dp->d_name[0] == '.' && fpat[0] != '.')
+			continue ;
+
+		// fpat:*.c
+		if (match_pattern(fpat, dp->d_name))
+			matches = append_match(matches, dir_path, dp->d_name, count);
+	}
+
+	closedir(dir);
+
+	return (matches);
 }
 
 // パターンとファイル名が一致するか判定
@@ -133,10 +161,13 @@ static int	match_pattern(char *pattern, char *str) // pattern:*.c str:d_name
 		return (0); // 偽（不一致）
 }
 
-// 見つかったファイル名を配列に追加して拡張
-static char	**append_match(char **matches, char *new_str, int *count)
+// 見つかったファイル名を配列に追加して拡張 prefix:src, new_str:ファイル名
+// 		prefix が非NULLの場合、"prefix/new_str" の形式でエントリを作成する
+static char	**append_match(char **matches, char *prefix, char *new_str, int *count)
 {
 	char	**new_array;
+	char	*tmp;
+	char	*full;
 	int		i;
 
 	// 新しいメモリ
@@ -155,8 +186,23 @@ static char	**append_match(char **matches, char *new_str, int *count)
 		}
 		free(matches);
 	}
-	new_array[i] = ft_strdup(new_str);
-	new_array[i + 1] = NULL;
+
+	if (prefix)
+    {
+        tmp = ft_strjoin(prefix, "/");
+        if (!tmp) return (NULL); // 追加: malloc失敗時
+
+        full = ft_strjoin(tmp, new_str);
+        free(tmp);
+        if (!full) return (NULL); // 追加: malloc失敗時
+
+        new_array[i] = full;
+    }
+    else
+    {
+        new_array[i] = ft_strdup(new_str);
+        if (!new_array[i]) return (NULL); // 追加: malloc失敗時
+    }
 
 	(*count)++;
 	return (new_array);

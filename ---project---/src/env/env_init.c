@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:28:32 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 18:32:54 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,10 @@ t_env *env_init(char **envp)
 		env_add_back(&env_list, env_new(key, value));
 		i++;
 	}
+
+	// $? の初期値を 0 に設定
+	env_add_back(&env_list, env_new(ft_strdup("?"), ft_strdup("0")));
+	
 	return (env_list);
 }
 

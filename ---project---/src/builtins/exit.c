@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 19:29:58 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 17:43:23 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 18:21:48 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,17 @@
 
 static int	ft_isnumeric(char *str);
 
-int	builtin_exit(char **args)
+int	builtin_exit(char **args, t_env **env_list)
 {
 	int	exit_code;
 
 	ft_putendl_fd("exit", STDERR_FILENO);
 
 	if (!args[1])
-		exit(0);
+	{
+		exit_code = ft_atoi(get_env_value(*env_list, "?"));
+		exit(exit_code);
+	}
 
 	// 引数が非数値の場合
 	if (!ft_isnumeric(args[1]))
@@ -29,7 +32,7 @@ int	builtin_exit(char **args)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(args[1], STDERR_FILENO);
 		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-		exit(255);
+		exit(2);
 	}
 
 	// 引数が exit '' '' のように多い

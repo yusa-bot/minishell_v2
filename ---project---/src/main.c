@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:50 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 18:04:39 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,9 @@ int main(int argc, char **argv, char **envp)
 		exec_ast(node, &env_list); // 展開 -> 実行
 
 		// いらない？
-		rl_on_new_line(); // readlineに次の入力へと伝える
-		rl_replace_line("", 0); // 現在の行を空に
-		rl_redisplay(); // 空にした後、$ で入力待機
+		// rl_on_new_line(); // readlineに次の入力へと伝える
+		// rl_replace_line("", 0); // 現在の行を空に
+		// rl_redisplay(); // 空にした後、$ で入力待機
 
 		// cleanup
 		free_ast(node);

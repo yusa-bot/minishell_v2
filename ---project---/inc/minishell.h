@@ -77,7 +77,7 @@ extern volatile sig_atomic_t g_sig;
 int	builtin_cd(char **args, t_env **env_list);
 int	builtin_echo(char **args);
 int	builtin_env(t_env *env_list);
-int	builtin_exit(char **args);
+int	builtin_exit(char **args, t_env **env_list);
 int	builtin_export(char **args, t_env **env_list);
 int	builtin_pwd(void);
 int	builtin_unset(char **args, t_env **env_list);

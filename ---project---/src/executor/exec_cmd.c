@@ -104,7 +104,7 @@ static int exec_builtin(char **args, t_env **env_list)
 	if (ft_strcmp(args[0], "env") == 0)
 		return (builtin_env(*env_list));
 	if (ft_strcmp(args[0], "exit") == 0)
-		return (builtin_exit(args));
+		return (builtin_exit(args, env_list));
 
 	return (1);
 }
