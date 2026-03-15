@@ -22,7 +22,7 @@ static t_token *consume_word(char **line_ptr);
 
 // free tokens
 // トークンの連結リストを全て解放する
-void	free_tokens(t_token *tokens)
+void	free_tokens(t_token *tokens);
 
 
 // tokenize ----------------------------------------------
@@ -107,7 +107,7 @@ static t_token *consume_operator(char **line_ptr)
 
 	else if (s[0] == '(')
 		{ type = TK_LPAREN; len = 1; }
-	else if (s[0] == ')')
+	else
 		{ type = TK_RPAREN; len = 1; }
 
 	// ヒープ領域にする
@@ -143,7 +143,7 @@ static t_token *consume_word(char **line_ptr)
 			break ;
 
 		if (**line_ptr == '\'' && !in_dquote)
-			n_squote = !in_squote; // ''のなかに入る
+			in_squote = !in_squote; // ''のなかに入る
 		else if (**line_ptr == '"' && !in_squote)
 			in_dquote = !in_dquote; // ""のなかに入る
 

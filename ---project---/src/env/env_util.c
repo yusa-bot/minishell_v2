@@ -20,11 +20,11 @@ int	count_env_nodes(t_env *env_list);
 
 // 変数の検索と更新（Expander / Builtins 用）
 // 指定されたキーを持つ変数を探し、その value のポインタを返す
-char *get_env_value(t_env *env_list, char *key)
+char *get_env_value(t_env *env_list, char *key);
 // 指定されたキーが存在すれば value を上書きし、存在しなければ新規ノードとして追加
-void set_env_value(t_env **env_list, char *key, char *value)
+void set_env_value(t_env **env_list, char *key, char *value);
 // 指定されたキーを持つノードをリストから切り離して free する
-void remove_env_node(t_env **env_list, char *key)
+void remove_env_node(t_env **env_list, char *key);
 
 
 

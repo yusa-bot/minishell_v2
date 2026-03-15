@@ -17,15 +17,15 @@
 // redirect処理
 // t_redirect->nextがある間リストを回し、リダイレクトの種類によって処理を振り分け
 // 		複数t_redirectでも、最後のFDで上書き
-int apply_redirects(t_redirect *redirects) // t_node->t_redirect (1nodeづつ)
+int apply_redirects(t_redirect *redirects); // t_node->t_redirect (1nodeづつ)
 // 入力 < とヒアドキュメント << の処理. open -> dup2 -(heredocメモ確認)
-static int handle_input(t_redirect *redir)
+static int handle_input(t_redirect *redir);
 // 出力 > と追記 >> の処理. open -> dup2
-static int handle_output(t_redirect *redir)
+static int handle_output(t_redirect *redir);
 
 // バックアップ
 // バックアップしておいた標準入出力のFDを dup2 で元に戻す
-void restore_fds(int saved_stdin, int saved_stdout)
+void restore_fds(int saved_stdin, int saved_stdout);
 
 
 // redirect処理 ---------------------------------------------
@@ -41,14 +41,14 @@ int apply_redirects(t_redirect *redirects) // t_node->t_redirect (1nodeづつ)
 	while (current)
 	{
 		// input(<, <<)
-		if (current->t_token_type == TK_REDIRECT_IN || current->t_token_type == TK_HEREDOC)
+		if (current->type == TK_REDIR_IN || current->type == TK_HEREDOC)
 		{
 			if (handle_input(current) < 0)
 				return (1);
 		}
 
 		// output(>, >>)
-		else if (current->t_token_type == TK_REDIRECT_OUT || current->t_token_type == TK_REDIRECT_APPEND)
+		else if (current->type == TK_REDIR_OUT || current->type == TK_REDIR_APPEND)
 		{
 			if (handle_output(current) < 0)
 				return (1);
@@ -81,7 +81,7 @@ static int handle_input(t_redirect *redir)
 	}
 
 	// heredoc -> unlink
-	if (redir->t_token_type == TK_HEREDOC)
+	if (redir->type == TK_HEREDOC)
 		unlink(redir->filename);
 
 	// STDIN_FILENOをfdで上書き
@@ -97,7 +97,7 @@ static int handle_output(t_redirect *redir)
 	int	fd;
 
 	// open: ファイルとの接続口を作る
-	if (redir->t_token_type == TK_REDIRECT_OUT) // >
+	if (redir->type == TK_REDIR_OUT) // >
 		fd = open(redir->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644); // O_TRUNC:既存の中身を空
 	else // >>
 		fd = open(redir->filename, O_WRONLY | O_CREAT | O_APPEND, 0644); // O_APPEND:追記

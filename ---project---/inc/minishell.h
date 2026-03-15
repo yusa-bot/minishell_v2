@@ -1,6 +1,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "libft.h"
+# include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <readline/readline.h>
@@ -69,13 +71,13 @@ typedef struct s_env
     struct s_env    *next;  // 次の要素へのポインタ
 }   t_env;
 
-volatile sig_atomic_t g_sig;
+extern volatile sig_atomic_t g_sig;
 
 // builtin -----------------------------------------------
 int	builtin_cd(char **args, t_env **env_list);
 int	builtin_echo(char **args);
 int	builtin_env(t_env *env_list);
-int	builtin_exit(char **args, t_env **env_list);
+int	builtin_exit(char **args);
 int	builtin_export(char **args, t_env **env_list);
 int	builtin_pwd(void);
 int	builtin_unset(char **args, t_env **env_list);
@@ -141,6 +143,8 @@ char	**expand_wildcard(char *pattern);
 // 配列全体を再構築して、node->args 自体を上書き
 // 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
 char	**insert_matches_to_args(char **args, int index, char **matches, int match_count);
+// 文字列配列を辞書順(ASCII順)にバブルソートする
+void	sort_str_array(char **array, int count);
 
 //  lexer -----------------------------------------------
 
@@ -179,6 +183,8 @@ void append_arg(t_node *node, char *value);
 // free_ast.c
 // AST 全体のメモリを再帰的に解放する
 void	free_ast(t_node *node);
+// 文字列配列 (char **) の全要素と枠組みを解放する
+void	free_str_array(char **array);
 
 //  signal ----------------------------------------------
 

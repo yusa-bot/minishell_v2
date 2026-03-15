@@ -20,7 +20,8 @@ int main(int argc, char **argv, char **envp)
 	char    *line;
 	t_env   *env_list;
 	t_token *tokens;  //1token
-    t_node  *node; //1node
+	t_node  *node; //1node
+	int     exit_status;
 
 	(void)argc;
     (void)argv;
@@ -74,7 +75,7 @@ int main(int argc, char **argv, char **envp)
 		set_signal_executing();
 
 		// Executor
-		exec_ast(ast, &env_list); // 展開 -> 実行
+		exec_ast(node, &env_list); // 展開 -> 実行
 
 		// いらない？
 		rl_on_new_line(); // readlineに次の入力へと伝える
@@ -88,7 +89,8 @@ int main(int argc, char **argv, char **envp)
 	}
 
 	rl_clear_history(); // history削除
+	exit_status = ft_atoi(get_env_value(env_list, "?"));
 	free_env(env_list);
 
-	return (get_env_value(env_list, "?"));
+	return (exit_status);
 }

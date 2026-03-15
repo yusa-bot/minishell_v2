@@ -21,10 +21,10 @@ RM      = rm -f
 SRCDIR      = src
 OBJDIR      = obj
 LIBFTDIR    = libft
-INCDIR      = include
+INCDIR      = inc
 
 SRCS = src/signal/signal.c \
-	src/parser/parser.c \
+	src/parser/parser.c  src/parser/parser_helpers.c  src/parser/free_ast.c \
 	src/main.c  \
 	src/status.c \
 	src/lexer/lexer.c src/lexer/lexer_helpers.c\
@@ -33,7 +33,7 @@ SRCS = src/signal/signal.c \
 	src/env/env_init.c  src/env/env_util.c  \
 	src/builtins/cd.c  src/builtins/echo.c  src/builtins/env.c  src/builtins/exit.c  src/builtins/export.c  src/builtins/pwd.c  src/builtins/unset.c
 
-OBJS = $(SRCS:.c=.o)
+OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 
 LIBFT = $(LIBFTDIR)/libft.a
 INCLUDES    = -I $(INCDIR) -I $(LIBFTDIR)
@@ -44,7 +44,7 @@ $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(RLFLAGS) -o $(NAME)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	mkdir -p $(OBJDIR)
+	mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):

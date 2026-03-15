@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 17:34:55 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,19 @@ static int exec_builtin(char **args, t_env **env_list);
 // 子プロでexecve()
 static int exec_external(char **args, t_env **env_list);
 // 実行可能ファイルのフルパスを取得
-static char *get_cmd_path(ch	r *cmd, t_env *env_list);
+static char *get_cmd_path(char *cmd, t_env *env_list);
 
 
 // コマンド実行 ----------------------------------------------
 // 展開 -> リダイレクト適用 -> 実行分岐
-int exec_cmd(t_node *node, t_env **env_list);
+int exec_cmd(t_node *node, t_env **env_list)
 {
 	int	status;
 	int	saved_stdin;
 	int	saved_stdout;
 
 	// 変数展開とクォート除去, * 処理
-	if (expand_node(node, *env_list) != 0)
-        return (1);
+	expand_node(node, *env_list);
 	if (!node->args || !node->args[0]) // args(実行コマンド)が無い
 		return (0);
 
@@ -105,7 +104,7 @@ static int exec_builtin(char **args, t_env **env_list)
 	if (ft_strcmp(args[0], "env") == 0)
 		return (builtin_env(*env_list));
 	if (ft_strcmp(args[0], "exit") == 0)
-		return (builtin_exit(args, env_list));
+		return (builtin_exit(args));
 
 	return (1);
 }
@@ -196,7 +195,7 @@ static char *get_cmd_path(char *cmd, t_env *env_list)
 		return (NULL);
 
 	// PATH を ':' で分割
-	paths = ft_split(path_env, ':');
+	paths = ft_split_c(path_env, ':');
 	if (!paths)
 		return (NULL);
 

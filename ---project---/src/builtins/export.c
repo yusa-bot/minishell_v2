@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:10:26 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 17:46:48 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@
 //(_			 あり 		  なし）
 
 // 引数あり 引数なし に対応
-int	builtin_export(char **args, t_env **env_list)
+int	builtin_export(char **args, t_env **env_list);
 //　引数なしを処理
-static void	print_exported_env(t_env *env_list)
+static void	print_exported_env(t_env *env_list);
 // 1つの環境変数ノードを表示
-static void	print_single_export(t_env *node)
+static void	print_single_export(t_env *node);
 
 
 // 引数あり 引数なし に対応

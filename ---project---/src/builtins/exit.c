@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 19:29:58 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 17:43:23 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	ft_isnumeric(char *str);
 
-int	builtin_exit(char **args, t_env **env_list)
+int	builtin_exit(char **args)
 {
 	int	exit_code;
 

@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 09:40:42 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 17:36:15 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ static int	match_pattern(char *pattern, char *str); // pattern:*.c str:d_name
 // 見つかったファイル名を配列に追加して拡張
 static char	**append_match(char **matches, char *new_str, int *count);
 // 文字列配列を辞書順(ASCII順)にバブルソートする
-static void	sort_str_array(char **array, int count);
+void	sort_str_array(char **array, int count);
 // 配列全体を再構築して、node->args 自体を上書き
 // 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
-char	**insert_matches_to_args(char **args, int index, char **matches, int match_count)
+char	**insert_matches_to_args(char **args, int index, char **matches, int match_count);
 
 
 // dir内の全ファイル取得 -> 一致判定 -> sort -> sorted_matches配列を返す
@@ -92,7 +92,7 @@ static int	match_pattern(char *pattern, char *str) // pattern:*.c str:d_name
 	star_idx = NULL;
 	match = NULL;
 
-	while (*s)
+	while (*str)
 	{
 		// 文字が完全に一致する場合、両方のポインタを進める
 		if (*pattern == *str)
@@ -163,7 +163,7 @@ static char	**append_match(char **matches, char *new_str, int *count)
 }
 
 // 文字列配列を辞書順(ASCII順)にバブルソートする
-static void	sort_str_array(char **array, int count)
+void	sort_str_array(char **array, int count)
 {
 	int		i;
 	int		j;

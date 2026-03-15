@@ -62,19 +62,19 @@ static t_node *parse_list(t_token **tokens)
 
 	// パイプラインをパースして左辺に
 	node = parse_pipeline(tokens);
-    if (!node)
-        return (NULL);
+	if (!node)
+		return (NULL);
 
 	// 次のトークンが && か || なら、ツリーを成長させる
 	while (*tokens && ((*tokens)->type == TK_AND || (*tokens)->type == TK_OR))
 	{
 		type = ((*tokens)->type == TK_AND) ? NODE_AND : NODE_OR;
-		tokens = (*tokens)->next; //次のtokenに進む
+		*tokens = (*tokens)->next; //次のtokenに進む
 
 		// パイプラインをパースして右辺に
 		right = parse_pipeline(tokens);
 		if (!right)
-            return (NULL); // 構文エラー (例: "ls &&" で終わっている)
+			return (NULL); // 構文エラー (例: "ls &&" で終わっている)
 
 		// 新しい親ノードを作って、これまでのノードを左下にぶら下げる
 		node = new_node(type, node, right);
@@ -98,8 +98,8 @@ static t_node *parse_pipeline(t_token **tokens)
 
 	// parse_commandでパースして左辺に
 	node = parse_command(tokens);
-    if (!node)
-        return (NULL);
+	if (!node)
+		return (NULL);
 
 	while (*tokens && (*tokens)->type == TK_PIPE)
 	{
@@ -108,7 +108,7 @@ static t_node *parse_pipeline(t_token **tokens)
 		// parse_commandでパースして右辺に
 		right = parse_command(tokens);
 		if (!right)
-            return (NULL);
+			return (NULL);
 
 		// 新しい親ノードを作って、これまでのノードを左下にぶら下げる
 		node = new_node(NODE_PIPE, node, right);
@@ -190,7 +190,7 @@ static t_node *parse_command(t_token **tokens)
 			// t_node->redirectsに追加
 			// redir_type, (*tokens)->value:ファイル名
 			append_redirect(node, redir_type, (*tokens)->value);
-			tokens = (*tokens)->next; // ファイル名を進める
+			*tokens = (*tokens)->next; // ファイル名を進める
 
 		}
 	}

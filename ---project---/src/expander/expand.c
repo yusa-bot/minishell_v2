@@ -16,10 +16,10 @@
 // str: args[i], redir->filename を expand_stringに渡す
 void	expand_node(t_node *node, t_env *env_list);
 // 	str: args[i] か redir->filename の $, クォート を適切に展開する
-static char *expand_string(char *str, t_env *env_list);
+static char *expand_string(char *str, t_env *env_list, int *has_wildcard);
 //　$と、それに続く文字(2個目の$まで) を返す
 //		* 環境変数は連続出力にも対応する, valueが無い時は空文字扱い
-static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list);
+static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list, int in_dquote, int *has_wildcard);
 // 文字列の末尾に1文字を追加し、元の文字列を解放
 static char	*append_char(char *str, char c);
 
@@ -110,7 +110,6 @@ void	expand_node(t_node *node, t_env *env_list)
 					free_str_array(sorted_matches);
 					free(expanded_str);
 				}
-				}
 				else // match_count > 1
 				{
 					// エラー出力
@@ -120,7 +119,7 @@ void	expand_node(t_node *node, t_env *env_list)
 
                     free_str_array(sorted_matches);
                     free(expanded_str);
-                    return (1);
+                    return ;
 				}
 			}
 			// wildcardではない場合、上書き -------------------
@@ -132,10 +131,11 @@ void	expand_node(t_node *node, t_env *env_list)
 
 		}
 		redir = redir->next;
+	}
 }
 
 // 	str: args[i] か redir->filename の $, クォート を適切に展開する
-static char *expand_string(char *str, t_env *env_list, int *has_wildcard);
+static char *expand_string(char *str, t_env *env_list, int *has_wildcard)
 {
 	char	*res;
 	int		i;

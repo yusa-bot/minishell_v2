@@ -35,6 +35,7 @@ int exec_ast(t_node *node, t_env **env_list)
 {
 	int	status;
 
+	status = 0;
 	if (node == NULL)
 		return (0);
 

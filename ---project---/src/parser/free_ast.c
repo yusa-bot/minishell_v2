@@ -6,18 +6,18 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 16:38:37 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/15 17:27:36 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 // AST 全体のメモリを再帰的に解放する
-void	free_ast(t_node *node)
+void	free_ast(t_node *node);
 // 文字列配列 (char **) の全要素と枠組みを解放する
-static void	free_str_array(char **array)
+void	free_str_array(char **array);
 // リダイレクトの連結リストを解放する
-static void	free_redirects(t_redirect *redir)
+static void	free_redirects(t_redirect *redir);
 
 
 // AST 全体のメモリを再帰的に解放する
@@ -49,7 +49,7 @@ void	free_ast(t_node *node)
 }
 
 // 文字列配列 (char **) の全要素と枠組みを解放する
-static void	free_str_array(char **array)
+void	free_str_array(char **array)
 {
 	int	i;
 
