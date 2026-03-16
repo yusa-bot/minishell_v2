@@ -1,12 +1,56 @@
 
-
-エラー動作、status, 等　把握
-テスト修正
-
 メモリ　確認
+disco
 修正
 テスト修正
 
 norm 分けながら理解
 
 zennと交えてコード理解
+
+
+
+touch no_exec.sh
+chmod -x no_exec.sh (2行同時実行時のみ時発生)
+-> フリーズ
+-> ^C
+minishell$ ^[[A^[[A^[[A^[[A^[[A^ (historyを出せない)
+
+ターミナルは通常Cooked モード
+readline：Raw モード　ー＞　プログラムが終了する時にターミナルがおかしくならないよう、Cooked モードに戻すという処理を atexit という関数を使って予約
+
+fork()：atexit の予約リストまで子プロセスにコピー　ー＞　execve が「失敗」：子プロセスは上書きされず　ー＞　exit(126);すると子プロセスはatexit実行して死ぬ
+ー＞　親プロセスがRaw モードのまま
+
+ls
+cat Makefile
+
+ーーー
+
+「コピペでの複数行実行」への対応
+ls\ncat Makefile\n とコピペした場合、OSの入力バッファにその文字列が貯まり
+1回目の readline がバッファから ls を受け取る（ユーザーのキーボードエンターは待たない）。
+ls が実行される。
+ループが回り、2回目の readline が即座にバッファの続きから cat Makefile を受け取る。
+cat Makefile が実行される。
+
+「解釈しない」
+ただの文字列として切り出し
+
+---
+
+↓
+
+候補AやBやCではなく、実際の原因は handler_interactive の中で rl_redisplay() を呼んでいること
+
+
+  1. signal.c: rl_done = 1 → rl_redisplay()
+  - rl_catch_signals = 0 と rl_done = 1 の組み合わせが ls
+  フリーズの原因だった。
+  Ctrl+C 後に readline が rl_doneを確認するのは次の文字入力後のため、ls の l が消費されて s\n
+  がバッファに残り混乱が起きていた。
+
+ーーーーー
+
+ ls のあとにプロンプトが表示されず shell
+  がハングしているようです。restore_fds の実装を確認します。
