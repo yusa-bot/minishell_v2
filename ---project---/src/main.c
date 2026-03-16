@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/16 12:00:23 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/16 12:31:45 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,10 @@ static void	exec_line(char *line, t_env **env_list)
 
 	node = build_ast(line, env_list);
 	if (!node)
+	{
+		update_exit_status(env_list, 2);
 		return ;
+	}
 
 	// コマンド実行中のシグナルハンドラに切り替え (親プロでは無視)
 	set_signal_executing();

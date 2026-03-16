@@ -83,6 +83,8 @@ static t_token *consume_operator(char **line_ptr)
 
 	if (s[0] == '<' && s[1] == '<')
 		{ type = TK_HEREDOC; len = 2; }
+	else if (s[0] == '<' && s[1] == '>')
+		{ type = TK_REDIR_RDWR; len = 2; }
 	else if (s[0] == '<')
 		{ type = TK_REDIR_IN; len = 1; }
 

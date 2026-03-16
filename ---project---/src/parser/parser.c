@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:49 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 17:02:08 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/16 12:30:47 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,15 @@ t_node *parse(t_token **tokens)
 
 	root = parse_list(tokens);
 	if (root == NULL)
+	{
+		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+		if (*tokens)
+			ft_putstr_fd((*tokens)->value, 2);
+		else
+			ft_putstr_fd("newline", 2);
+		ft_putstr_fd("'\n", 2);
 		return (NULL);
+	}
 
 	// トークンが余っていればエラー
 	if (*tokens != NULL)

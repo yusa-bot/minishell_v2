@@ -29,7 +29,8 @@ typedef enum e_token_type {
     TK_REDIR_IN,    // <
     TK_REDIR_OUT,   // >
     TK_REDIR_APPEND,// >>
-    TK_HEREDOC      // <<
+    TK_HEREDOC,     // <<
+    TK_REDIR_RDWR   // <> (read-write, 構文チェック用)
 } t_token_type;
 
 typedef struct s_token {

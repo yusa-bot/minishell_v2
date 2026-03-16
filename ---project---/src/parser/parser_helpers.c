@@ -44,7 +44,8 @@ t_node *new_node(t_node_type type, t_node *left, t_node *right)
 int  is_redirect(t_token_type type)
 {
 	if (type == TK_REDIR_IN || type == TK_REDIR_OUT ||
-		type == TK_REDIR_APPEND || type == TK_HEREDOC)
+		type == TK_REDIR_APPEND || type == TK_HEREDOC ||
+		type == TK_REDIR_RDWR)
 		return (1);
 	return (0);
 }
