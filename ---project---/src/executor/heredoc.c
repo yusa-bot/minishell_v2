@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:10 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 17:40:05 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/16 12:05:42 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,9 @@ static int	read_heredoc(t_redirect *redir, t_env *env_list)
 	// 一意な一時ファイルを生成
 	tmp_filename = generate_tmp_filename();
 
+	// 親プロはSIGINTを無視: handler_interactiveによるrl_redisplayを防ぐ
+	signal(SIGINT, SIG_IGN);
+
 	pid = fork();
 	if (pid < 0)
 		return (1);
@@ -88,14 +91,14 @@ static int	read_heredoc(t_redirect *redir, t_env *env_list)
 			return (1); // 失敗
 		}
 
-		// heredoc用のsignalに。
+		// 子プロはheredoc用のsignalに。
 		set_signal_heredoc();
 
 		// heredoc読み込み
 		while (1)
 		{
 
-			line = readline("heredoc> ");
+			line = readline("> ");
 
 			// heredoc読み込み中の、Ctrl-D (EOF) または Ctrl-C による中断
 			// 		-> Ctrl-C:perompt処理自体を中断, Ctrl-D:heredoc読み込みはそこで中断
@@ -126,14 +129,19 @@ static int	read_heredoc(t_redirect *redir, t_env *env_list)
 		exit(0);
 	}
 
+	// ここで子プロのstatusを保存
 	waitpid(pid, &status, 0);
 
-	// >読み込み中Ctrl-Cでは、g_sigにSIGINTが設定される
+	// Ctrl-C(SIGINT)かを確認
 	//		-> AST全体の実行をキャンセルし、新しいプロンプトに戻る
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 	{
+		g_sig = SIGINT;
+		write(STDOUT_FILENO, "\n", 1);
+
 		unlink(tmp_filename);
 		free(tmp_filename);
+
 		return (1);
 	}
 
