@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:09:47 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/16 11:00:11 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,18 @@
 
 int	builtin_env(t_env *env_list)
 {
+	char	*tmp_key;
 	while (env_list)
 	{
 		if (env_list->value)
 		{
-			ft_putstr_fd(env_list->key, STDOUT_FILENO);
-			ft_putchar_fd('=', STDOUT_FILENO);
-			ft_putendl_fd(env_list->value, STDOUT_FILENO);
+			tmp_key = env_list->key;
+			if (tmp_key[0] != '?')
+			{
+				ft_putstr_fd(tmp_key, STDOUT_FILENO);
+				ft_putchar_fd('=', STDOUT_FILENO);
+				ft_putendl_fd(env_list->value, STDOUT_FILENO);
+			}
 		}
 		env_list = env_list->next;
 	}
