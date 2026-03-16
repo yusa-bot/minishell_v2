@@ -177,6 +177,13 @@
   - bash: ?=0 は出力されない
   - minishell: 内部管理用の ? キーが env に表示される
 
+
+
+ <claude's miss>
+  4. A=hello 形式の変数代入未対応（重要度: 中）
+
+  - bash: シェル変数として設定
+  - minishell: command not found (exit 127)
   2. cd -（OLDPWD未設定時）（重要度: 低）
 
   - bash: cd: OLDPWD not set、exit 1
@@ -186,12 +193,6 @@
 
   - bash: PIDの数値
   - minishell: $$ がリテラルのまま
-
-  4. A=hello 形式の変数代入未対応（重要度: 中）
-
-  - bash: シェル変数として設定
-  - minishell: command not found (exit 127)
-
   5. サブシェル内セミコロンがパースできない（重要度: 高）
 
   - (cd /tmp; pwd) → syntax error near unexpected token ';'
@@ -214,4 +215,4 @@
   false && echo yes, false || echo yes, true || echo yes, (echo hello), (cd
   /tmp; pwd); pwd, ls /nonexistent; echo $?, notacommand; echo $?, chmod
   000ファイル実行, cat /etc/shadow; echo $?, echo *.c, echo src/*.c, echo
-  hello && echo world || echo fail, (echo a; echo b) | cat   
+  hello && echo world || echo fail, (echo a; echo b) | cat
