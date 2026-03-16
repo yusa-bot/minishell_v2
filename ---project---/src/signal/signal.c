@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:55 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:57:26 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/16 14:00:48 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,9 @@ void handler_interactive(int signum)
 	// 画面上に改行を入れて、プロンプトが被らないようにする
 	write(STDOUT_FILENO, "\n", 1);
 
-	// 新しい行に新しいプロンプトを表示
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 void set_signal_interactive(void)
