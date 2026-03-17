@@ -39,18 +39,22 @@ int exec_cmd(t_node *node, t_env **env_list)
 
 	// 変数展開とクォート除去, * 処理
 	expand_node(node, *env_list);
-	if (!node->args || !node->args[0]) // args(実行コマンド)が無い
-		return (0);
-
 	// 親プロセスの標準入出力をバックアップ
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);
 
-	// リダイレクトの適用
+	// リダイレクトの適用 (コマンドがなくてもリダイレクトは実行する)
 	if (apply_redirects(node->redirects) != 0)
 	{ // 失敗
 		restore_fds(saved_stdin, saved_stdout); // 親プロセスの元FDに復元
 		return (1);
+	}
+
+	// args(実行コマンド)が無い場合はリダイレクト適用のみで終了
+	if (!node->args || !node->args[0])
+	{
+		restore_fds(saved_stdin, saved_stdout);
+		return (0);
 	}
 
 	// コマンドの実行分岐
