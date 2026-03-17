@@ -48,9 +48,14 @@ int calculate_exit_status_quit(int status)
     {
         term_sig = WTERMSIG(status); // 終了させたシグナル番号を取得
 
-        // SIGQUIT: "Quit (core dumped)" を出力 (stderrに出す)
+        // SIGQUIT: "Quit" を出力 (コアダンプ時は "(core dumped)" も付加)
         if (term_sig == SIGQUIT)
-            ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+        {
+            if (WCOREDUMP(status))
+                ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+            else
+                ft_putstr_fd("Quit\n", STDERR_FILENO);
+        }
 
         return (128 + term_sig); // 128 + 終了させたシグナル番号
     }
