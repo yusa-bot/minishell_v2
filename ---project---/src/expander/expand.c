@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 21:28:34 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/17 21:49:19 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,12 @@ static char	*append_char(char *str, char c);
 void	expand_node(t_node *node, t_env *env_list)
 {
 	int			i;
-	int has_wildcard;
+	int			j;
+	int			has_wildcard;
 	char		*expanded_str;
 	t_redirect	*redir;
-	char	**sorted_matches;
-	int		match_count = 0;
+	char		**sorted_matches;
+	int			match_count = 0;
 
 	has_wildcard = 0;
 
@@ -75,6 +76,21 @@ void	expand_node(t_node *node, t_env *env_list)
 			// wildcardではない場合、上書き -------------------
 			else
 			{
+				if (expanded_str[0] == '\0'
+					&& !ft_strchr(node->args[i], '\'') // クオートがあったら空文字とする
+					&& !ft_strchr(node->args[i], '"'))
+				{ // args[i]が'\0'だったら、args[]を1つづつずらす。
+					free(node->args[i]);
+					free(expanded_str);
+					j = i;
+					while (node->args[j + 1])
+					{
+						node->args[j] = node->args[j + 1];
+						j++;
+					}
+					node->args[j] = NULL;
+					continue ;
+				}
 				free(node->args[i]);
 				node->args[i] = expanded_str;
 			}
