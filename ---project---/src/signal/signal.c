@@ -34,8 +34,8 @@ void handler_interactive(int signum)
 {
 	g_sig = signum;
 
-	// 画面上に改行を入れて、プロンプトが被らないようにする
-	write(STDOUT_FILENO, "\n", 1);
+	// ^C を表示して改行 (readlineがECHOを無効にしているため自分で出力)
+	write(STDOUT_FILENO, "^C\n", 3);
 
 	rl_on_new_line();
 	rl_replace_line("", 0);
