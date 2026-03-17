@@ -127,8 +127,8 @@ static void	print_exported_env(t_env *env_list)
 		while (node && ft_strcmp(node->key, keys[i]) != 0)
 			node = node->next;
 
-		// 1つの環境変数をprint
-		if (node)
+		// 1つの環境変数をprint (内部変数 ? はスキップ)
+		if (node && ft_strcmp(node->key, "?") != 0)
 			print_single_export(node);
 		i++;
 	}
