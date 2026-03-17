@@ -22,6 +22,8 @@
 int	builtin_export(char **args, t_env **env_list);
 //　引数なしを処理
 static void	print_exported_env(t_env *env_list);
+// 値の中の ", \, $, ` をエスケープして出力
+static void	print_escaped_value(char *value);
 // 1つの環境変数ノードを表示
 static void	print_single_export(t_env *node);
 // 有効な識別子か確認 (先頭: 英字or_, 以降: 英数字or_)
@@ -135,6 +137,18 @@ static void	print_exported_env(t_env *env_list)
 	free(keys);
 }
 
+// 値の中の ", \, $, ` をエスケープして出力
+static void	print_escaped_value(char *value)
+{
+	while (*value)
+	{
+		if (*value == '"' || *value == '\\' || *value == '$' || *value == '`')
+			ft_putchar_fd('\\', STDOUT_FILENO);
+		ft_putchar_fd(*value, STDOUT_FILENO);
+		value++;
+	}
+}
+
 // 1つの環境変数ノードを表示
 static void	print_single_export(t_env *node)
 {
@@ -143,7 +157,7 @@ static void	print_single_export(t_env *node)
 	if (node->value)
 	{
 		ft_putstr_fd("=\"", STDOUT_FILENO);
-		ft_putstr_fd(node->value, STDOUT_FILENO);
+		print_escaped_value(node->value);
 		ft_putchar_fd('\"', STDOUT_FILENO);
 	}
 	ft_putchar_fd('\n', STDOUT_FILENO);
