@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:33 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/17 23:18:18 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,15 @@ int	exec_pipeline(t_node *node, t_env **env_list)
 	waitpid(pids[0], NULL, 0);
 	waitpid(pids[1], &status, 0); // 右(読)のstatusを取得
 
-	return (calculate_exit_status(status));
+	return (calculate_exit_status_quit(status));
 
 }
 
 // 左（書）の子プロセス で fd[1] に書き込み準備 -> node下層を呼び出し再帰
 static void	exec_pipe_left(t_node *node, t_env **env_list, int fd[2])
 {
+	// パイプ子プロ: シグナルをデフォルトに戻す (シグナルで直接死ねるようにする)
+	set_signal_child();
 	// 読み込み端は使わないので閉じる
 	close(fd[0]);
 
@@ -76,6 +78,8 @@ static void	exec_pipe_left(t_node *node, t_env **env_list, int fd[2])
 // 右（読）の子プロセス で fd[0] から読み取り -> node下層を呼び出し再帰
 static void	exec_pipe_right(t_node *node, t_env **env_list, int fd[2])
 {
+	// パイプ子プロ: シグナルをデフォルトに戻す (シグナルで直接死ねるようにする)
+	set_signal_child();
 	// 書き込み端は使わないので閉じる
 	close(fd[1]);
 

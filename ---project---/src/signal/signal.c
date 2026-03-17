@@ -54,14 +54,20 @@ void set_signal_interactive(void)
 
 // B: コマンド実行中 (子プロセス) ---------------------------------------------
 
+// SIGINT: シグナル番号だけ記録 (親プロは死なない)
+static void	handler_executing(int signum)
+{
+	g_sig = signum;
+}
+
 // 親プロ
 void set_signal_executing(void)
 {
-	// SIGINT: 無視
-	signal(SIGINT, SIG_IGN);
+	// SIGINT: g_sigに記録 (実行後に改行出力するため)
+	signal(SIGINT, handler_executing);
 
 	// SIGQUIT: 無視
-    signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 // 子プロ
