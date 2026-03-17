@@ -205,6 +205,7 @@ static char	**append_match(char **matches, char *prefix, char *new_str, int *cou
     }
 
 	(*count)++;
+	new_array[*count] = NULL;
 	return (new_array);
 }
 
