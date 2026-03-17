@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 21:28:34 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/17 21:49:19 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 08:31:13 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,20 @@
 // str: args[i], redir->filename を expand_stringに渡す
 void	expand_node(t_node *node, t_env *env_list);
 // heredocの各行を変数展開する (lineの所有権を受け取り、展開後の文字列を返す)
-char	*expand_heredoc_line(char *line, t_env *env_list);
-// 	str: args[i] か redir->filename の $, クォート を適切に展開する
 static char *expand_string(char *str, t_env *env_list, int *has_wildcard);
 //　$と、それに続く文字(2個目の$まで) を返す
 //		* 環境変数は連続出力にも対応する, valueが無い時は空文字扱い
 static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list, int in_dquote, int *has_wildcard);
 // 文字列の末尾に1文字を追加し、元の文字列を解放
 static char	*append_char(char *str, char c);
+// 配列全体を再構築して、node->args 自体を上書き
+// 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
+char	**insert_matches_to_args(char **args, int index, char **matches, int match_count);
+// heredocの各行を変数展開する
+// lineの所有権を受け取り、$展開後の新しい文字列を返す
+char	*expand_heredoc_line(char *line, t_env *env_list);
+// 引用符なしの$があるかチェック (ワードスプリット判定用)
+static int	has_unquoted_dollar(char *str);
 
 // 展開系util ----------------------------------------------
 // str: args[i], redir->filename を expand_stringに渡す
@@ -90,6 +96,26 @@ void	expand_node(t_node *node, t_env *env_list)
 					}
 					node->args[j] = NULL;
 					continue ;
+				}
+				// ワードスプリット: 引用符なしの$展開でスペースを含む場合、分割
+				if (has_unquoted_dollar(node->args[i])
+					&& ft_strchr(expanded_str, ' '))
+				{
+					sorted_matches = ft_split_c(expanded_str, ' ');
+					match_count = 0;
+					while (sorted_matches && sorted_matches[match_count])
+						match_count++;
+					if (match_count > 1)
+					{
+						free(node->args[i]);
+						free(expanded_str);
+						node->args = insert_matches_to_args(
+								node->args, i, sorted_matches, match_count);
+						i += (match_count - 1);
+						i++;
+						continue ;
+					}
+					free_str_array(sorted_matches);
 				}
 				free(node->args[i]);
 				node->args[i] = expanded_str;
@@ -290,6 +316,45 @@ static char	*append_char(char *str, char c)
 	return (new_str);
 }
 
+// 配列全体を再構築して、node->args 自体を上書き
+// 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
+char	**insert_matches_to_args(char **args, int index, char **matches, int match_count)
+{
+	int		old_len = 0;
+	int		i = 0, j = 0, k = 0;
+	char	**new_args;
+
+	if (!args || !matches)
+		return (args);
+
+	// 元のargsの要素数
+	while (args[old_len])
+		old_len++;
+
+	// 新しいargsの配列
+	new_args = (char **)malloc(sizeof(char *) * (old_len + match_count));
+	if (!new_args)
+		return (NULL);
+
+	// indexより前(元のargs)をコピー
+	while (i < index)
+		new_args[k++] = args[i++];
+
+	// matchesの要素をすべて挿入
+	while (j < match_count)
+		new_args[k++] = matches[j++];
+
+	// indexより後(元のargs)をコピー
+	i++; // index番目の元の文字列は飛ばすためi++
+	while (i < old_len)
+		new_args[k++] = args[i++];
+	new_args[k] = NULL;
+
+	free(args);
+	free(matches);
+	return (new_args);
+}
+
 // heredocの各行を変数展開する
 // lineの所有権を受け取り、$展開後の新しい文字列を返す
 char	*expand_heredoc_line(char *line, t_env *env_list)
@@ -300,4 +365,27 @@ char	*expand_heredoc_line(char *line, t_env *env_list)
 	result = expand_string(line, env_list, &has_wildcard);
 	free(line);
 	return (result);
+}
+
+// 引用符なしの$があるかチェック (ワードスプリット判定用)
+static int	has_unquoted_dollar(char *str)
+{
+	int	in_sq;
+	int	in_dq;
+	int	i;
+
+	in_sq = 0;
+	in_dq = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !in_dq)
+			in_sq = !in_sq;
+		else if (str[i] == '"' && !in_sq)
+			in_dq = !in_dq;
+		else if (str[i] == '$' && !in_sq && !in_dq)
+			return (1);
+		i++;
+	}
+	return (0);
 }

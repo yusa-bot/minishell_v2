@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 09:40:42 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 19:11:08 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 08:26:50 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,6 @@ static int	match_pattern(char *pattern, char *str); // pattern:*.c str:d_name
 static char	**append_match(char **matches, char *prefix, char *new_str, int *count);
 // 文字列配列を辞書順(ASCII順)にバブルソートする
 void	sort_str_array(char **array, int count);
-// 配列全体を再構築して、node->args 自体を上書き
-// 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
-char	**insert_matches_to_args(char **args, int index, char **matches, int match_count);
 
 
 // dir内の全ファイル取得 -> 一致判定 -> sort -> sorted_matches配列を返す
@@ -237,43 +234,4 @@ void	sort_str_array(char **array, int count)
 		}
 		i++;
 	}
-}
-
-// 配列全体を再構築して、node->args 自体を上書き
-// 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
-char	**insert_matches_to_args(char **args, int index, char **matches, int match_count)
-{
-	int		old_len = 0;
-	int		i = 0, j = 0, k = 0;
-	char	**new_args;
-
-	if (!args || !matches)
-		return (args);
-
-	// 元のargsの要素数
-	while (args[old_len])
-		old_len++;
-
-	// 新しいargsの配列
-	new_args = (char **)malloc(sizeof(char *) * (old_len + match_count));
-	if (!new_args)
-		return (NULL);
-
-	// indexより前(元のargs)をコピー
-	while (i < index)
-		new_args[k++] = args[i++];
-
-	// matchesの要素をすべて挿入
-	while (j < match_count)
-		new_args[k++] = matches[j++];
-
-	// indexより後(元のargs)をコピー
-	i++; // index番目の元の文字列は飛ばすためi++
-	while (i < old_len)
-		new_args[k++] = args[i++];
-	new_args[k] = NULL;
-
-	free(args);
-	free(matches);
-	return (new_args);
 }
