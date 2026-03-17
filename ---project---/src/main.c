@@ -95,6 +95,13 @@ static void	exec_line(char *line, t_env **env_list)
 
 	exec_ast(node, env_list);
 
+	// 実行中にSIGINTを受けた場合、改行を出力してプロンプトを整える
+	if (g_sig == SIGINT)
+	{
+		ft_putstr_fd("\n", STDERR_FILENO);
+		g_sig = 0;
+	}
+
 	free_ast(node);
 }
 

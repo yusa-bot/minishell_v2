@@ -48,11 +48,9 @@ int calculate_exit_status_quit(int status)
     {
         term_sig = WTERMSIG(status); // 終了させたシグナル番号を取得
 
-        // シグナルに応じたメッセージの出力
+        // SIGQUIT: "Quit (core dumped)" を出力 (stderrに出す)
         if (term_sig == SIGQUIT)
-            printf("Quit (core dumped)\n");
-        else if (term_sig == SIGINT)
-            printf("\n"); // Ctrl-C の場合は改行のみ出力してプロンプトを整える
+            ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
 
         return (128 + term_sig); // 128 + 終了させたシグナル番号
     }
