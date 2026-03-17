@@ -13,6 +13,7 @@
 #include "../../inc/minishell.h"
 
 static int	ft_isnumeric(char *str);
+static int	ft_isoverflow(char *str);
 
 int	builtin_exit(char **args, t_env **env_list)
 {
@@ -29,8 +30,8 @@ int	builtin_exit(char **args, t_env **env_list)
 		exit(exit_code);
 	}
 
-	// 引数が非数値の場合
-	if (!ft_isnumeric(args[1]))
+	// 引数が非数値またはオーバーフローの場合
+	if (!ft_isnumeric(args[1]) || ft_isoverflow(args[1]))
 	{
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(args[1], STDERR_FILENO);
@@ -72,4 +73,32 @@ static int	ft_isnumeric(char *str)
 		i++;
 	}
 	return (1);
+}
+
+// long longの範囲を超えるか判定 (ft_isnumericを通過済みの前提)
+static int	ft_isoverflow(char *str)
+{
+	int			sign;
+	long long	res;
+	int			digit;
+
+	sign = 1;
+	res = 0;
+	if (*str == '+' || *str == '-')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (*str)
+	{
+		digit = *str - '0';
+		if (sign == 1 && (res > (LLONG_MAX - digit) / 10))
+			return (1);
+		if (sign == -1 && (res > (-(LLONG_MIN + digit)) / 10))
+			return (1);
+		res = res * 10 + digit;
+		str++;
+	}
+	return (0);
 }
