@@ -81,6 +81,8 @@ static void	exec_line(char *line, t_env **env_list)
 {
 	t_node	*node;
 
+	if (!line || !*line)
+		return ;
 	node = build_ast(line, env_list);
 	if (!node)
 	{
