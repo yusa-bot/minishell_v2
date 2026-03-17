@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/14 19:29:58 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 18:21:48 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/17 21:35:34 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ int	builtin_exit(char **args, t_env **env_list)
 {
 	int	exit_code;
 
-	ft_putendl_fd("exit", STDERR_FILENO);
+	if (isatty(STDIN_FILENO))
+	{
+		ft_putendl_fd("exit", STDERR_FILENO); // または STDOUT_FILENO
+	}
 
 	if (!args[1])
 	{
