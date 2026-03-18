@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/16 14:08:20 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 10:02:59 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ volatile sig_atomic_t g_sig = 0;
 
 static t_node	*build_ast(char *line, t_env **env_list);
 static void		exec_line(char *line, t_env **env_list);
-static void    read_prompt(t_env **env_list, struct termios *default_term);
+static void		exec_multiline(char *line, t_env **env_list);
+static void		read_prompt(t_env **env_list, struct termios *default_term);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -71,9 +72,38 @@ static void	read_prompt(t_env **env_list, struct termios  *default_term)
 		if (*line != '\0')
 			add_history(line);
 
-		exec_line(line, env_list);
+		exec_multiline(line, env_list);
 		free(line);
 	}
+}
+
+// bracket pasteで複数行がまとめて返された場合、改行で分割して各行を実行
+static void	exec_multiline(char *line, t_env **env_list)
+{
+	char	**lines;
+	int		i;
+
+	if (!line || !*line)
+		return ;
+
+	if (!ft_strchr(line, '\n'))
+	{
+		exec_line(line, env_list);
+		return ;
+	}
+
+	lines = ft_split_c(line, '\n');
+	if (!lines)
+		return ;
+
+	i = 0;
+	while (lines[i])
+	{
+		exec_line(lines[i], env_list);
+		i++;
+	}
+	
+	free_str_array(lines);
 }
 
 // 1行を実行: AST構築 -> 実行
