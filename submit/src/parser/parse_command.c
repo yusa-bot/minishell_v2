@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:37:14 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 15:40:25 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:24:03 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static t_node		*parse_subshell(t_token **tokens);
 static int			parse_redirect(t_token **tokens, t_node *node);
-static t_redirect	*new_redirect(t_token_type type, char *filename);
 static void			append_redirect(t_node *node, t_token_type type,
 						char *filename);
+static t_redirect	*new_redirect(t_token_type type, char *filename);
 
 // Highest priority : single command or sub shell
 t_node	*parse_command(t_token **tokens)
@@ -76,6 +76,27 @@ static int	parse_redirect(t_token **tokens, t_node *node)
 	return (0);
 }
 
+// Append a t_redirect to the node
+static void	append_redirect(t_node *node, t_token_type type,
+		char *filename)
+{
+	t_redirect	*new_redir;
+	t_redirect	*current;
+
+	new_redir = new_redirect(type, filename);
+	if (!new_redir)
+		return ;
+	if (node->redirects == NULL)
+	{
+		node->redirects = new_redir;
+		return ;
+	}
+	current = node->redirects;
+	while (current->next != NULL)
+		current = current->next;
+	current->next = new_redir;
+}
+
 // Create a new t_redirect
 static t_redirect	*new_redirect(t_token_type type, char *filename)
 {
@@ -98,25 +119,4 @@ static t_redirect	*new_redirect(t_token_type type, char *filename)
 	else
 		redir->filename = ft_strdup(filename);
 	return (redir);
-}
-
-// Append a t_redirect to the node
-static void	append_redirect(t_node *node, t_token_type type,
-		char *filename)
-{
-	t_redirect	*new_redir;
-	t_redirect	*current;
-
-	new_redir = new_redirect(type, filename);
-	if (!new_redir)
-		return ;
-	if (node->redirects == NULL)
-	{
-		node->redirects = new_redir;
-		return ;
-	}
-	current = node->redirects;
-	while (current->next != NULL)
-		current = current->next;
-	current->next = new_redir;
 }

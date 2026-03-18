@@ -12,6 +12,36 @@
 
 #include "../../inc/minishell.h"
 
+static int	classify_redir_in(char *s, t_token_type *type, int *len);
+static int	classify_redir_out(char *s, t_token_type *type, int *len);
+static int	classify_pipe_and(char *s, t_token_type *type, int *len);
+
+int	classify_operator(char *s, t_token_type *type, int *len)
+{
+	int	ret;
+
+	if (classify_redir_in(s, type, len))
+		return (0);
+	if (classify_redir_out(s, type, len))
+		return (0);
+	ret = classify_pipe_and(s, type, len);
+	if (ret == -1)
+		return (-1);
+	if (ret == 1)
+		return (0);
+	if (s[0] == '(')
+	{
+		*type = TK_LPAREN;
+		*len = 1;
+	}
+	else
+	{
+		*type = TK_RPAREN;
+		*len = 1;
+	}
+	return (0);
+}
+
 static int	classify_redir_in(char *s, t_token_type *type, int *len)
 {
 	if (s[0] == '<' && s[1] == '<')
@@ -73,30 +103,4 @@ static int	classify_pipe_and(char *s, t_token_type *type, int *len)
 	else
 		return (0);
 	return (1);
-}
-
-int	classify_operator(char *s, t_token_type *type, int *len)
-{
-	int	ret;
-
-	if (classify_redir_in(s, type, len))
-		return (0);
-	if (classify_redir_out(s, type, len))
-		return (0);
-	ret = classify_pipe_and(s, type, len);
-	if (ret == -1)
-		return (-1);
-	if (ret == 1)
-		return (0);
-	if (s[0] == '(')
-	{
-		*type = TK_LPAREN;
-		*len = 1;
-	}
-	else
-	{
-		*type = TK_RPAREN;
-		*len = 1;
-	}
-	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:10 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 18:52:37 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:21:57 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ static int	read_heredoc(t_redirect *redir, t_env *env_list,
 				t_node *root);
 static void	heredoc_child(t_redirect *redir, t_env *env_list,
 				char *tmp_filename, t_node *root);
+static void	heredoc_read_loop(t_redirect *redir, t_env *env_list, int fd);
 static int	heredoc_parent(t_redirect *redir, char *tmp_filename,
 				int status);
 
@@ -87,7 +88,7 @@ static void	heredoc_child(t_redirect *redir, t_env *env_list,
 	cleanup_and_exit(0, root, env_list);
 }
 
-void	heredoc_read_loop(t_redirect *redir, t_env *env_list, int fd)
+static void	heredoc_read_loop(t_redirect *redir, t_env *env_list, int fd)
 {
 	char	*line;
 

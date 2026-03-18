@@ -6,14 +6,14 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:49 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 19:55:05 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:24:53 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static t_node		*parse_pipeline(t_token **tokens);
 static t_node_type	get_list_type(t_token_type type);
+static t_node		*parse_pipeline(t_token **tokens);
 
 // Parse starting with the lowest-priority tokens
 

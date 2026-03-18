@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 17:50:58 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 17:59:06 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:19:45 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,6 @@ char	*generate_tmp_filename(void)
 	return (filename);
 }
 
-static int	read_urandom(unsigned char *buf)
-{
-	int	fd;
-
-	fd = open("/dev/urandom", O_RDONLY);
-	if (fd < 0)
-		return (-1);
-	read(fd, buf, 4);
-	close(fd);
-	return (0);
-}
-
 // Read random numbers from /dev/urandom
 static char	*get_random_suffix(void)
 {
@@ -74,4 +62,16 @@ static char	*get_random_suffix(void)
 	}
 	suffix[8] = '\0';
 	return (suffix);
+}
+
+static int	read_urandom(unsigned char *buf)
+{
+	int	fd;
+
+	fd = open("/dev/urandom", O_RDONLY);
+	if (fd < 0)
+		return (-1);
+	read(fd, buf, 4);
+	close(fd);
+	return (0);
 }

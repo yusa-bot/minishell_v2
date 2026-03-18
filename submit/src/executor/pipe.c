@@ -6,13 +6,12 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:33 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/17 23:18:18 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:16:50 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int			exec_pipeline(t_node *node, t_env **env_list, t_node *root);
 static void	exec_pipe_left(t_node *n, t_env **el, int fd[2], t_node *rt);
 static void	exec_pipe_right(t_node *n, t_env **el, int fd[2], t_node *rt);
 

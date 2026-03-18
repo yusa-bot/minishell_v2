@@ -6,13 +6,12 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:00 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 20:02:04 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:16:01 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int			exec_ast(t_node *node, t_env **env_list, t_node *root);
 static int	exec_and(t_node *node, t_env **env_list, t_node *root);
 static int	exec_or(t_node *node, t_env **env_list, t_node *root);
 static int	exec_subshell(t_node *node, t_env **env_list, t_node *root);

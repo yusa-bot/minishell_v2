@@ -6,17 +6,15 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:35 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 16:56:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:17:07 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int			apply_redirects(t_redirect *redirects);
 static int	handle_redir_node(t_redirect *current);
 static int	handle_input(t_redirect *redir);
 static int	handle_output(t_redirect *redir);
-void		restore_fds(int saved_stdin, int saved_stdout);
 
 int	apply_redirects(t_redirect *redirects)
 {

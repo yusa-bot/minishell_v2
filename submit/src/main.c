@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 15:00:00 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:25:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 volatile sig_atomic_t	g_sig = 0;
 
-static t_node	*build_ast(char *line, t_env **env_list);
-static void		exec_line(char *line, t_env **env_list);
-static void		exec_multiline(char *line, t_env **env_list);
 static void		read_prompt(t_env **env_list, struct termios *default_term);
+static void		exec_multiline(char *line, t_env **env_list);
+static void		exec_line(char *line, t_env **env_list);
+static t_node	*build_ast(char *line, t_env **env_list);
 
 // Save terminal information -> env list init -> read prompt -> status return
 int	main(int argc, char **argv, char **envp)

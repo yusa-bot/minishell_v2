@@ -6,16 +6,15 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 18:31:02 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 18:37:59 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:13:04 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void			print_exported_env(t_env *env_list);
 static void		print_sorted_keys(t_env *env_list, char **keys, int count);
-static void		print_escaped_value(char *value);
 static void		print_single_export(t_env *node);
+static void		print_escaped_value(char *value);
 
 void	print_exported_env(t_env *env_list)
 {
@@ -40,6 +39,23 @@ void	print_exported_env(t_env *env_list)
 	free(keys);
 }
 
+static void	print_sorted_keys(t_env *env_list, char **keys, int count)
+{
+	int		i;
+	t_env	*node;
+
+	i = 0;
+	while (i < count)
+	{
+		node = env_list;
+		while (node && ft_strcmp(node->key, keys[i]) != 0)
+			node = node->next;
+		if (node && ft_strcmp(node->key, "?") != 0)
+			print_single_export(node);
+		i++;
+	}
+}
+
 static void	print_single_export(t_env *node)
 {
 	ft_putstr_fd("declare -x ", STDOUT_FILENO);
@@ -62,22 +78,5 @@ static void	print_escaped_value(char *value)
 			ft_putchar_fd('\\', STDOUT_FILENO);
 		ft_putchar_fd(*value, STDOUT_FILENO);
 		value++;
-	}
-}
-
-static void	print_sorted_keys(t_env *env_list, char **keys, int count)
-{
-	int		i;
-	t_env	*node;
-
-	i = 0;
-	while (i < count)
-	{
-		node = env_list;
-		while (node && ft_strcmp(node->key, keys[i]) != 0)
-			node = node->next;
-		if (node && ft_strcmp(node->key, "?") != 0)
-			print_single_export(node);
-		i++;
 	}
 }

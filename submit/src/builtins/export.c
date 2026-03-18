@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:10:26 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 18:31:02 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:13:51 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int			builtin_export(char **args, t_env **env_list);
 static int	process_export_arg(char *arg, t_env **env_list);
-static int	export_error(char *arg);
 static int	is_valid_identifier(char *name);
+static int	export_error(char *arg);
 
 int	builtin_export(char **args, t_env **env_list)
 {
@@ -65,14 +65,6 @@ static int	process_export_arg(char *arg, t_env **env_list)
 	return (0);
 }
 
-static int	export_error(char *arg)
-{
-	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-	ft_putstr_fd(arg, STDERR_FILENO);
-	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-	return (1);
-}
-
 static int	is_valid_identifier(char *name)
 {
 	int	i;
@@ -88,5 +80,13 @@ static int	is_valid_identifier(char *name)
 			return (0);
 		i++;
 	}
+	return (1);
+}
+
+static int	export_error(char *arg)
+{
+	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
+	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 	return (1);
 }

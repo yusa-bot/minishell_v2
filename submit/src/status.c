@@ -6,16 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 16:00:30 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 14:49:10 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:27:36 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/minishell.h"
-
-int		calculate_exit_status(int status);
-int		calculate_exit_status_quit(int status);
-void	update_exit_status(t_env **env_list, int status);
-void	cleanup_and_exit(int status, t_node *ast, t_env *env);
 
 // WIFEXITED: Ended Normally, WIFSIGNALED: Terminated by a signal
 int	calculate_exit_status(int status)

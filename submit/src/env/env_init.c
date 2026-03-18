@@ -6,16 +6,13 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:28:32 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 18:05:20 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:14:23 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 static t_env	*parse_env_entry(char *entry);
-t_env			*env_new(char *key, char *value);
-void			env_add_back(t_env **env_list, t_env *new_node);
-void			free_env_list(t_env *env_list);
 
 // **envp -> t_env linked list
 t_env	*env_init(char **envp)
