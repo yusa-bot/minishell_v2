@@ -177,6 +177,9 @@ int	is_spaces_operator(char c);
 // 構文解析の入り口
 t_node *parse(t_token **tokens);
 
+// parse_command.c
+t_node *parse_command(t_token **tokens);
+
 // parser_helpers.c
 // ASTの新しいノードを作成し、初期化
 t_node *new_node(t_node_type type, t_node *left, t_node *right);

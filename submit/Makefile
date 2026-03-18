@@ -6,7 +6,7 @@
 #    By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/15 15:34:32 by ayusa             #+#    #+#              #
-#    Updated: 2026/03/15 16:45:34 by ayusa            ###   ########.fr        #
+#    Updated: 2026/03/18 15:39:07 by ayusa            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ LIBFTDIR    = libft
 INCDIR      = inc
 
 SRCS = src/signal/signal.c \
-	src/parser/parser.c  src/parser/parser_helpers.c  src/parser/free_ast.c \
+	src/parser/parser.c  src/parser/parser_helpers.c  src/parser/free_ast.c src/parser/parse_command.c\
 	src/main.c  \
 	src/status.c \
 	src/lexer/lexer.c src/lexer/lexer_helpers.c\
