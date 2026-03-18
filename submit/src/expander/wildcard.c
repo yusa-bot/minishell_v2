@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 09:40:42 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 19:51:26 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:01:01 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ char	**expand_wildcard(char *pattern)
 }
 
 // '/' ex.) dir_path:src, fpat:*.c
-static char	**collect_matches(char *dir_path, char *fpat, char **matches, int *count)
+static char	**collect_matches(char *dir_path, char *fpat,
+		char **matches, int *count)
 {
 	DIR				*dir;
 	struct dirent	*dp;
@@ -75,7 +76,7 @@ static char	**collect_matches(char *dir_path, char *fpat, char **matches, int *c
 	return (matches);
 }
 
-// Add the found filenames to the array and expand ----------------------------------------------
+// Add the found filenames to the array and expand
 //		prefix: src
 static char	**append_match(char **matches, char *prefix,
 		char *new_str, int *count)

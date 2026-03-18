@@ -37,7 +37,7 @@ int	is_redirect(t_token_type type)
 }
 
 //　Reallocate memory for `args` and add it
-void append_arg(t_node *node, char *value)
+void	append_arg(t_node *node, char *value)
 {
 	int		i;
 	char	**new_args;

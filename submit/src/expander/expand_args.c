@@ -12,6 +12,8 @@
 
 #include "../../inc/minishell.h"
 
+static int	handle_expand_arg(t_node *node, int *i, char *expanded,
+				int has_wildcard);
 static int	expand_arg_wildcard(t_node *node, int i, char *expanded);
 static int	remove_empty_arg(t_node *node, int i, char *expanded);
 static int	try_word_split(t_node *node, int *i, char *expanded);

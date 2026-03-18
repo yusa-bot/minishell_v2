@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:28:25 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 19:50:27 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:01:19 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static char	*handle_dollar(char *res, char *str, int *i,
 				t_env *env_list);
 static char	*resolve_dollar_var(char *str, int *i, t_env *env_list);
 
-// 	 Expand $ and quotes ----------------------------------------------
+// 	 Expand $ and quotes 
 char	*expand_string(char *str, t_env *env_list, int *has_wildcard)
 {
 	char	*res;
@@ -71,7 +71,7 @@ static int	process_expand_char(char *str, int *i, int *quotes,
 	return (0);
 }
 
-// Expand the characters following a single $ -> Join to res ----------------------------------------------
+// Expand the characters following a single $ -> Join to res
 static char	*handle_dollar(char *res, char *str, int *i,
 		t_env *env_list)
 {

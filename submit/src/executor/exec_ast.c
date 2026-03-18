@@ -6,23 +6,19 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:00 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 18:54:24 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:02:04 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-// A router that determines the t_node_type based on t_node and directs it to the appropriate execution process
-//		-> In this file(&&, ||, ()), pipe.c, exec_cmd.c
-
-int exec_ast(t_node *node, t_env **env_list, t_node *root);
-static int exec_and(t_node *node, t_env **env_list, t_node *root);
-static int exec_or(t_node *node, t_env **env_list, t_node *root);
-static int exec_subshell(t_node *node, t_env **env_list, t_node *root);
-
+int			exec_ast(t_node *node, t_env **env_list, t_node *root);
+static int	exec_and(t_node *node, t_env **env_list, t_node *root);
+static int	exec_or(t_node *node, t_env **env_list, t_node *root);
+static int	exec_subshell(t_node *node, t_env **env_list, t_node *root);
 
 // AST -> assign &&, ||, ()
-int exec_ast(t_node *node, t_env **env_list, t_node *root)
+int	exec_ast(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
 
@@ -44,7 +40,7 @@ int exec_ast(t_node *node, t_env **env_list, t_node *root)
 }
 
 // &&
-static int exec_and(t_node *node, t_env **env_list, t_node *root)
+static int	exec_and(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
 
@@ -61,7 +57,7 @@ static int exec_and(t_node *node, t_env **env_list, t_node *root)
 }
 
 // ||
-static int exec_or(t_node *node, t_env **env_list, t_node *root)
+static int	exec_or(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
 
@@ -78,7 +74,7 @@ static int exec_or(t_node *node, t_env **env_list, t_node *root)
 }
 
 // sub shell
-static int exec_subshell(t_node *node, t_env **env_list, t_node *root)
+static int	exec_subshell(t_node *node, t_env **env_list, t_node *root)
 {
 	pid_t	pid;
 	int		status;

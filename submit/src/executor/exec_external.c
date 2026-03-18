@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 17:30:58 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 18:55:05 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:02:31 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 
 static void	exec_child(char **args, t_env **env_list, t_node *root);
 static void	child_cmd_not_found(char **args, t_env **env_list, t_node *root);
-static void	child_exec_failed(char **args, char *path,;
-		char **envp, t_node *root)
+static void	child_exec_failed(char **args, char *path,
+				char **envp, t_node *root);
 
-// External command
 int	exec_external(char **args, t_env **env_list, t_node *root)
 {
 	pid_t	pid;
@@ -57,11 +56,11 @@ static void	child_cmd_not_found(char **args, t_env **env_list, t_node *root)
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(args[0], 2);
 	if (ft_strchr(args[0], '/')
-		|| !get_env_value(*el, "PATH"))
+		|| !get_env_value(*env_list, "PATH"))
 		ft_putstr_fd(": No such file or directory\n", 2);
 	else
 		ft_putstr_fd(": command not found\n", 2);
-	cleanup_and_exit(127, root, *el);
+	cleanup_and_exit(127, root, *env_list);
 }
 
 // execve failed error
