@@ -71,7 +71,7 @@ int	builtin_export(char **args, t_env **env_list)
 			free(key);
 		}
 
-		// 値なし登録
+		// 値なし登録 (既に存在する場合は値を変更しない)
 		else
 		{
 			if (!is_valid_identifier(args[i]))
@@ -83,7 +83,8 @@ int	builtin_export(char **args, t_env **env_list)
 				i++;
 				continue ;
 			}
-			set_env_value(env_list, args[i], NULL);
+			if (!get_env_value(*env_list, args[i]))
+				set_env_value(env_list, args[i], NULL);
 		}
 
 		i++;
