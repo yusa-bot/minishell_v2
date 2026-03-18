@@ -53,7 +53,10 @@ int	builtin_cd(char **args, t_env **env_list)
 	// change dir
 	if (chdir(path) != 0)
 	{
-		perror("cd");
+		ft_putstr_fd("minishell: cd: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putendl_fd(strerror(errno), 2);
 		return (1);
 	}
 

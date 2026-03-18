@@ -80,6 +80,7 @@ static int handle_input(t_redirect *redir)
 	// 失敗
 	if (fd < 0)
 	{
+		ft_putstr_fd("minishell: ", 2);
 		perror(redir->filename);
 		return (-1);
 	}
@@ -109,6 +110,7 @@ static int handle_output(t_redirect *redir)
 	// 失敗
 	if (fd < 0)
 	{
+		ft_putstr_fd("minishell: ", 2);
 		perror(redir->filename);
 		return (-1);
 	}
