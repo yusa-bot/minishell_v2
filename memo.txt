@@ -13,6 +13,10 @@ sudo npm install -g @anthropic-ai/claude-code
 
 ---
 
+valgrind --leak-check=full --show-leak-kinds=reachable --track-origins=yes --suppressions=minishell.supp ./minishell
+
+---
+
 メモリ　確認
 disco
 修正
@@ -23,4 +27,4 @@ norm 分けながら理解
 
 zennと交えてコード理解
 
-valgrind --leak-check=full --show-leak-kinds=reachable --track-origins=yes ./minishell 
+valgrind --leak-check=full --show-leak-kinds=reachable --track-origins=yes ./minishell
