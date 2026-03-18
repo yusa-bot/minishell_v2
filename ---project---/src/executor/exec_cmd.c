@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/15 17:34:55 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 10:42:57 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,8 @@ static int exec_external(char **args, t_env **env_list)
 		{
 			ft_putstr_fd("minishell: ", 2);
 			ft_putstr_fd(args[0], 2);
-			if (ft_strchr(args[0], '/'))
+			if (ft_strchr(args[0], '/')
+				|| !get_env_value(*env_list, "PATH"))
 				ft_putstr_fd(": No such file or directory\n", 2);
 			else
 				ft_putstr_fd(": command not found\n", 2);
@@ -203,9 +204,10 @@ static char *get_cmd_path(char *cmd, t_env *env_list)
 	}
 
 	// env_listからkeyが"PATH"のvalueを取得
+	// PATH未設定時はデフォルトパスを使用 (bash準拠)
 	path_env = get_env_value(env_list, "PATH");
 	if (!path_env)
-		return (NULL);
+		path_env = "/usr/local/bin:/usr/bin:/bin";
 
 	// PATH を ':' で分割
 	paths = ft_split_c(path_env, ':');
