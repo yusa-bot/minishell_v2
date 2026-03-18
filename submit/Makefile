@@ -6,7 +6,7 @@
 #    By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/15 15:34:32 by ayusa             #+#    #+#              #
-#    Updated: 2026/03/18 17:57:38 by ayusa            ###   ########.fr        #
+#    Updated: 2026/03/18 20:44:30 by ayusa            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,16 +23,16 @@ OBJDIR      = obj
 LIBFTDIR    = libft
 INCDIR      = inc
 
-SRCS = src/signal.c \
+SRCS = src/signal/signal.c src/signal/signal_heredoc.c \
 	src/parser/parser.c  src/parser/parser_helpers.c  src/parser/free_ast.c src/parser/parse_command.c\
 	src/main.c  \
 	src/status.c \
-	src/lexer/lexer.c src/lexer/lexer_helpers.c\
-	src/expander/expand.c  src/expander/expand_args.c  src/expander/expand_redirects.c  src/expander/expand_dollers_quotes.c  src/expander/wildcard.c  src/expander/wildcard_match.c  \
-	src/executor/exec_ast.c  src/executor/exec_cmd.c src/executor/pipe.c  src/executor/redirect.c \
+	src/lexer/lexer.c src/lexer/lexer_helpers.c src/lexer/classify_operator.c\
+	src/expander/expand.c  src/expander/expand_args.c  src/expander/expand_args_utils.c  src/expander/expand_redirects.c  src/expander/expand_dollers_quotes.c  src/expander/wildcard.c  src/expander/wildcard_utils.c  \
+	src/executor/exec_ast.c  src/executor/exec_cmd.c  src/executor/exec_external.c  src/executor/get_exec_path.c  src/executor/pipe.c  src/executor/redirect.c \
 	src/heredoc/heredoc.c src/heredoc/generate_tmp_filename.c \
-	src/env/env_init.c  src/env/env_util.c  \
-	src/builtins/cd.c  src/builtins/echo.c  src/builtins/env.c  src/builtins/exit.c  src/builtins/export.c  src/builtins/pwd.c  src/builtins/unset.c
+	src/env/env_init.c  src/env/env_util.c  src/env/env_access.c  \
+	src/builtins/cd.c  src/builtins/echo.c  src/builtins/env.c  src/builtins/exit.c  src/builtins/export.c  src/builtins/export_print.c  src/builtins/pwd.c  src/builtins/unset.c
 
 OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 

@@ -12,6 +12,8 @@
 
 #include "../inc/minishell.h"
 
+static void	handler_executing(int signum);
+
 // A: Waiting for input at the prompt
 void	set_signal_interactive(void)
 {
