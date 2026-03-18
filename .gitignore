@@ -6,4 +6,5 @@
 **/libft
 .devcontainer
 prc.c
-
+test
+.DS_Store

@@ -10,11 +10,11 @@
 - シグナル
 • 受信したシグナルを示すグローバル変数は最大で1つとする。
 
-    このアプローチの影響を考慮すると、シグナルハンドラがメインのデータ構造にアクセスしなくなることが保証されます。
-    注意が必要です。このグローバル変数はシグナル番号のみを格納する必要があり、
-    追加情報やデータへのアクセスを提供してはなりません。
-    したがって、グローバルスコープで「norm」型の構造体を使用することは
-    禁止されています。
+このアプローチの影響を考慮すると、シグナルハンドラがメインのデータ構造にアクセスしなくなることが保証されます。
+注意が必要です。このグローバル変数はシグナル番号のみを格納する必要があり、
+追加情報やデータへのアクセスを提供してはなりません。
+したがって、グローバルスコープで「norm」型の構造体を使用することは
+禁止されています。
 
 
 閉じられていない引用符や、\（バックスラッシュ）や;（セミコロン）など、対象に必要のない特殊文字は解釈しません。
@@ -63,3 +63,86 @@ readline() 関数はメモリリークを引き起こす可能性があります
 プログラムは以下の要件を実装する必要があります。
 • 優先順位を示す括弧付きの && と ||。
 • ワイルドカード * は、現在の作業ディレクトリで使用できます。
+
+# External Function
+
+printf, malloc, free, write,
+
+open, read,close,
+
+ exit
+
+// 1. Readline・履歴系
+
+readline,
+
+add_history
+
+rl_on_new_line
+
+rl_replace_line
+
+rl_redisplay
+
+rl_clear_history
+
+// 2. プロセス制御系
+
+fork
+execve
+
+waitpid
+
+wait
+
+wait3
+
+wait4
+
+// 3. シグナル処理系
+
+signal
+
+sigemptyset
+
+sigaddset
+
+sigaction
+
+kill
+
+// 4. ファイル・ディレクトリ操作・アクセス権系
+
+getcwd
+
+chdir
+
+access
+
+stat
+
+lstat
+
+unlink
+
+opendir
+
+readdir
+
+closedir
+
+// 5. パイプとファイルディスクリプタ系
+
+pipe
+
+dup, dup2
+
+// 6. エラー処理系
+
+strerror, perror
+
+// 7. 端末制御・Termcap系
+
+isatty, ttyname, ttyslot, ioctl,
+getenv, tcsetattr, tcgetattr, tgetent, tgetflag,
+tgetnum, tgetstr, tgoto, tputs
