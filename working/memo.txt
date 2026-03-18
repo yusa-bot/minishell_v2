@@ -1,0 +1,30 @@
+sudo apt-get update
+sudo apt-get install -y libreadline-dev
+ls /usr/include/readline/readline.h
+
+# NodeSourceのセットアップスクリプトをsudoで実行
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash -
+
+# Node.jsをsudoでインストール
+sudo apt-get install -y nodejs
+
+# Claude Codeをsudoでグローバルインストール
+sudo npm install -g @anthropic-ai/claude-code
+
+---
+
+valgrind --leak-check=full --show-leak-kinds=reachable --track-origins=yes --suppressions=minishell.supp ./minishell
+
+ valgrind --leak-check=full --show-leak-kinds=reachable --track-origins=yes --suppressions=minishell.supp ./minishell
+ このコマンドでminishellをたちあげ、claude.md の課題要項に沿って、様々なシェルプロンプトでテストを実行してください。valgrindによるエラーがないか
+、bashと挙動が違うものはないかを、claude.mdの範囲内で、厳しいプロンプトで見てください。エッジケースも試し、課題要項の範囲内であれば最大限厳しくテ
+ストしてください。テスト中は実況を出力し、ミスがあれば修正してください。
+
+---
+
+norm 分けながら理解
+gemini test
+
+zennと交えてコード理解
+
+---
