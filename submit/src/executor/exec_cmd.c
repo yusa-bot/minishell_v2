@@ -6,76 +6,45 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 10:42:57 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 17:32:00 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-// コマンド実行
-// 展開 -> リダイレクト適用 -> 実行分岐
-int exec_cmd(t_node *node, t_env **env_list, t_node *root);
-
-// ビルトインコマンド
-// ビルトインコマンドか判定
 static int is_builtin(char *cmd);
-// ビルトインコマンドの実装関数を呼び出す
 static int exec_builtin(char **args, t_env **env_list, t_node *root);
 
-// 外部コマンド
-// 子プロでexecve()
-static int exec_external(char **args, t_env **env_list, t_node *root);
-// 実行可能ファイルのフルパスを取得
-static char *get_cmd_path(char *cmd, t_env *env_list);
-
-
-// コマンド実行 ----------------------------------------------
-// 展開 -> リダイレクト適用 -> 実行分岐
+// Expand -> Apply Redirect -> Execute Branch
 int exec_cmd(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
 	int	saved_stdin;
 	int	saved_stdout;
 
-	// 変数展開とクォート除去, * 処理
 	expand_node(node, *env_list);
-	// 親プロセスの標準入出力をバックアップ
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);
-
-	// リダイレクトの適用 (コマンドがなくてもリダイレクトは実行する)
 	if (apply_redirects(node->redirects) != 0)
-	{ // 失敗
-		restore_fds(saved_stdin, saved_stdout); // 親プロセスの元FDに復元
+	{
+		restore_fds(saved_stdin, saved_stdout);
 		return (1);
 	}
-
-	// args(実行コマンド)が無い場合はリダイレクト適用のみで終了
 	if (!node->args || !node->args[0])
 	{
 		restore_fds(saved_stdin, saved_stdout);
 		return (0);
 	}
-
-	// コマンドの実行分岐
 	if (is_builtin(node->args[0]))
-		status = exec_builtin(node->args, env_list, root); // ビルトイン
+		status = exec_builtin(node->args, env_list, root);
 	else
-		status = exec_external(node->args, env_list, root); // 外部
-
-	restore_fds(saved_stdin, saved_stdout); // 親プロセスの元FDに復元
-
+		status = exec_external(node->args, env_list, root);
+	restore_fds(saved_stdin, saved_stdout);
 	return (status);
-
-	//引数（args）の変数展開やクォート除去（Expander）を行う
-	//リダイレクトを適用する
-	//コマンド名（args[0]）を見て、ビルトインか外部コマンドかを判定し、
-	//	それぞれの実行関数に振り分ける
-	//ビルトインを親プロセスで実行した場合は、切り替えた標準入出力を元に戻す
 }
 
-// ビルトインコマンド ----------------------------------------------
-// echo, cd, pwd, export, unset, env, exit か -> 親プロ
+// Builtin command ----------------------------------------------
+
 static int is_builtin(char *cmd)
 {
 	if (!cmd)
@@ -92,7 +61,6 @@ static int is_builtin(char *cmd)
 	return (0);
 }
 
-// ビルトインコマンドの実装関数を呼び出す -> 終了ステータスを返す
 static int exec_builtin(char **args, t_env **env_list, t_node *root)
 {
 	if (ft_strcmp(args[0], "echo") == 0)
@@ -111,137 +79,4 @@ static int exec_builtin(char **args, t_env **env_list, t_node *root)
 		return (builtin_exit(args, env_list, root));
 
 	return (1);
-}
-
-// 外部コマンド ----------------------------------------------
-// 子プロでexecve()
-static int exec_external(char **args, t_env **env_list, t_node *root)
-{
-	pid_t		pid;
-	int			status;
-	char		*path;
-	char		**envp;
-	struct stat	st;
-
-	pid = fork();
-
-	if (pid < 0)
-	{
-		perror("minishell: fork");
-		return (1);
-	}
-
-	if (pid == 0) // 子プロセス
-	{
-		// シグナルハンドラをデフォルトに戻す -> 子プロは、Ctrl-Cで終了
-		set_signal_child();
-
-		// コマンドのフルパスを取得
-		path = get_cmd_path(args[0], *env_list);
-		if (!path)
-		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(args[0], 2);
-			if (ft_strchr(args[0], '/')
-				|| !get_env_value(*env_list, "PATH"))
-				ft_putstr_fd(": No such file or directory\n", 2);
-			else
-				ft_putstr_fd(": command not found\n", 2);
-			cleanup_and_exit(127, root, *env_list);
-		}
-
-		// 環境変数リストを char ** の配列に逆変換
-		envp = env_list_to_array(*env_list);
-
-		// execve でプロセスを上書き
-		execve(path, args, envp);
-
-		// execve が戻ってきた場合: ディレクトリか権限なしかを判別してエラー出力
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(args[0], 2);
-		if (stat(path, &st) == 0 && S_ISDIR(st.st_mode))
-			ft_putstr_fd(": Is a directory\n", 2);
-		else
-			ft_putstr_fd(": Permission denied\n", 2);
-		free(path);
-		free_str_array(envp);
-		cleanup_and_exit(126, root, *env_list);
-	}
-
-	waitpid(pid, &status, 0);
-
-	// Quit print ver.
-	return (calculate_exit_status_quit(status));
-
-	//fork() で子プロセスを生成
-	//get_cmd_path() を呼び出し、実行可能ファイルのフルパスを取得
-	//env_list_to_array() を使って環境変数リストを char ** の配列に逆変換
-	//execve() を呼び出してプロセスを上書き
-	//親プロセスは waitpid で子の終了を待ち、calculate_exit_status() でステータスを返す
-}
-
-// 実行可能ファイルのフルパスを取得
-static char *get_cmd_path(char *cmd, t_env *env_list)
-{
-	char	**paths;
-	char	*path_env;
-	char	*tmp;
-	char	*full_path;
-	int		i;
-
-	if (!cmd || !*cmd)
-		return (NULL);
-
-	// '/'を含んでいる場合、既にフルパスなのでreturn
-	if (ft_strchr(cmd, '/'))
-	{
-		// ファイルが存在する場合はパスを返し、execveに権限判定を委ねる (126 vs 127 の分岐のため)
-		if (access(cmd, F_OK) == 0)
-			return (ft_strdup(cmd));
-
-		// ファイル自体が存在しない
-		return (NULL);
-	}
-
-	// env_listからkeyが"PATH"のvalueを取得
-	// PATH未設定時はカレントディレクトリのみ検索 (bash準拠)
-	path_env = get_env_value(env_list, "PATH");
-	if (!path_env)
-	{
-		tmp = ft_strjoin("./", cmd);
-		if (tmp && access(tmp, X_OK) == 0)
-			return (tmp);
-		free(tmp);
-		return (NULL);
-	}
-
-	// PATH を ':' で分割
-	paths = ft_split_c(path_env, ':');
-	if (!paths)
-		return (NULL);
-
-	// 各ディレクトリにコマンド名を結合して実行可能かテスト
-	i = 0;
-	while (paths[i])
-	{
-		tmp = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(tmp, cmd);
-		free(tmp);
-
-		if (access(full_path, X_OK) == 0)
-		{
-			free_str_array(paths);
-			return (full_path);
-		}
-
-		free(full_path);
-		i++;
-	}
-
-	free_str_array(paths);
-	return (NULL);
-
-	//環境変数 $PATH を : で分割
-	//各ディレクトリにコマンド名を結合
-	//access(path, X_OK) で実行可能かチェック
 }

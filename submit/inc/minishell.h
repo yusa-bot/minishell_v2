@@ -119,9 +119,11 @@ int exec_ast(t_node *node, t_env **env_list, t_node *root);
 // 展開 -> リダイレクト適用 -> 実行分岐
 int exec_cmd(t_node *node, t_env **env_list, t_node *root);
 
-// heredoc.c
-// AST全体を走査し、TK_HEREDOC があれば入力を処理する（再帰）
-int	process_heredoc(t_node *node, t_env *env_list);
+// exec_external.c
+int	exec_external(char **args, t_env **env_list, t_node *root);
+
+// get_exec_path.c
+char	*get_cmd_path(char *cmd, t_env *env_list);
 
 // pipe.c
 // pipe(2つのfdを繋ぐ) -> 左(書), 右(読)の子プロを作成 -> 実行関数へ -> 親プロで子プロを待つ
@@ -134,7 +136,15 @@ int apply_redirects(t_redirect *redirects);
 // バックアップしておいた標準入出力のFDを dup2 で元に戻す
 void restore_fds(int saved_stdin, int saved_stdout);
 
-//  expander -----------------------------------------------
+// heredoc ----------------------------------------------
+
+// heredoc.c
+
+//
+
+
+
+// expander -----------------------------------------------
 
 // expand.c
 // str: args[i], redir->filename を expand_stringに渡す

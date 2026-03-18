@@ -6,7 +6,7 @@
 #    By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/15 15:34:32 by ayusa             #+#    #+#              #
-#    Updated: 2026/03/18 17:16:11 by ayusa            ###   ########.fr        #
+#    Updated: 2026/03/18 17:57:38 by ayusa            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,8 @@ SRCS = src/signal.c \
 	src/status.c \
 	src/lexer/lexer.c src/lexer/lexer_helpers.c\
 	src/expander/expand.c  src/expander/expand_args.c  src/expander/expand_redirects.c  src/expander/expand_dollers_quotes.c  src/expander/wildcard.c  src/expander/wildcard_match.c  \
-	src/executor/exec_ast.c  src/executor/exec_cmd.c  src/executor/heredoc.c  src/executor/pipe.c  src/executor/redirect.c \
+	src/executor/exec_ast.c  src/executor/exec_cmd.c src/executor/pipe.c  src/executor/redirect.c \
+	src/heredoc/heredoc.c src/heredoc/generate_tmp_filename.c \
 	src/env/env_init.c  src/env/env_util.c  \
 	src/builtins/cd.c  src/builtins/echo.c  src/builtins/env.c  src/builtins/exit.c  src/builtins/export.c  src/builtins/pwd.c  src/builtins/unset.c
 
