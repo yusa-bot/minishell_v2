@@ -139,17 +139,34 @@ void restore_fds(int saved_stdin, int saved_stdout);
 // expand.c
 // str: args[i], redir->filename を expand_stringに渡す
 void	expand_node(t_node *node, t_env *env_list);
+// 文字列の末尾に1文字を追加し、元の文字列を解放
+char	*append_char(char *str, char c);
 // heredocの各行を変数展開する (lineの所有権を受け取り、展開後の文字列を返す)
 char	*expand_heredoc_line(char *line, t_env *env_list);
+
+// expand_args.c
+// argsの各要素を展開
+void	expand_args(t_node *node, t_env *env_list);
+
+// expand_redirects.c
+// リダイレクトのファイル名を展開
+void	expand_redirects(t_node *node, t_env *env_list);
+// 引用符なしの$があるかチェック
+int		has_unquoted_dollar(char *str);
+
+// expand_dollers_quotes.c
+// $, クォート を適切に展開する
+char	*expand_string(char *str, t_env *env_list, int *has_wildcard);
 
 // wildcard.c
 // dir内の全ファイル取得 -> 一致判定 -> sort -> sorted_matches配列を返す
 char	**expand_wildcard(char *pattern);
-// 配列全体を再構築して、node->args 自体を上書き
-// 		args 配列の index 番目の要素を削除し、そこに matches 配列の要素を全て挿入
-char	**insert_matches_to_args(char **args, int index, char **matches, int match_count);
 // 文字列配列を辞書順(ASCII順)にバブルソートする
 void	sort_str_array(char **array, int count);
+
+// wildcard_match.c
+// パターンとファイル名が一致するか判定
+int		match_pattern(char *pattern, char *str);
 
 //  lexer -----------------------------------------------
 
