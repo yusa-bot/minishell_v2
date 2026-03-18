@@ -31,6 +31,7 @@ int	main(int argc, char **argv, char **envp)
 
 	rl_catch_signals = 0;
 	// terminal情報保存
+	ft_memset(&default_term, 0, sizeof(default_term));
 	tcgetattr(STDIN_FILENO, &default_term);
 
 	env_list = env_init(envp);
@@ -139,14 +140,16 @@ static void	exec_line(char *line, t_env **env_list)
 static t_node	*build_ast(char *line, t_env **env_list)
 {
 	t_token	*tokens;
+	t_token	*head;
 	t_node	*node;
 
 	tokens = tokenize(line);
 	if (!tokens)
 		return (NULL);
 
+	head = tokens;
 	node = parse(&tokens);
-	free_tokens(tokens);
+	free_tokens(head);
 	if (!node)
 		return (NULL);
 
