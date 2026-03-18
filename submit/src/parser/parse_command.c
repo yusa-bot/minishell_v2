@@ -12,14 +12,13 @@
 
 #include "../../inc/minishell.h"
 
-t_node *parse_command(t_token **tokens);
 static t_node	*parse_subshell(t_token **tokens);
 static int	parse_redirect(t_token **tokens, t_node *node);
 static t_redirect	*new_redirect(t_token_type type, char *filename);
 static void	append_redirect(t_node *node, t_token_type type, char *filename);
 
 // Highest priority : single command or sub shell
-static t_node	*parse_command(t_token **tokens)
+t_node	*parse_command(t_token **tokens)
 {
 	t_node	*node;
 

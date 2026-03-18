@@ -12,9 +12,7 @@
 
 #include "../../inc/minishell.h"
 
-t_node *parse(t_token **tokens);
-static t_node *parse_list(t_token **tokens);
-static t_node *parse_pipeline(t_token **tokens);
+static t_node	*parse_pipeline(t_token **tokens);
 
 // Parse starting with the lowest-priority tokens
 
@@ -49,7 +47,7 @@ t_node *parse(t_token **tokens)
 }
 
 // &&, || is Lowest priority -> parse_pipeline
-static t_node *parse_list(t_token **tokens)
+t_node	*parse_list(t_token **tokens)
 {
 	t_node *node;
 	t_node *right;

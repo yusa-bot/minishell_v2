@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:55 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 14:52:39 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 17:16:23 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../inc/minishell.h"
 
 // A: Waiting for input at the prompt
 void handler_interactive(int signum);

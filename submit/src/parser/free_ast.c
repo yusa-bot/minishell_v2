@@ -12,6 +12,8 @@
 
 #include "../../inc/minishell.h"
 
+static void	free_redirects(t_redirect *redir);
+
 void	free_ast(t_node *node)
 {
 	if (!node)
