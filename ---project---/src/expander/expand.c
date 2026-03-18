@@ -64,6 +64,7 @@ void	expand_node(t_node *node, t_env *env_list)
 				// sorted_matches: [init.c ,util.c, main.c]
 
 				// 挿入する要素数をカウント
+				match_count = 0;
 				while (sorted_matches && sorted_matches[match_count])
 					match_count++;
 
