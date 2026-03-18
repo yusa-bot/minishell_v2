@@ -25,10 +25,10 @@ int	builtin_cd(char **args, t_env **env_list)
 	getcwd(cwd, sizeof(cwd));
 	if (chdir(path) != 0)
 	{
-		ft_putstr_fd("minishell: cd: ", 2);
-		ft_putstr_fd(path, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putendl_fd(strerror(errno), 2);
+		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putendl_fd(strerror(errno), STDERR_FILENO);
 		return (1);
 	}
 	set_env_value(env_list, "OLDPWD", cwd);

@@ -47,20 +47,20 @@ static void	exec_child(char **args, t_env **env_list, t_node *root)
 	envp = env_list_to_array(*env_list);
 	execve(path, args, envp);
 	child_exec_failed(args, path, envp, root);
-	cleanup_and_exit(126, root, *env_list);
+	cleanup_and_exit(EXIT_NOT_EXEC, root, *env_list);
 }
 
 // cmd not found error
 static void	child_cmd_not_found(char **args, t_env **env_list, t_node *root)
 {
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(args[0], 2);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(args[0], STDERR_FILENO);
 	if (ft_strchr(args[0], '/')
 		|| !get_env_value(*env_list, "PATH"))
-		ft_putstr_fd(": No such file or directory\n", 2);
+		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
 	else
-		ft_putstr_fd(": command not found\n", 2);
-	cleanup_and_exit(127, root, *env_list);
+		ft_putstr_fd(": command not found\n", STDERR_FILENO);
+	cleanup_and_exit(EXIT_NOT_FOUND, root, *env_list);
 }
 
 // execve failed error
@@ -69,12 +69,12 @@ static void	child_exec_failed(char **args, char *path,
 {
 	struct stat	st;
 
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(args[0], 2);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(args[0], STDERR_FILENO);
 	if (stat(path, &st) == 0 && S_ISDIR(st.st_mode))
-		ft_putstr_fd(": Is a directory\n", 2);
+		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
 	else
-		ft_putstr_fd(": Permission denied\n", 2);
+		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 	free(path);
 	free_str_array(envp);
 	(void)root;

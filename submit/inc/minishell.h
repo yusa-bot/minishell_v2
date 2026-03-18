@@ -13,6 +13,12 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# define EXIT_SIGNAL_BASE	128
+# define EXIT_NOT_EXEC		126
+# define EXIT_NOT_FOUND		127
+# define EXIT_SIGINT		130
+# define EXIT_SYNTAX_ERR	2
+
 # include "libft.h"
 # include <fcntl.h>
 # include <stdio.h>

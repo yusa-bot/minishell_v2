@@ -56,9 +56,9 @@ static int	expand_redir_wildcard(t_redirect *redir, char *expanded)
 		free(expanded);
 		return (0);
 	}
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(redir->filename, 2);
-	ft_putstr_fd(": ambiguous redirect\n", 2);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(redir->filename, STDERR_FILENO);
+	ft_putstr_fd(": ambiguous redirect\n", STDERR_FILENO);
 	free_str_array(matches);
 	free(expanded);
 	return (1);
@@ -69,9 +69,9 @@ static void	handle_empty_redir(t_redirect *redir, char *expanded)
 {
 	if (!expanded[0] && has_unquoted_dollar(redir->filename))
 	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(redir->filename, 2);
-		ft_putstr_fd(": ambiguous redirect\n", 2);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(redir->filename, STDERR_FILENO);
+		ft_putstr_fd(": ambiguous redirect\n", STDERR_FILENO);
 		free(expanded);
 		redir->filename[0] = '\0';
 		return ;

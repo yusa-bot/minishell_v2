@@ -18,7 +18,7 @@ int	calculate_exit_status(int status)
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
+		return (EXIT_SIGNAL_BASE + WTERMSIG(status));
 	return (status);
 }
 
@@ -39,7 +39,7 @@ int	calculate_exit_status_quit(int status)
 			else
 				ft_putstr_fd("Quit\n", STDERR_FILENO);
 		}
-		return (128 + term_sig);
+		return (EXIT_SIGNAL_BASE + term_sig);
 	}
 	return (status);
 }

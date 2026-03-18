@@ -51,7 +51,7 @@ static t_token	*consume_operator(char **line_ptr)
 	if (classify_operator(*line_ptr, &type, &len) == -1)
 	{
 		ft_putendl_fd(
-			"minishell: syntax error near unexpected token `&'", 2);
+			"minishell: syntax error near unexpected token `&'", STDERR_FILENO);
 		return (NULL);
 	}
 	*line_ptr += len;
@@ -81,7 +81,7 @@ static t_token	*consume_word(char **line_ptr)
 	}
 	if (in_squote || in_dquote)
 	{
-		ft_putendl_fd("minishell: unclosed quote error", 2);
+		ft_putendl_fd("minishell: unclosed quote error", STDERR_FILENO);
 		return (NULL);
 	}
 	value = ft_substr(start, 0, *line_ptr - start);

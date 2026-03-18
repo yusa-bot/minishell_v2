@@ -27,19 +27,19 @@ t_node	*parse(t_token **tokens)
 	root = parse_list(tokens);
 	if (root == NULL)
 	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
 		if (*tokens)
-			ft_putstr_fd((*tokens)->value, 2);
+			ft_putstr_fd((*tokens)->value, STDERR_FILENO);
 		else
-			ft_putstr_fd("newline", 2);
-		ft_putstr_fd("'\n", 2);
+			ft_putstr_fd("newline", STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
 		return (NULL);
 	}
 	if (*tokens != NULL)
 	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
-		ft_putstr_fd((*tokens)->value, 2);
-		ft_putstr_fd("'\n", 2);
+		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+		ft_putstr_fd((*tokens)->value, STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
 		free_ast(root);
 		return (NULL);
 	}

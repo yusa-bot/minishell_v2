@@ -57,7 +57,7 @@ static int	handle_input(t_redirect *redir)
 	fd = open(redir->filename, O_RDONLY);
 	if (fd < 0)
 	{
-		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		perror(redir->filename);
 		return (-1);
 	}
@@ -80,7 +80,7 @@ static int	handle_output(t_redirect *redir)
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd < 0)
 	{
-		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		perror(redir->filename);
 		return (-1);
 	}

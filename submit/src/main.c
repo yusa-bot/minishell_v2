@@ -56,7 +56,7 @@ static void	read_prompt(t_env **env_list, struct termios *default_term)
 		}
 		if (g_sig == SIGINT)
 		{
-			update_exit_status(env_list, 130);
+			update_exit_status(env_list, EXIT_SIGINT);
 			g_sig = 0;
 		}
 		if (*line != '\0')
@@ -101,7 +101,7 @@ static void	exec_line(char *line, t_env **env_list)
 	node = build_ast(line, env_list);
 	if (!node)
 	{
-		update_exit_status(env_list, 2);
+		update_exit_status(env_list, EXIT_SYNTAX_ERR);
 		return ;
 	}
 	set_signal_executing();
