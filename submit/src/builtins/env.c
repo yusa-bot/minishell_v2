@@ -15,6 +15,7 @@
 int	builtin_env(t_env *env_list)
 {
 	char	*tmp_key;
+
 	while (env_list)
 	{
 		if (env_list->value)

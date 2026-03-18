@@ -12,11 +12,10 @@
 
 #include "../../inc/minishell.h"
 
-char *get_env_value(t_env *env_list, char *key)
+char	*get_env_value(t_env *env_list, char *key)
 {
 	if (!env_list || !key)
 		return (NULL);
-
 	while (env_list)
 	{
 		if (ft_strcmp(env_list->key, key) == 0)
@@ -26,7 +25,7 @@ char *get_env_value(t_env *env_list, char *key)
 	return (NULL);
 }
 
-void set_env_value(t_env **env_list, char *key, char *value)
+void	set_env_value(t_env **env_list, char *key, char *value)
 {
 	t_env	*current;
 	char	*new_value;
@@ -40,11 +39,17 @@ void set_env_value(t_env **env_list, char *key, char *value)
 		{
 			if (current->value)
 				free(current->value);
-			current->value = value ? ft_strdup(value) : NULL;
+			if (value)
+				current->value = ft_strdup(value);
+			else
+				current->value = NULL;
 			return ;
 		}
 		current = current->next;
 	}
-	new_value = value ? ft_strdup(value) : NULL;
+	if (value)
+		new_value = ft_strdup(value);
+	else
+		new_value = NULL;
 	env_add_back(env_list, env_new(ft_strdup(key), new_value));
 }

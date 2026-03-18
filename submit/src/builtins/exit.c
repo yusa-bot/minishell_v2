@@ -55,13 +55,10 @@ static int	ft_isnumeric(char *str)
 	i = 0;
 	if (!str || str[0] == '\0')
 		return (0);
-	// 先頭の符号をスキップ
 	if (str[i] == '+' || str[i] == '-')
 		i++;
-	// 符号だけで数字が続いていない場合（例: "exit +"）は非数値
 	if (str[i] == '\0')
 		return (0);
-	// 残りの文字が全て数字かチェック
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))

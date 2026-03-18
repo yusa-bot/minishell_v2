@@ -13,9 +13,9 @@
 #include "../../inc/minishell.h"
 
 static t_env	*parse_env_entry(char *entry);
-t_env *env_new(char *key, char *value);
-void env_add_back(t_env **env_list, t_env *new_node);
-void free_env_list(t_env *env_list);
+t_env			*env_new(char *key, char *value);
+void			env_add_back(t_env **env_list, t_env *new_node);
+void			free_env_list(t_env *env_list);
 
 // **envp -> t_env linked list
 t_env	*env_init(char **envp)
@@ -57,7 +57,7 @@ static t_env	*parse_env_entry(char *entry)
 	return (env_new(key, value));
 }
 
-t_env *env_new(char *key, char *value)
+t_env	*env_new(char *key, char *value)
 {
 	t_env	*new_node;
 
@@ -70,7 +70,7 @@ t_env *env_new(char *key, char *value)
 	return (new_node);
 }
 
-void env_add_back(t_env **env_list, t_env *new_node)
+void	env_add_back(t_env **env_list, t_env *new_node)
 {
 	t_env	*current;
 
@@ -87,7 +87,7 @@ void env_add_back(t_env **env_list, t_env *new_node)
 	current->next = new_node;
 }
 
-void free_env(t_env *env_list)
+void	free_env(t_env *env_list)
 {
 	t_env	*current;
 	t_env	*next_node;

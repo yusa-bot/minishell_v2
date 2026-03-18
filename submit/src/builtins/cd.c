@@ -64,15 +64,12 @@ static int	resolve_cd_path(char **args, t_env **env_list, char **path)
 
 static int	cd_minus(t_env **env_list, char **path)
 {
-	//
 	*path = get_env_value(*env_list, "OLDPWD");
 	if (!(*path))
 	{
 		ft_putendl_fd("cd: OLDPWD not set", STDERR_FILENO);
 		return (1);
 	}
-
 	ft_putendl_fd(*path, STDOUT_FILENO);
-
 	return (0);
 }

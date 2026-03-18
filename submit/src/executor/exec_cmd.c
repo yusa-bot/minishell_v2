@@ -6,14 +6,14 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 17:32:00 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 18:45:00 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static int is_builtin(char *cmd);
-static int exec_builtin(char **args, t_env **env_list, t_node *root);
+static int	is_builtin(char *cmd);
+static int	exec_builtin(char **args, t_env **env_list, t_node *root);
 
 // Expand -> Apply Redirect -> Execute Branch
 int exec_cmd(t_node *node, t_env **env_list, t_node *root)
@@ -49,19 +49,24 @@ static int is_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
-
-	if (ft_strcmp(cmd, "echo") == 0) return (1);
-	if (ft_strcmp(cmd, "cd") == 0) return (1);
-	if (ft_strcmp(cmd, "pwd") == 0) return (1);
-	if (ft_strcmp(cmd, "export") == 0) return (1);
-	if (ft_strcmp(cmd, "unset") == 0) return (1);
-	if (ft_strcmp(cmd, "env") == 0) return (1);
-	if (ft_strcmp(cmd, "exit") == 0) return (1);
-
+	if (ft_strcmp(cmd, "echo") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "cd") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "pwd") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "export") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "unset") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "env") == 0)
+		return (1);
+	if (ft_strcmp(cmd, "exit") == 0)
+		return (1);
 	return (0);
 }
 
-static int exec_builtin(char **args, t_env **env_list, t_node *root)
+static int	exec_builtin(char **args, t_env **env_list, t_node *root)
 {
 	if (ft_strcmp(args[0], "echo") == 0)
 		return (builtin_echo(args));
@@ -77,6 +82,5 @@ static int exec_builtin(char **args, t_env **env_list, t_node *root)
 		return (builtin_env(*env_list));
 	if (ft_strcmp(args[0], "exit") == 0)
 		return (builtin_exit(args, env_list, root));
-
 	return (1);
 }

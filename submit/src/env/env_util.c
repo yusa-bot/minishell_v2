@@ -13,7 +13,7 @@
 #include "../../inc/minishell.h"
 
 // **envp -> t_env linked list
-char **env_list_to_array(t_env *env_list)
+char	**env_list_to_array(t_env *env_list)
 {
 	char	**envp;
 	char	*tmp;
@@ -33,7 +33,6 @@ char **env_list_to_array(t_env *env_list)
 		}
 		else
 			envp[i] = ft_strdup(env_list->key);
-
 		env_list = env_list->next;
 		i++;
 	}
