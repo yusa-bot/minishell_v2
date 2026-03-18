@@ -124,7 +124,7 @@ static void	exec_line(char *line, t_env **env_list)
 	// コマンド実行中のシグナルハンドラに切り替え (親プロでは無視)
 	set_signal_executing();
 
-	exec_ast(node, env_list);
+	exec_ast(node, env_list, node);
 
 	// 実行中にSIGINTを受けた場合、改行を出力してプロンプトを整える
 	if (g_sig == SIGINT)

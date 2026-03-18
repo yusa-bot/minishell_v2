@@ -14,16 +14,16 @@
 
 // pipe
 // pipe(2つのfdを繋ぐ) -> 左(書), 右(読)の子プロを作成 -> 実行関数へ -> 親プロで子プロを待つ
-int	exec_pipeline(t_node *node, t_env **env_list);
+int	exec_pipeline(t_node *node, t_env **env_list, t_node *root);
 // 左（書）の子プロセス で fd[1] に書き込み準備 -> node下層を呼び出し再帰
-static void	exec_pipe_left(t_node *node, t_env **env_list, int fd[2]);
+static void	exec_pipe_left(t_node *n, t_env **el, int fd[2], t_node *root);
 // 右（読）の子プロセス で fd[0] から読み取り -> node下層を呼び出し再帰
-static void	exec_pipe_right(t_node *node, t_env **env_list, int fd[2]);
+static void	exec_pipe_right(t_node *n, t_env **el, int fd[2], t_node *root);
 
 
 // pipe ----------------------------------------------
 // pipe(2つのfdを繋ぐ) -> 左(書), 右(読)の子プロを作成 -> 実行関数へ -> 親プロで子プロを待つ
-int	exec_pipeline(t_node *node, t_env **env_list)
+int	exec_pipeline(t_node *node, t_env **env_list, t_node *root)
 {
 	int		fd[2];
 	pid_t	pids[2];
@@ -39,12 +39,12 @@ int	exec_pipeline(t_node *node, t_env **env_list)
 	// .1左用の子プロを作成 (fd[2]は引き継ぐ)
 	pids[0] = fork();
 	if (pids[0] == 0) // 子プロだったら
-		exec_pipe_left(node, env_list, fd); // -> 左コマンド実行
+		exec_pipe_left(node, env_list, fd, root); // -> 左コマンド実行
 
 	// 2.右用の子プロを作成 (fd[2]は引き継ぐ)
 	pids[1] = fork();
 	if (pids[1] == 0) // 子プロだったら
-		exec_pipe_right(node, env_list, fd); // -> 右コマンド実行
+		exec_pipe_right(node, env_list, fd, root); // -> 右コマンド実行
 
 	// 親プロ: 1.左 2.右 のfdを閉める
 	close(fd[0]);
@@ -59,8 +59,10 @@ int	exec_pipeline(t_node *node, t_env **env_list)
 }
 
 // 左（書）の子プロセス で fd[1] に書き込み準備 -> node下層を呼び出し再帰
-static void	exec_pipe_left(t_node *node, t_env **env_list, int fd[2])
+static void	exec_pipe_left(t_node *n, t_env **el, int fd[2], t_node *root)
 {
+	int	status;
+
 	// パイプ子プロ: シグナルをデフォルトに戻す (シグナルで直接死ねるようにする)
 	set_signal_child();
 	// 読み込み端は使わないので閉じる
@@ -71,13 +73,15 @@ static void	exec_pipe_left(t_node *node, t_env **env_list, int fd[2])
 	close(fd[1]);
 
 	// 実行する環境が整ったので、木の下層を再帰で実行
-	//	子プロなので、exitする
-	exit(exec_ast(node->left, env_list));
+	status = exec_ast(n->left, el, root);
+	cleanup_and_exit(status, root, *el);
 }
 
 // 右（読）の子プロセス で fd[0] から読み取り -> node下層を呼び出し再帰
-static void	exec_pipe_right(t_node *node, t_env **env_list, int fd[2])
+static void	exec_pipe_right(t_node *n, t_env **el, int fd[2], t_node *root)
 {
+	int	status;
+
 	// パイプ子プロ: シグナルをデフォルトに戻す (シグナルで直接死ねるようにする)
 	set_signal_child();
 	// 書き込み端は使わないので閉じる
@@ -88,6 +92,6 @@ static void	exec_pipe_right(t_node *node, t_env **env_list, int fd[2])
 	close(fd[0]);
 
 	// 実行する環境が整ったので、木の下層を再帰で実行
-	//	子プロなので、exitする
-	exit(exec_ast(node->right, env_list));
+	status = exec_ast(n->right, el, root);
+	cleanup_and_exit(status, root, *el);
 }

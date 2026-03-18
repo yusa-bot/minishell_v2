@@ -80,7 +80,7 @@ extern volatile sig_atomic_t g_sig;
 int	builtin_cd(char **args, t_env **env_list);
 int	builtin_echo(char **args);
 int	builtin_env(t_env *env_list);
-int	builtin_exit(char **args, t_env **env_list);
+int	builtin_exit(char **args, t_env **env_list, t_node *root);
 int	builtin_export(char **args, t_env **env_list);
 int	builtin_pwd(void);
 int	builtin_unset(char **args, t_env **env_list);
@@ -113,11 +113,11 @@ void remove_env_node(t_env **env_list, char *key);
 
 // exec_ast.c
 // AST評価 -> type に応じて処理を分岐 (分解より下層は分岐先で再帰) -> $?を返す
-int exec_ast(t_node *node, t_env **env_list);
+int exec_ast(t_node *node, t_env **env_list, t_node *root);
 
 // exec_cmd.c
 // 展開 -> リダイレクト適用 -> 実行分岐
-int exec_cmd(t_node *node, t_env **env_list);;
+int exec_cmd(t_node *node, t_env **env_list, t_node *root);
 
 // heredoc.c
 // AST全体を走査し、TK_HEREDOC があれば入力を処理する（再帰）
@@ -125,7 +125,7 @@ int	process_heredoc(t_node *node, t_env *env_list);
 
 // pipe.c
 // pipe(2つのfdを繋ぐ) -> 左(書), 右(読)の子プロを作成 -> 実行関数へ -> 親プロで子プロを待つ
-int	exec_pipeline(t_node *node, t_env **env_list);
+int	exec_pipeline(t_node *node, t_env **env_list, t_node *root);
 
 // redirect.c
 // t_redirect->nextがある間リストを回し、リダイレクトの種類によって処理を振り分け
@@ -216,5 +216,7 @@ int	calculate_exit_status(int status);
 int calculate_exit_status_quit(int status);
 // 環境変数の $? を更新
 void	update_exit_status(t_env **env_list, int status);
+// AST・env・historyを解放してexit (子プロセス・builtin exit用)
+void	cleanup_and_exit(int status, t_node *ast, t_env *env);
 
 #endif

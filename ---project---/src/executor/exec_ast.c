@@ -17,21 +17,21 @@
 
 // AST -> &&, ||, () に振り分け
 // AST評価 -> type に応じて処理を分岐 -> $?を返す
-int exec_ast(t_node *node, t_env **env_list);
+int exec_ast(t_node *node, t_env **env_list, t_node *root);
 // NODE_AND (&&)を処理.
 //		左ノードを実行し、その終了ステータスが0であった場合のみ、右ノードを実行
-static int exec_and(t_node *node, t_env **env_list);
+static int exec_and(t_node *node, t_env **env_list, t_node *root);
 // NODE_OR (||) を処理.
 //		左ノードを実行し、その終了ステータスが0以外であった場合のみ、右ノードを実行
-static int exec_or(t_node *node, t_env **env_list);
+static int exec_or(t_node *node, t_env **env_list, t_node *root);
 // NODE_SUBSHELL (()) を処理.
 //		forkで子プロ生成 -> 子プロでexec_ast() -> 親プロが子プロのステータスを返す
-static int exec_subshell(t_node *node, t_env **env_list);
+static int exec_subshell(t_node *node, t_env **env_list, t_node *root);
 
 
 // AST -> &&, ||, () に振り分け ----------------------------------------------
 // AST評価 -> type に応じて処理を分岐 (分解より下層は分岐先で再帰) -> $?を返す
-int exec_ast(t_node *node, t_env **env_list)
+int exec_ast(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
 
@@ -40,19 +40,19 @@ int exec_ast(t_node *node, t_env **env_list)
 		return (0);
 
 	if (node->type == NODE_CMD) // NODE_CMD
-		status = exec_cmd(node, env_list);
+		status = exec_cmd(node, env_list, root);
 
 	else if (node->type == NODE_PIPE) // NODE_PIPE
-		status = exec_pipeline(node, env_list);
+		status = exec_pipeline(node, env_list, root);
 
 	else if (node->type == NODE_AND) // NODE_AND
-		status = exec_and(node, env_list);
+		status = exec_and(node, env_list, root);
 
 	else if (node->type == NODE_OR) // NODE_OR
-		status = exec_or(node, env_list);
+		status = exec_or(node, env_list, root);
 
 	else if (node->type == NODE_SUBSHELL)
-		status = exec_subshell(node, env_list);
+		status = exec_subshell(node, env_list, root);
 
 	// 環境変数の $? を更新
 	update_exit_status(env_list, status);
@@ -62,7 +62,7 @@ int exec_ast(t_node *node, t_env **env_list)
 
 // NODE_AND (&&)を処理.
 //		左ノードを実行し、その終了ステータスが0であった場合のみ、右ノードを実行
-static int exec_and(t_node *node, t_env **env_list)
+static int exec_and(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
 
@@ -70,13 +70,13 @@ static int exec_and(t_node *node, t_env **env_list)
 		return (0);
 
 	// '&&'を跨いだ左項
-	status = exec_ast(node->left, env_list); // 再帰
+	status = exec_ast(node->left, env_list, root); // 再帰
 	update_exit_status(env_list, status); // $? を更新
 
 	// '&&'を跨いだ左項が成功
 	if (status == 0)
 	{
-		status = exec_ast(node->right, env_list); // 再帰
+		status = exec_ast(node->right, env_list, root); // 再帰
 		update_exit_status(env_list, status); // 右項の結果で $? を上書き
 	}
 
@@ -85,7 +85,7 @@ static int exec_and(t_node *node, t_env **env_list)
 
 // NODE_OR (||) を処理.
 //		左ノードを実行し、その終了ステータスが0以外であった場合のみ、右ノードを実行
-static int exec_or(t_node *node, t_env **env_list)
+static int exec_or(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
 
@@ -93,13 +93,13 @@ static int exec_or(t_node *node, t_env **env_list)
 		return (0);
 
 	// '||'を跨いだ左項
-	status = exec_ast(node->left, env_list); // 再帰
+	status = exec_ast(node->left, env_list, root); // 再帰
 	update_exit_status(env_list, status); // $? を更新
 
 	// '||'を跨いだ左項が成功
 	if (status != 0)
 	{
-		status = exec_ast(node->right, env_list); // 再帰
+		status = exec_ast(node->right, env_list, root); // 再帰
 		update_exit_status(env_list, status); // 右項の結果で $? を上書き
 	}
 
@@ -108,7 +108,7 @@ static int exec_or(t_node *node, t_env **env_list)
 
 // NODE_SUBSHELL (()) を処理.
 //		forkで子プロ生成 -> 子プロでexec_ast() -> 親プロが子プロのステータスを返す
-static int exec_subshell(t_node *node, t_env **env_list)
+static int exec_subshell(t_node *node, t_env **env_list, t_node *root)
 {
 	pid_t	pid;
 	int		status;
@@ -123,10 +123,10 @@ static int exec_subshell(t_node *node, t_env **env_list)
 	{
 		// サブシェルノード自体にリダイレクト((ls && pwd) > out.txt)の場合、dup2
 
-		status = exec_ast(node->left, env_list);
+		status = exec_ast(node->left, env_list, root);
 
-		// 子プロセスはexitで終わらせる
-		exit(status);
+		// 子プロセスはcleanup_and_exitで終わらせる
+		cleanup_and_exit(status, root, *env_list);
 	}
 
 	// 親プロ

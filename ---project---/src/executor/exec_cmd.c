@@ -14,24 +14,24 @@
 
 // コマンド実行
 // 展開 -> リダイレクト適用 -> 実行分岐
-int exec_cmd(t_node *node, t_env **env_list);
+int exec_cmd(t_node *node, t_env **env_list, t_node *root);
 
 // ビルトインコマンド
 // ビルトインコマンドか判定
 static int is_builtin(char *cmd);
 // ビルトインコマンドの実装関数を呼び出す
-static int exec_builtin(char **args, t_env **env_list);
+static int exec_builtin(char **args, t_env **env_list, t_node *root);
 
 // 外部コマンド
 // 子プロでexecve()
-static int exec_external(char **args, t_env **env_list);
+static int exec_external(char **args, t_env **env_list, t_node *root);
 // 実行可能ファイルのフルパスを取得
 static char *get_cmd_path(char *cmd, t_env *env_list);
 
 
 // コマンド実行 ----------------------------------------------
 // 展開 -> リダイレクト適用 -> 実行分岐
-int exec_cmd(t_node *node, t_env **env_list)
+int exec_cmd(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
 	int	saved_stdin;
@@ -59,9 +59,9 @@ int exec_cmd(t_node *node, t_env **env_list)
 
 	// コマンドの実行分岐
 	if (is_builtin(node->args[0]))
-		status = exec_builtin(node->args, env_list); // ビルトイン
+		status = exec_builtin(node->args, env_list, root); // ビルトイン
 	else
-		status = exec_external(node->args, env_list); // 外部
+		status = exec_external(node->args, env_list, root); // 外部
 
 	restore_fds(saved_stdin, saved_stdout); // 親プロセスの元FDに復元
 
@@ -93,7 +93,7 @@ static int is_builtin(char *cmd)
 }
 
 // ビルトインコマンドの実装関数を呼び出す -> 終了ステータスを返す
-static int exec_builtin(char **args, t_env **env_list)
+static int exec_builtin(char **args, t_env **env_list, t_node *root)
 {
 	if (ft_strcmp(args[0], "echo") == 0)
 		return (builtin_echo(args));
@@ -108,14 +108,14 @@ static int exec_builtin(char **args, t_env **env_list)
 	if (ft_strcmp(args[0], "env") == 0)
 		return (builtin_env(*env_list));
 	if (ft_strcmp(args[0], "exit") == 0)
-		return (builtin_exit(args, env_list));
+		return (builtin_exit(args, env_list, root));
 
 	return (1);
 }
 
 // 外部コマンド ----------------------------------------------
 // 子プロでexecve()
-static int exec_external(char **args, t_env **env_list)
+static int exec_external(char **args, t_env **env_list, t_node *root)
 {
 	pid_t		pid;
 	int			status;
@@ -147,7 +147,7 @@ static int exec_external(char **args, t_env **env_list)
 				ft_putstr_fd(": No such file or directory\n", 2);
 			else
 				ft_putstr_fd(": command not found\n", 2);
-			exit(127);
+			cleanup_and_exit(127, root, *env_list);
 		}
 
 		// 環境変数リストを char ** の配列に逆変換
@@ -165,7 +165,7 @@ static int exec_external(char **args, t_env **env_list)
 			ft_putstr_fd(": Permission denied\n", 2);
 		free(path);
 		free_str_array(envp);
-		exit(126);
+		cleanup_and_exit(126, root, *env_list);
 	}
 
 	waitpid(pid, &status, 0);

@@ -20,7 +20,7 @@
 // AST全体を走査し、TK_HEREDOC があれば入力を処理する（再帰）
 int	process_heredoc(t_node *node, t_env *env_list);
 // 実際に readline を回して一時ファイルに書き込む。ここでは、一時ファイルに書き込むまで
-static int	read_heredoc(t_redirect *redir, t_env *env_list);
+static int	read_heredoc(t_redirect *redir, t_env *env_list, t_node *root);
 
 // suffix取得し一意のfilename作成
 static char	*generate_tmp_filename(void);
@@ -46,7 +46,7 @@ int	process_heredoc(t_node *node, t_env *env_list)
 		{
 			if (redir->type == TK_HEREDOC)
 			{
-				if (read_heredoc(redir, env_list) != 0)
+				if (read_heredoc(redir, env_list, node) != 0)
 					return (1); // 失敗（Ctrl-Cなどで中断された場合）
 			}
 			redir = redir->next;
@@ -64,7 +64,7 @@ int	process_heredoc(t_node *node, t_env *env_list)
 }
 
 // 実際に readline を回して一時ファイルに書き込む。ここでは、一時ファイルに書き込むまで
-static int	read_heredoc(t_redirect *redir, t_env *env_list)
+static int	read_heredoc(t_redirect *redir, t_env *env_list, t_node *root)
 {
 	pid_t	pid;
 	int		status;
@@ -126,7 +126,8 @@ static int	read_heredoc(t_redirect *redir, t_env *env_list)
 		close(fd);
 
 		// 正常に読み終えたら子プロセスを終了
-		exit(0);
+		free(tmp_filename);
+		cleanup_and_exit(0, root, env_list);
 	}
 
 	// ここで子プロのstatusを保存

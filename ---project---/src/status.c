@@ -19,6 +19,9 @@ int calculate_exit_status_quit(int status);
 // 環境変数の $? を更新
 void	update_exit_status(t_env **env_list, int status);
 
+// AST・env・historyを解放してexit (子プロセス・builtin exit用)
+void	cleanup_and_exit(int status, t_node *ast, t_env *env);
+
 // waitpid のステータスマクロ(WIFEXITED等)を使って正確な終了コードを計算して返す
 int	calculate_exit_status(int status)
 {
@@ -76,4 +79,15 @@ void	update_exit_status(t_env **env_list, int status)
 	set_env_value(env_list, "?", status_str); // 内部で値をft_strdup
 
 	free(status_str);
+}
+
+// AST・env・historyを解放してexit (子プロセス・builtin exit用)
+void	cleanup_and_exit(int status, t_node *ast, t_env *env)
+{
+	if (ast)
+		free_ast(ast);
+	if (env)
+		free_env(env);
+	rl_clear_history();
+	exit(status);
 }
