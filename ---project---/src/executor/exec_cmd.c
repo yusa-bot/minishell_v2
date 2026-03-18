@@ -204,10 +204,16 @@ static char *get_cmd_path(char *cmd, t_env *env_list)
 	}
 
 	// env_listからkeyが"PATH"のvalueを取得
-	// PATH未設定時はデフォルトパスを使用 (bash準拠)
+	// PATH未設定時はカレントディレクトリのみ検索 (bash準拠)
 	path_env = get_env_value(env_list, "PATH");
 	if (!path_env)
-		path_env = "/usr/local/bin:/usr/bin:/bin";
+	{
+		tmp = ft_strjoin("./", cmd);
+		if (tmp && access(tmp, X_OK) == 0)
+			return (tmp);
+		free(tmp);
+		return (NULL);
+	}
 
 	// PATH を ':' で分割
 	paths = ft_split_c(path_env, ':');
