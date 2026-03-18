@@ -12,6 +12,8 @@
 
 #include "../../inc/minishell.h"
 
+static void	free_env_node(t_env *node);
+
 // **envp -> t_env linked list
 char	**env_list_to_array(t_env *env_list)
 {

@@ -6,24 +6,20 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:43 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 16:13:37 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 19:53:41 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-t_token *tokenize(char *line);
-static int	classify_operator(char *s, t_token_type *type, int *len);
-static t_token *consume_operator(char **line_ptr);
-static t_token *consume_word(char **line_ptr);
-void	free_tokens(t_token *tokens);
-
+static t_token	*consume_operator(char **line_ptr);
+static t_token	*consume_word(char **line_ptr);
 
 // skip_spaces -> consume_operator || consume_word -> token_add_back
-t_token *tokenize(char *line)
+t_token	*tokenize(char *line)
 {
 	t_token	*head;
-	t_token	*new_node;
+	t_token	*new_nd;
 
 	head = NULL;
 	while (line)
@@ -32,44 +28,17 @@ t_token *tokenize(char *line)
 		if (*line == '\0')
 			break ;
 		if (is_operator(*line))
-			new_node = consume_operator(&line);
+			new_nd = consume_operator(&line);
 		else
-			new_node = consume_word(&line);
-		if (new_node == NULL)
+			new_nd = consume_word(&line);
+		if (new_nd == NULL)
 		{
 			free_tokens(head);
 			return (NULL);
 		}
-		token_add_back(&head, new_node);
+		token_add_back(&head, new_nd);
 	}
 	return (head);
-}
-
-static int	classify_operator(char *s, t_token_type *type, int *len)
-{
-	if (s[0] == '<' && s[1] == '<')
-		{ *type = TK_HEREDOC; *len = 2; }
-	else if (s[0] == '<' && s[1] == '>')
-		{ *type = TK_REDIR_RDWR; *len = 2; }
-	else if (s[0] == '<')
-		{ *type = TK_REDIR_IN; *len = 1; }
-	else if (s[0] == '>' && s[1] == '>')
-		{ *type = TK_REDIR_APPEND; *len = 2; }
-	else if (s[0] == '>')
-		{ *type = TK_REDIR_OUT; *len = 1; }
-	else if (s[0] == '|' && s[1] == '|')
-		{ *type = TK_OR; *len = 2; }
-	else if (s[0] == '|')
-		{ *type = TK_PIPE; *len = 1; }
-	else if (s[0] == '&' && s[1] == '&')
-		{ *type = TK_AND; *len = 2; }
-	else if (s[0] == '&')
-		return (-1);
-	else if (s[0] == '(')
-		{ *type = TK_LPAREN; *len = 1; }
-	else
-		{ *type = TK_RPAREN; *len = 1; }
-	return (0);
 }
 
 // |, <, >, &, (, ) -> &&, ||, <<, >>
@@ -90,7 +59,7 @@ static t_token	*consume_operator(char **line_ptr)
 }
 
 // nomal word
-static t_token *consume_word(char **line_ptr)
+static t_token	*consume_word(char **line_ptr)
 {
 	char	*start;
 	char	*value;

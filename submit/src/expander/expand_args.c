@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:54:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 17:15:05 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 19:00:17 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 static int	expand_arg_wildcard(t_node *node, int i, char *expanded);
 static int	remove_empty_arg(t_node *node, int i, char *expanded);
 static int	try_word_split(t_node *node, int *i, char *expanded);
-static char	**insert_matches_to_args(char **args, int index, char **matches, int match_count);
 
 void	expand_args(t_node *node, t_env *env_list)
 {
@@ -26,26 +25,35 @@ void	expand_args(t_node *node, t_env *env_list)
 	i = 0;
 	while (node->args[i])
 	{
-		expanded = expand_string(node->args[i], env_list, &has_wildcard);
-		if (has_wildcard == 1)
-		{
-			i = expand_arg_wildcard(node, i, expanded);
-			i++;
-			continue ;
-		}
-		if (expanded[0] == '\0'
-			&& !ft_strchr(node->args[i], '\'')
-			&& !ft_strchr(node->args[i], '"'))
-		{
-			if (remove_empty_arg(node, i, expanded))
-				continue ;
-		}
-		if (try_word_split(node, &i, expanded))
+		expanded = expand_string(node->args[i],
+				env_list, &has_wildcard);
+		if (handle_expand_arg(node, &i, expanded, has_wildcard))
 			continue ;
 		free(node->args[i]);
 		node->args[i] = expanded;
 		i++;
 	}
+}
+
+static int	handle_expand_arg(t_node *node, int *i, char *expanded,
+		int has_wildcard)
+{
+	if (has_wildcard == 1)
+	{
+		*i = expand_arg_wildcard(node, *i, expanded);
+		(*i)++;
+		return (1);
+	}
+	if (expanded[0] == '\0'
+		&& !ft_strchr(node->args[*i], '\'')
+		&& !ft_strchr(node->args[*i], '"'))
+	{
+		if (remove_empty_arg(node, *i, expanded))
+			return (1);
+	}
+	if (try_word_split(node, i, expanded))
+		return (1);
+	return (0);
 }
 
 // wildcard expand -> insert args
@@ -60,7 +68,7 @@ static int	expand_arg_wildcard(t_node *node, int i, char *expanded)
 		count++;
 	free(node->args[i]);
 	free(expanded);
-	node->args = insert_matches_to_args(node->args, i, matches, count);
+	node->args = insert_matches(node->args, i, matches, count);
 	if (count > 0)
 		return (i + count - 1);
 	return (i);
@@ -101,34 +109,7 @@ static int	try_word_split(t_node *node, int *i, char *expanded)
 	}
 	free(node->args[*i]);
 	free(expanded);
-	node->args = insert_matches_to_args(node->args, *i, splits, count);
+	node->args = insert_matches(node->args, *i, splits, count);
 	*i += count;
 	return (1);
-}
-
-// Insert all elements of the `matches` array into the original `args`
-static char	**insert_matches_to_args(char **args, int index, char **matches, int match_count)
-{
-	int		old_len = 0;
-	int		i = 0, j = 0, k = 0;
-	char	**new_args;
-
-	if (!args || !matches)
-		return (args);
-	while (args[old_len])
-		old_len++;
-	new_args = (char **)malloc(sizeof(char *) * (old_len + match_count));
-	if (!new_args)
-		return (NULL);
-	while (i < index)
-		new_args[k++] = args[i++];
-	while (j < match_count)
-		new_args[k++] = matches[j++];
-	i++;
-	while (i < old_len)
-		new_args[k++] = args[i++];
-	new_args[k] = NULL;
-	free(args);
-	free(matches);
-	return (new_args);
 }

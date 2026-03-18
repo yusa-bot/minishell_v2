@@ -12,10 +12,11 @@
 
 #include "../../inc/minishell.h"
 
-static t_node	*parse_subshell(t_token **tokens);
-static int	parse_redirect(t_token **tokens, t_node *node);
+static t_node		*parse_subshell(t_token **tokens);
+static int			parse_redirect(t_token **tokens, t_node *node);
 static t_redirect	*new_redirect(t_token_type type, char *filename);
-static void	append_redirect(t_node *node, t_token_type type, char *filename);
+static void			append_redirect(t_node *node, t_token_type type,
+						char *filename);
 
 // Highest priority : single command or sub shell
 t_node	*parse_command(t_token **tokens)
@@ -38,16 +39,10 @@ t_node	*parse_command(t_token **tokens)
 			*tokens = (*tokens)->next;
 		}
 		else if (parse_redirect(tokens, node) == -1)
-		{
-			free_ast(node);
-			return (NULL);
-		}
+			return (free_ast(node), NULL);
 	}
 	if (node->args == NULL && node->redirects == NULL)
-	{
-		free_ast(node);
-		return (NULL);
-	}
+		return (free_ast(node), NULL);
 	return (node);
 }
 
@@ -93,7 +88,8 @@ static t_redirect	*new_redirect(t_token_type type, char *filename)
 	redir->type = type;
 	redir->quoted = 0;
 	redir->next = NULL;
-	if (type == TK_HEREDOC && (filename[0] == '\'' || filename[0] == '"'))
+	if (type == TK_HEREDOC
+		&& (filename[0] == '\'' || filename[0] == '"'))
 	{
 		redir->quoted = 1;
 		len = ft_strlen(filename);
@@ -105,7 +101,8 @@ static t_redirect	*new_redirect(t_token_type type, char *filename)
 }
 
 // Append a t_redirect to the node
-static void	append_redirect(t_node *node, t_token_type type, char *filename)
+static void	append_redirect(t_node *node, t_token_type type,
+		char *filename)
 {
 	t_redirect	*new_redir;
 	t_redirect	*current;

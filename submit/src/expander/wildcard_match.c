@@ -13,6 +13,7 @@
 #include "../../inc/minishell.h"
 
 static int	match_step(char **pat, char **str, char **star, char **match);
+static void	swap_if_needed(char **array, int j);
 
 // Check if the pattern matches the filename
 int	match_pattern(char *pattern, char *str)
@@ -56,4 +57,36 @@ static int	match_step(char **pat, char **str, char **star, char **match)
 	else
 		return (-1);
 	return (0);
+}
+
+void	sort_str_array(char **array, int count)
+{
+	int	i;
+	int	j;
+
+	if (!array || count < 2)
+		return ;
+	i = 0;
+	while (i < count - 1)
+	{
+		j = 0;
+		while (j < count - i - 1)
+		{
+			swap_if_needed(array, j);
+			j++;
+		}
+		i++;
+	}
+}
+
+static void	swap_if_needed(char **array, int j)
+{
+	char	*tmp;
+
+	if (ft_strcmp(array[j], array[j + 1]) > 0)
+	{
+		tmp = array[j];
+		array[j] = array[j + 1];
+		array[j + 1] = tmp;
+	}
 }

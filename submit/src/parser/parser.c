@@ -6,18 +6,19 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:49 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 16:13:52 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 19:55:05 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static t_node	*parse_pipeline(t_token **tokens);
+static t_node		*parse_pipeline(t_token **tokens);
+static t_node_type	get_list_type(t_token_type type);
 
 // Parse starting with the lowest-priority tokens
 
 // Entrance -> parse_list
-t_node *parse(t_token **tokens)
+t_node	*parse(t_token **tokens)
 {
 	t_node	*root;
 
@@ -39,7 +40,6 @@ t_node *parse(t_token **tokens)
 		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
 		ft_putstr_fd((*tokens)->value, 2);
 		ft_putstr_fd("'\n", 2);
-
 		free_ast(root);
 		return (NULL);
 	}
@@ -49,15 +49,17 @@ t_node *parse(t_token **tokens)
 // &&, || is Lowest priority -> parse_pipeline
 t_node	*parse_list(t_token **tokens)
 {
-	t_node *node;
-	t_node *right;
-	t_node_type type;
+	t_node		*node;
+	t_node		*right;
+	t_node_type	type;
+
 	node = parse_pipeline(tokens);
 	if (!node)
 		return (NULL);
-	while (*tokens && ((*tokens)->type == TK_AND || (*tokens)->type == TK_OR))
+	while (*tokens && ((*tokens)->type == TK_AND
+			|| (*tokens)->type == TK_OR))
 	{
-		type = ((*tokens)->type == TK_AND) ? NODE_AND : NODE_OR;
+		type = get_list_type((*tokens)->type);
 		*tokens = (*tokens)->next;
 		right = parse_pipeline(tokens);
 		if (!right)
@@ -67,11 +69,18 @@ t_node	*parse_list(t_token **tokens)
 	return (node);
 }
 
-// Next, process the lower-priority pipe -> parse_command
-static t_node *parse_pipeline(t_token **tokens)
+static t_node_type	get_list_type(t_token_type type)
 {
-	t_node *node;
-    t_node *right;
+	if (type == TK_AND)
+		return (NODE_AND);
+	return (NODE_OR);
+}
+
+// Next, process the lower-priority pipe -> parse_command
+static t_node	*parse_pipeline(t_token **tokens)
+{
+	t_node	*node;
+	t_node	*right;
 
 	node = parse_command(tokens);
 	if (!node)

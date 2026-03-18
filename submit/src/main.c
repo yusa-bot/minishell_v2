@@ -12,20 +12,19 @@
 
 #include "../inc/minishell.h"
 
-volatile sig_atomic_t g_sig = 0;
+volatile sig_atomic_t	g_sig = 0;
 
 static t_node	*build_ast(char *line, t_env **env_list);
 static void		exec_line(char *line, t_env **env_list);
 static void		exec_multiline(char *line, t_env **env_list);
 static void		read_prompt(t_env **env_list, struct termios *default_term);
 
-
 // Save terminal information -> env list init -> read prompt -> status return
 int	main(int argc, char **argv, char **envp)
 {
-	t_env	*env_list;
-	int		exit_status;
-	struct termios  default_term;
+	t_env			*env_list;
+	int				exit_status;
+	struct termios	default_term;
 
 	(void)argc;
 	(void)argv;
@@ -41,13 +40,13 @@ int	main(int argc, char **argv, char **envp)
 }
 
 // read prompt -> exec_multiline
-static void	read_prompt(t_env **env_list, struct termios  *default_term)
+static void	read_prompt(t_env **env_list, struct termios *default_term)
 {
 	char	*line;
 
 	while (1)
 	{
-        tcsetattr(STDIN_FILENO, TCSANOW, default_term);
+		tcsetattr(STDIN_FILENO, TCSANOW, default_term);
 		set_signal_interactive();
 		line = readline("minishell$ ");
 		if (line == NULL)
@@ -67,7 +66,7 @@ static void	read_prompt(t_env **env_list, struct termios  *default_term)
 	}
 }
 
-// If bracket paste returns multiple lines at once, split them by line breaks and execute each line -> exec_line
+// If bracket paste returns multiple lines, split and execute each
 static void	exec_multiline(char *line, t_env **env_list)
 {
 	char	**lines;

@@ -6,13 +6,13 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/15 16:36:31 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 15:43:57 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 19:54:10 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-t_node *new_node(t_node_type type, t_node *left, t_node *right)
+t_node	*new_node(t_node_type type, t_node *left, t_node *right)
 {
 	t_node	*node;
 
@@ -27,11 +27,11 @@ t_node *new_node(t_node_type type, t_node *left, t_node *right)
 	return (node);
 }
 
-int  is_redirect(t_token_type type)
+int	is_redirect(t_token_type type)
 {
-	if (type == TK_REDIR_IN || type == TK_REDIR_OUT ||
-		type == TK_REDIR_APPEND || type == TK_HEREDOC ||
-		type == TK_REDIR_RDWR)
+	if (type == TK_REDIR_IN || type == TK_REDIR_OUT
+		|| type == TK_REDIR_APPEND || type == TK_HEREDOC
+		|| type == TK_REDIR_RDWR)
 		return (1);
 	return (0);
 }

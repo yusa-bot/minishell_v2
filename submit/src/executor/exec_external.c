@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 17:30:58 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 17:40:32 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 18:55:05 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,11 @@ static void	child_cmd_not_found(char **args, t_env **env_list, t_node *root)
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(args[0], 2);
 	if (ft_strchr(args[0], '/')
-		|| !get_env_value(*env_list, "PATH"))
+		|| !get_env_value(*el, "PATH"))
 		ft_putstr_fd(": No such file or directory\n", 2);
 	else
 		ft_putstr_fd(": command not found\n", 2);
-	cleanup_and_exit(127, root, *env_list);
+	cleanup_and_exit(127, root, *el);
 }
 
 // execve failed error
@@ -78,4 +78,5 @@ static void	child_exec_failed(char **args, char *path,
 		ft_putstr_fd(": Permission denied\n", 2);
 	free(path);
 	free_str_array(envp);
+	(void)root;
 }

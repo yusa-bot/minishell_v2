@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 18:45:00 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 18:45:35 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	is_builtin(char *cmd);
 static int	exec_builtin(char **args, t_env **env_list, t_node *root);
 
 // Expand -> Apply Redirect -> Execute Branch
-int exec_cmd(t_node *node, t_env **env_list, t_node *root)
+int	exec_cmd(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
 	int	saved_stdin;
@@ -45,7 +45,7 @@ int exec_cmd(t_node *node, t_env **env_list, t_node *root)
 
 // Builtin command ----------------------------------------------
 
-static int is_builtin(char *cmd)
+static int	is_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);

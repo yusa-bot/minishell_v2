@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/13 09:40:42 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 17:04:33 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 19:51:26 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ static char	*make_match_entry(char *prefix, char *new_str);
 //		pattern:*.c or src/*.c
 char	**expand_wildcard(char *pattern)
 {
-	char			**matches;
-	int				count;
-	char			*slash;
+	char	**matches;
+	int		count;
+	char	*slash;
 
 	matches = NULL;
 	count = 0;
@@ -32,11 +32,13 @@ char	**expand_wildcard(char *pattern)
 	if (slash)
 	{
 		*slash = '\0';
-		matches = collect_matches(pattern, slash + 1, matches, &count);
+		matches = collect_matches(pattern,
+				slash + 1, matches, &count);
 		*slash = '/';
 	}
 	else
-		matches = collect_matches(NULL, pattern, matches, &count);
+		matches = collect_matches(NULL,
+				pattern, matches, &count);
 	if (count == 0)
 		matches = append_match(matches, NULL, pattern, &count);
 	else
@@ -56,12 +58,18 @@ static char	**collect_matches(char *dir_path, char *fpat, char **matches, int *c
 		dir = opendir(".");
 	if (!dir)
 		return (matches);
-	while ((dp = readdir(dir)) != NULL)
+	dp = readdir(dir);
+	while (dp != NULL)
 	{
 		if (dp->d_name[0] == '.' && fpat[0] != '.')
+		{
+			dp = readdir(dir);
 			continue ;
+		}
 		if (match_pattern(fpat, dp->d_name))
-			matches = append_match(matches, dir_path, dp->d_name, count);
+			matches = append_match(matches,
+					dir_path, dp->d_name, count);
+		dp = readdir(dir);
 	}
 	closedir(dir);
 	return (matches);
@@ -111,35 +119,4 @@ static char	*make_match_entry(char *prefix, char *new_str)
 		return (full);
 	}
 	return (ft_strdup(new_str));
-}
-
-// ----------------------------------------------
-
-void	sort_str_array(char **array, int count)
-{
-	int		i;
-	int		j;
-	char	*tmp;
-
-	if (!array || count < 2)
-		return ;
-
-	i = 0;
-	while (i < count - 1)
-	{
-		j = 0;
-		while (j < count - i - 1)
-		{
-			// ft_strcmp が正の値を返した場合、順序が逆なので入れ替える
-			if (ft_strcmp(array[j], array[j + 1]) > 0)
-			{
-				tmp = array[j];
-				array[j] = array[j + 1];
-				array[j + 1] = tmp;
-			}
-
-			j++;
-		}
-		i++;
-	}
 }

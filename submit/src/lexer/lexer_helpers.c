@@ -12,13 +12,13 @@
 
 #include "../../inc/minishell.h"
 
-void skip_spaces(char **line_ptr)
+void	skip_spaces(char **line_ptr)
 {
 	while (**line_ptr == ' ' || **line_ptr == '\t')
 		(*line_ptr)++;
 }
 
-t_token *new_token(t_token_type type, char *value)
+t_token	*new_token(t_token_type type, char *value)
 {
 	t_token	*node;
 
@@ -31,7 +31,7 @@ t_token *new_token(t_token_type type, char *value)
 	return (node);
 }
 
-void token_add_back(t_token **head, t_token *new_node)
+void	token_add_back(t_token **head, t_token *new_node)
 {
 	t_token	*current;
 
@@ -48,9 +48,10 @@ void token_add_back(t_token **head, t_token *new_node)
 	current->next = new_node;
 }
 
-int     is_operator(char c)
+int	is_operator(char c)
 {
-	if (c == '|' || c == '<' || c == '>' || c == '&' || c == '(' || c == ')')
+	if (c == '|' || c == '<' || c == '>'
+		|| c == '&' || c == '(' || c == ')')
 		return (1);
 	return (0);
 }
