@@ -170,6 +170,17 @@ void	expand_node(t_node *node, t_env *env_list)
 			// wildcardではない場合、上書き -------------------
 			else
 			{
+				// 展開結果が空文字列 -> ambiguous redirect
+				if (!expanded_str[0] && has_unquoted_dollar(redir->filename))
+				{
+					ft_putstr_fd("minishell: ", 2);
+					ft_putstr_fd(redir->filename, 2);
+					ft_putstr_fd(": ambiguous redirect\n", 2);
+					free(expanded_str);
+					redir->filename[0] = '\0';
+					redir = redir->next;
+					continue ;
+				}
 				free(redir->filename);
 				redir->filename = expanded_str;
 			}

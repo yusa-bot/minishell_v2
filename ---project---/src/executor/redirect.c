@@ -40,6 +40,10 @@ int apply_redirects(t_redirect *redirects) // t_node->t_redirect (1nodeづつ)
 	// t_redirect->nextがある間
 	while (current)
 	{
+		// ファイル名が空(未定義変数の展開結果など)の場合 -> ambiguous redirect (メッセージはexpander側で出力済み)
+		if (current->type != TK_HEREDOC
+			&& (!current->filename || !current->filename[0]))
+			return (1);
 		// input(<, <<)
 		if (current->type == TK_REDIR_IN || current->type == TK_HEREDOC)
 		{
