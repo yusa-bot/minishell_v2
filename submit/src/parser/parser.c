@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:49 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 15:38:20 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 16:13:52 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 t_node *parse(t_token **tokens);
 static t_node *parse_list(t_token **tokens);
 static t_node *parse_pipeline(t_token **tokens);
-
-// parse ----------------------------------------------
 
 // Parse starting with the lowest-priority tokens
 

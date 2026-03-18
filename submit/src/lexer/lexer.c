@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:43 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 15:16:29 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 16:13:37 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ static t_token *consume_operator(char **line_ptr);
 static t_token *consume_word(char **line_ptr);
 void	free_tokens(t_token *tokens);
 
-
-// tokenize ----------------------------------------------
 
 // skip_spaces -> consume_operator || consume_word -> token_add_back
 t_token *tokenize(char *line)
