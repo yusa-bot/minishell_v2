@@ -14,43 +14,38 @@
 
 static int	ft_isnumeric(char *str);
 static int	ft_isoverflow(char *str);
+static void	exit_numeric_error(char *arg, t_node *root, t_env *env_list);
 
 int	builtin_exit(char **args, t_env **env_list, t_node *root)
 {
 	int	exit_code;
 
 	if (isatty(STDIN_FILENO))
-	{
-		ft_putendl_fd("exit", STDERR_FILENO); // または STDOUT_FILENO
-	}
-
+		ft_putendl_fd("exit", STDERR_FILENO);
 	if (!args[1])
 	{
 		exit_code = ft_atoi(get_env_value(*env_list, "?"));
 		cleanup_and_exit(exit_code, root, *env_list);
 	}
-
-	// 引数が非数値またはオーバーフローの場合
 	if (!ft_isnumeric(args[1]) || ft_isoverflow(args[1]))
-	{
-		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
-		ft_putstr_fd(args[1], STDERR_FILENO);
-		ft_putendl_fd(": numeric argument required", STDERR_FILENO);
-		cleanup_and_exit(2, root, *env_list);
-	}
-
-	// 引数が exit '' '' のように多い
+		exit_numeric_error(args[1], root, *env_list);
 	if (args[2])
 	{
-		ft_putendl_fd("minishell: exit: too many arguments", STDERR_FILENO);
+		ft_putendl_fd("minishell: exit: too many arguments",
+			STDERR_FILENO);
 		return (1);
 	}
-
 	exit_code = ft_atoi(args[1]);
-
-	// 受け取った32bit -> status格納領域8bit へ切り出す
 	cleanup_and_exit(exit_code & 0xFF, root, *env_list);
 	return (0);
+}
+
+static void	exit_numeric_error(char *arg, t_node *root, t_env *env_list)
+{
+	ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
+	ft_putendl_fd(": numeric argument required", STDERR_FILENO);
+	cleanup_and_exit(2, root, env_list);
 }
 
 static int	ft_isnumeric(char *str)
