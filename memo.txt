@@ -22,9 +22,6 @@ valgrind --leak-check=full --show-leak-kinds=reachable --track-origins=yes --sup
 
 ---
 
-norm 分けながら理解
-
-magic num
 
 gemini test
 
