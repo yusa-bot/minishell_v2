@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo $LANG)",
+      "Bash(echo $LC_ALL)",
+      "Read(//etc/**)",
+      "Bash(git submodule:*)",
+      "Bash(git -C libft remote -v)",
+      "Bash(git:*)"
+    ]
+  }
+}

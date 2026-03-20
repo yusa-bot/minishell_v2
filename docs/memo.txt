@@ -28,3 +28,5 @@ gemini test
 zennと交えてコード理解
 
 ---
+
+

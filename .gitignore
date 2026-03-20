@@ -2,8 +2,6 @@
 **/minishell
 **/*.o
 **/*.d
-.gitmodules
-**/libft
 .devcontainer
 prc.c
 test
