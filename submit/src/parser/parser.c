@@ -6,16 +6,15 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:49 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/20 17:45:36 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/20 23:58:19 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
+static void			print_syntax_error(char *token_val);
 static t_node_type	get_list_type(t_token_type type);
 static t_node		*parse_pipeline(t_token **tokens);
-
-// Parse starting with the lowest-priority tokens
 
 // Entrance -> parse_list
 t_node	*parse(t_token **tokens)
@@ -27,23 +26,30 @@ t_node	*parse(t_token **tokens)
 	root = parse_list(tokens);
 	if (root == NULL)
 	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
 		if (*tokens)
-			ft_putstr_fd((*tokens)->value, STDERR_FILENO);
+			print_syntax_error((*tokens)->value);
 		else
-			ft_putstr_fd("newline", STDERR_FILENO);
-		ft_putstr_fd("'\n", STDERR_FILENO);
+			print_syntax_error(NULL);
 		return (NULL);
 	}
 	if (*tokens != NULL)
 	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
-		ft_putstr_fd((*tokens)->value, STDERR_FILENO);
-		ft_putstr_fd("'\n", STDERR_FILENO);
+		print_syntax_error((*tokens)->value);
 		free_ast(root);
 		return (NULL);
 	}
 	return (root);
+}
+
+static void	print_syntax_error(char *token_val)
+{
+	ft_putstr_fd("minishell: syntax error near ", STDERR_FILENO);
+	ft_putstr_fd("unexpected token `", STDERR_FILENO);
+	if (token_val)
+		ft_putstr_fd(token_val, STDERR_FILENO);
+	else
+		ft_putstr_fd("newline", STDERR_FILENO);
+	ft_putstr_fd("'\n", STDERR_FILENO);
 }
 
 // &&, || is Lowest priority -> parse_pipeline

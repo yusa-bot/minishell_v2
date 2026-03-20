@@ -14,40 +14,43 @@
 
 static int	is_builtin(char *cmd);
 static int	exec_builtin(char **args, t_env **env_list, t_node *root);
+static int	run_cmd(t_node *node, t_env **env_list, t_node *root,
+				int saved_fds[2]);
 
 // Expand -> Apply Redirect -> Execute Branch
 int	exec_cmd(t_node *node, t_env **env_list, t_node *root)
 {
 	int	status;
-	int	saved_stdin;
-	int	saved_stdout;
+	int	saved_fds[2];
 
 	expand_node(node, *env_list);
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
+	saved_fds[0] = dup(STDIN_FILENO);
+	saved_fds[1] = dup(STDOUT_FILENO);
 	if (apply_redirects(node->redirects) != 0)
 	{
-		restore_fds(saved_stdin, saved_stdout);
+		restore_fds(saved_fds[0], saved_fds[1]);
 		return (1);
 	}
 	if (!node->args || !node->args[0])
 	{
-		restore_fds(saved_stdin, saved_stdout);
+		restore_fds(saved_fds[0], saved_fds[1]);
 		return (0);
 	}
+	status = run_cmd(node, env_list, root, saved_fds);
+	restore_fds(saved_fds[0], saved_fds[1]);
+	return (status);
+}
+
+static int	run_cmd(t_node *node, t_env **env_list, t_node *root,
+		int saved_fds[2])
+{
 	if (is_builtin(node->args[0]))
 	{
 		if (ft_strcmp(node->args[0], "exit") == 0)
-		{
-			restore_fds(saved_stdin, saved_stdout);
-			return (exec_builtin(node->args, env_list, root));
-		}
-		status = exec_builtin(node->args, env_list, root);
+			restore_fds(saved_fds[0], saved_fds[1]);
+		return (exec_builtin(node->args, env_list, root));
 	}
-	else
-		status = exec_external(node->args, env_list, root);
-	restore_fds(saved_stdin, saved_stdout);
-	return (status);
+	return (exec_external(node->args, env_list, root));
 }
 
 // Builtin command ----------------------------------------------
