@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:28:25 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 20:01:19 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/20 16:42:54 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@ static char	*handle_dollar(char *res, char *str, int *i,
 				t_env *env_list);
 static char	*resolve_dollar_var(char *str, int *i, t_env *env_list);
 
-// 	 Expand $ and quotes 
+// 	 Expand $ and quotes
 char	*expand_string(char *str, t_env *env_list, int *has_wildcard)
 {
 	char	*res;
 	int		i;
 	int		quotes[2];
+	int		ret;
 
 	res = ft_strdup("");
 	quotes[0] = 0;
@@ -33,13 +34,10 @@ char	*expand_string(char *str, t_env *env_list, int *has_wildcard)
 		*has_wildcard = 0;
 	while (str[i] != '\0')
 	{
-		if (process_expand_char(str, &i, quotes, has_wildcard) == -1)
-		{
+		ret = process_expand_char(str, &i, quotes, has_wildcard);
+		if (ret == -1)
 			res = handle_dollar(res, str, &i, env_list);
-			if (!quotes[1] && has_wildcard && ft_strchr(res, '*'))
-				*has_wildcard = 1;
-		}
-		else
+		else if (ret == 0)
 			res = append_char(res, str[i++]);
 	}
 	return (res);
