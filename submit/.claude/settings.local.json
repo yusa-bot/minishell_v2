@@ -6,7 +6,9 @@
       "Read(//etc/**)",
       "Bash(git submodule:*)",
       "Bash(git -C libft remote -v)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(make:*)",
+      "Bash(norminette src/executor/exec_cmd.c)"
     ]
   }
 }
