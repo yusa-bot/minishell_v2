@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 20:25:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/20 18:36:31 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	read_prompt(t_env **env_list, struct termios *default_term)
 	{
 		tcsetattr(STDIN_FILENO, TCSANOW, default_term);
 		set_signal_interactive();
-		line = readline("minishell$ ");
+		line = readline("何か打ち込んでみろ! ");
 		if (line == NULL)
 		{
 			printf("exit\n");

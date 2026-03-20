@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:10 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 20:21:57 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/20 18:38:09 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ static void	heredoc_read_loop(t_redirect *redir, t_env *env_list, int fd)
 
 	while (1)
 	{
-		line = readline("> ");
+		line = readline("ウラ ");
 		if (line == NULL
 			|| ft_strcmp(line, redir->filename) == 0)
 		{
