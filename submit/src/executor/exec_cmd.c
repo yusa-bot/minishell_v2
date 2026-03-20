@@ -36,7 +36,14 @@ int	exec_cmd(t_node *node, t_env **env_list, t_node *root)
 		return (0);
 	}
 	if (is_builtin(node->args[0]))
+	{
+		if (ft_strcmp(node->args[0], "exit") == 0)
+		{
+			restore_fds(saved_stdin, saved_stdout);
+			return (exec_builtin(node->args, env_list, root));
+		}
 		status = exec_builtin(node->args, env_list, root);
+	}
 	else
 		status = exec_external(node->args, env_list, root);
 	restore_fds(saved_stdin, saved_stdout);
