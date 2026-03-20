@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:28:25 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/20 16:42:54 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/20 23:45:07 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,10 @@ static char	*handle_dollar(char *res, char *str, int *i,
 
 	val = resolve_dollar_var(str, i, env_list);
 	if (!val && str[*i] == '$')
+	{
+		(*i)++;
 		return (append_char(res, '$'));
+	}
 	if (val)
 	{
 		new_res = ft_strjoin(res, val);
