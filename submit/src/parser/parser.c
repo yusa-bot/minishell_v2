@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:49 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 20:24:53 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/20 17:45:36 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,10 @@ t_node	*parse_list(t_token **tokens)
 		*tokens = (*tokens)->next;
 		right = parse_pipeline(tokens);
 		if (!right)
+		{
+			free_ast(node);
 			return (NULL);
+		}
 		node = new_node(type, node, right);
 	}
 	return (node);
@@ -90,7 +93,10 @@ static t_node	*parse_pipeline(t_token **tokens)
 		*tokens = (*tokens)->next;
 		right = parse_command(tokens);
 		if (!right)
+		{
+			free_ast(node);
 			return (NULL);
+		}
 		node = new_node(NODE_PIPE, node, right);
 	}
 	return (node);
