@@ -1,0 +1,3 @@
+[submodule "submit/libft"]
+	path = submit/libft
+	url = https://github.com/yusa-bot/libft
