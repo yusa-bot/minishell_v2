@@ -44,7 +44,7 @@ static void	read_prompt(t_env **env_list)
 		line = readline(PROMPT);
 		if (line == NULL)
 		{
-			printf("exit\n");
+			ft_putendl_fd("exit", STDERR_FILENO);
 			break ;
 		}
 		if (g_sig == SIGINT)
