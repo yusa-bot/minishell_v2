@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:10:26 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 20:43:20 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 01:22:52 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@
 # include <signal.h>
 # include <errno.h>
 # include <limits.h>
-# include <string.h>
 # include <termios.h>
 # include <sys/ioctl.h>
 
