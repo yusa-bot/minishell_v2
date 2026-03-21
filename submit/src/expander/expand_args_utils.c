@@ -27,7 +27,7 @@ char	**insert_matches(char **args, int index,
 		old_len++;
 	new_args = malloc(sizeof(char *) * (old_len + match_count));
 	if (!new_args)
-		return (NULL);
+		return (args);
 	k = 0;
 	ft_memcpy(new_args + k, args, sizeof(char *) * index);
 	k += index;
