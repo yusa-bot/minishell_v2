@@ -40,31 +40,38 @@ char	*get_cmd_path(char *cmd, t_env *env_list)
 	return (search_in_paths(cmd, path_env));
 }
 
-// search cmd in PATH directories
+// search cmd in PATH directories (handles empty elements as ".")
 static char	*search_in_paths(char *cmd, char *path_env)
 {
-	char	**paths;
+	char	*colon;
+	char	*dir;
 	char	*tmp;
 	char	*full_path;
-	int		i;
+	size_t	len;
 
-	paths = ft_split_c(path_env, ':');
-	if (!paths)
-		return (NULL);
-	i = 0;
-	while (paths[i])
+	while (1)
 	{
-		tmp = ft_strjoin(paths[i], "/");
+		colon = ft_strchr(path_env, ':');
+		if (colon)
+			len = colon - path_env;
+		else
+			len = ft_strlen(path_env);
+		if (len == 0)
+			dir = ft_strdup(".");
+		else
+			dir = ft_substr(path_env, 0, len);
+		if (!dir)
+			return (NULL);
+		tmp = ft_strjoin(dir, "/");
+		free(dir);
 		full_path = ft_strjoin(tmp, cmd);
 		free(tmp);
 		if (access(full_path, X_OK) == 0)
-		{
-			free_str_array(paths);
 			return (full_path);
-		}
 		free(full_path);
-		i++;
+		if (!colon)
+			break ;
+		path_env = colon + 1;
 	}
-	free_str_array(paths);
 	return (NULL);
 }
