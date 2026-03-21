@@ -42,6 +42,7 @@ void	expand_redirects(t_node *node, t_env *env_list)
 static int	expand_redir_wildcard(t_redirect *redir, char *expanded)
 {
 	char	**matches;
+	char	*new_filename;
 	int		count;
 
 	matches = expand_wildcard(expanded);
@@ -50,10 +51,13 @@ static int	expand_redir_wildcard(t_redirect *redir, char *expanded)
 		count++;
 	if (count == 1)
 	{
-		free(redir->filename);
-		redir->filename = ft_strdup(matches[0]);
+		new_filename = ft_strdup(matches[0]);
 		free_str_array(matches);
 		free(expanded);
+		if (!new_filename)
+			return (1);
+		free(redir->filename);
+		redir->filename = new_filename;
 		return (0);
 	}
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
