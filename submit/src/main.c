@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/20 18:36:31 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 10:59:08 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,6 @@
 volatile sig_atomic_t	g_sig = 0;
 
 static void		read_prompt(t_env **env_list, struct termios *default_term);
-static void		exec_multiline(char *line, t_env **env_list);
-static void		exec_line(char *line, t_env **env_list);
-static t_node	*build_ast(char *line, t_env **env_list);
 
 // Save terminal information -> env list init -> read prompt -> status return
 int	main(int argc, char **argv, char **envp)
@@ -64,75 +61,4 @@ static void	read_prompt(t_env **env_list, struct termios *default_term)
 		exec_multiline(line, env_list);
 		free(line);
 	}
-}
-
-// If bracket paste returns multiple lines, split and execute each
-static void	exec_multiline(char *line, t_env **env_list)
-{
-	char	**lines;
-	int		i;
-
-	if (!line || !*line)
-		return ;
-	if (!ft_strchr(line, '\n'))
-	{
-		exec_line(line, env_list);
-		return ;
-	}
-	lines = ft_split_c(line, '\n');
-	if (!lines)
-		return ;
-	i = 0;
-	while (lines[i])
-	{
-		exec_line(lines[i], env_list);
-		i++;
-	}
-	free_str_array(lines);
-}
-
-// 1 prompt exec: AST Construction(build_ast) -> exec_ast
-static void	exec_line(char *line, t_env **env_list)
-{
-	t_node	*node;
-
-	if (!line || !*line)
-		return ;
-	node = build_ast(line, env_list);
-	if (!node)
-	{
-		update_exit_status(env_list, EXIT_SYNTAX_ERR);
-		return ;
-	}
-	set_signal_executing();
-	exec_ast(node, env_list, node);
-	if (g_sig == SIGINT)
-	{
-		ft_putstr_fd("\n", STDERR_FILENO);
-		g_sig = 0;
-	}
-	free_ast(node);
-}
-
-// lexer -> parser -> process_heredoc -> return root AST
-static t_node	*build_ast(char *line, t_env **env_list)
-{
-	t_token	*tokens;
-	t_token	*head;
-	t_node	*node;
-
-	tokens = tokenize(line);
-	if (!tokens)
-		return (NULL);
-	head = tokens;
-	node = parse(&tokens);
-	free_tokens(head);
-	if (!node)
-		return (NULL);
-	if (process_heredoc(node, *env_list))
-	{
-		free_ast(node);
-		return (NULL);
-	}
-	return (node);
 }

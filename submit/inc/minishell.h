@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:10:26 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 01:22:52 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 11:01:20 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,9 @@ char	*get_env_value(t_env *env_list, char *key);
 void	set_env_value(t_env **env_list, char *key, char *value);
 
 // executor ----------------------------------------------
+
+// exec_line.c
+void	exec_multiline(char *line, t_env **env_list);
 
 // exec_ast.c
 int		exec_ast(t_node *node, t_env **env_list, t_node *root);
