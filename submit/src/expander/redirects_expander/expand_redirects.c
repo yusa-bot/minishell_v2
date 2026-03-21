@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:07:51 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 22:08:18 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 23:53:59 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,3 @@ static void	handle_empty_redir(t_redirect *redir, char *expanded)
 	free(redir->filename);
 	redir->filename = expanded;
 }
-

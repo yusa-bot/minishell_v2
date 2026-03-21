@@ -56,11 +56,7 @@ static void	free_redirects(t_redirect *redir)
 	{
 		tmp = redir->next;
 		if (redir->filename)
-		{
-			if (redir->type == TK_HEREDOC)
-				unlink(redir->filename);
 			free(redir->filename);
-		}
 		free(redir);
 		redir = tmp;
 	}
