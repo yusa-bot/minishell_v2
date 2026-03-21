@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(/bin/bash -c 'unset PATH; cd /usr/bin; ls / 2>&1 | head -3')",
-      "Bash(bash --version)"
+      "Bash(bash --version)",
+      "Bash(find /workspaces/minishell_v2/submit/minishell_tester/ -name *.sh -o -name tester*)",
+      "Bash(make)",
+      "Bash(./minishell)",
+      "Bash(strace -e trace=read,write,ioctl ./minishell)"
     ]
   }
 }

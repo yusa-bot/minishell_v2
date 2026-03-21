@@ -9,7 +9,12 @@
       "Bash(git:*)",
       "Bash(make:*)",
       "Bash(norminette src/executor/exec_cmd.c)",
-      "Bash(valgrind --version)"
+      "Bash(valgrind --version)",
+      "Bash(./minishell)",
+      "Bash(echo -e \"../minishell\\\\nexit -100\\\\necho $?nexit\")",
+      "Bash(bash)",
+      "Bash(echo -e \"../minishell\\\\nexit -100\\\\necho $?nexit\\\\n\")",
+      "Bash(echo -e \"./minishell\\\\nexit -100\\\\necho $?nexit\\\\n\")"
     ]
   }
 }
