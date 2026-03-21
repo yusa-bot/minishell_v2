@@ -6,13 +6,14 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 17:39:34 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 17:43:22 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 16:34:37 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 static char	*search_in_paths(char *cmd, char *path_env);
+static char	*try_exec_path(char *cmd, char *path_env, size_t len);
 
 // get full path of executable
 char	*get_cmd_path(char *cmd, t_env *env_list)
@@ -44,8 +45,6 @@ char	*get_cmd_path(char *cmd, t_env *env_list)
 static char	*search_in_paths(char *cmd, char *path_env)
 {
 	char	*colon;
-	char	*dir;
-	char	*tmp;
 	char	*full_path;
 	size_t	len;
 
@@ -56,22 +55,34 @@ static char	*search_in_paths(char *cmd, char *path_env)
 			len = colon - path_env;
 		else
 			len = ft_strlen(path_env);
-		if (len == 0)
-			dir = ft_strdup(".");
-		else
-			dir = ft_substr(path_env, 0, len);
-		if (!dir)
-			return (NULL);
-		tmp = ft_strjoin(dir, "/");
-		free(dir);
-		full_path = ft_strjoin(tmp, cmd);
-		free(tmp);
-		if (access(full_path, X_OK) == 0)
+		full_path = try_exec_path(cmd, path_env, len);
+		if (full_path)
 			return (full_path);
-		free(full_path);
 		if (!colon)
 			break ;
 		path_env = colon + 1;
 	}
+	return (NULL);
+}
+
+static char	*try_exec_path(char *cmd, char *path_env, size_t len)
+{
+	char	*dir;
+	char	*tmp;
+	char	*full_path;
+
+	if (len == 0)
+		dir = ft_strdup(".");
+	else
+		dir = ft_substr(path_env, 0, len);
+	if (!dir)
+		return (NULL);
+	tmp = ft_strjoin(dir, "/");
+	free(dir);
+	full_path = ft_strjoin(tmp, cmd);
+	free(tmp);
+	if (full_path && access(full_path, X_OK) == 0)
+		return (full_path);
+	free(full_path);
 	return (NULL);
 }
