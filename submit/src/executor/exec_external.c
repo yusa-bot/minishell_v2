@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 17:30:58 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 20:02:31 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 19:29:43 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 static void	exec_child(char **args, t_env **env_list, t_node *root);
 static void	child_cmd_not_found(char **args, t_env **env_list, t_node *root);
-static void	child_exec_failed(char **args, char *path,
-				char **envp, t_node *root);
+static void	child_exec_failed(char **args, char *path, char **envp);
 
 int	exec_external(char **args, t_env **env_list, t_node *root)
 {
@@ -46,7 +45,7 @@ static void	exec_child(char **args, t_env **env_list, t_node *root)
 		child_cmd_not_found(args, env_list, root);
 	envp = env_list_to_array(*env_list);
 	execve(path, args, envp);
-	child_exec_failed(args, path, envp, root);
+	child_exec_failed(args, path, envp);
 	cleanup_and_exit(EXIT_NOT_EXEC, root, *env_list);
 }
 
@@ -64,8 +63,7 @@ static void	child_cmd_not_found(char **args, t_env **env_list, t_node *root)
 }
 
 // execve failed error
-static void	child_exec_failed(char **args, char *path,
-		char **envp, t_node *root)
+static void	child_exec_failed(char **args, char *path, char **envp)
 {
 	struct stat	st;
 
@@ -77,5 +75,4 @@ static void	child_exec_failed(char **args, char *path,
 		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 	free(path);
 	free_str_array(envp);
-	(void)root;
 }
