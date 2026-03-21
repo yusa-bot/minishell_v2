@@ -41,6 +41,7 @@ void	append_arg(t_node *node, char *value)
 {
 	int		i;
 	char	**new_args;
+	char	*dup;
 
 	i = 0;
 	if (node->args)
@@ -51,6 +52,12 @@ void	append_arg(t_node *node, char *value)
 	new_args = (char **)malloc(sizeof(char *) * (i + 2));
 	if (!new_args)
 		return ;
+	dup = ft_strdup(value);
+	if (!dup)
+	{
+		free(new_args);
+		return ;
+	}
 	i = 0;
 	if (node->args)
 	{
@@ -61,7 +68,7 @@ void	append_arg(t_node *node, char *value)
 		}
 		free(node->args);
 	}
-	new_args[i] = ft_strdup(value);
+	new_args[i] = dup;
 	new_args[i + 1] = NULL;
 	node->args = new_args;
 }
