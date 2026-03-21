@@ -35,6 +35,12 @@ char	**env_list_to_array(t_env *env_list)
 		}
 		else
 			envp[i] = ft_strdup(env_list->key);
+		if (!envp[i])
+		{
+			envp[i] = NULL;
+			free_str_array(envp);
+			return (NULL);
+		}
 		env_list = env_list->next;
 		i++;
 	}
