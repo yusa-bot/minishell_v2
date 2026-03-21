@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
 
 static char	**collect_matches(char *dir_path, char *fpat,
 				char **matches, int *count);

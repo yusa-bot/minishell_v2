@@ -28,8 +28,13 @@ SRCS = src/signal/signal.c src/signal/signal_heredoc.c \
 	src/main.c  \
 	src/status.c \
 	src/lexer/lexer.c src/lexer/lexer_helpers.c src/lexer/classify_operator.c\
-	src/expander/expand.c  src/expander/expand_args.c  src/expander/expand_args_utils.c  src/expander/expand_redirects.c  src/expander/expand_dollers_quotes.c  src/expander/wildcard.c  src/expander/wildcard_utils.c  \
-	src/executor/exec_line.c src/executor/exec_ast.c  src/executor/exec_cmd.c  src/executor/exec_external.c  src/executor/get_exec_path.c  src/executor/pipe.c  src/executor/redirect.c \
+	src/expander/expand.c  src/expander/expand_string.c  src/expander/expand_utils.c  \
+	src/expander/args_expander/expand_args.c  src/expander/args_expander/expand_args_utils.c  \
+	src/expander/redirects_expander/expand_redirects.c  \
+	src/expander/wildcard/wildcard.c  src/expander/wildcard/wildcard_utils.c  \
+	src/executor/exec_line.c src/executor/exec_ast.c  src/executor/pipe.c  \
+	src/executor/exec_cmd/exec_cmd.c  src/executor/exec_cmd/redirect.c  \
+	src/executor/exec_external/exec_external.c  src/executor/exec_external/get_exec_path.c  \
 	src/heredoc/heredoc.c src/heredoc/generate_tmp_filename.c \
 	src/env/env_init.c  src/env/env_util.c  src/env/env_access.c  \
 	src/builtins/cd.c  src/builtins/echo.c  src/builtins/env.c  src/builtins/exit.c  src/builtins/export.c  src/builtins/export_print.c  src/builtins/pwd.c  src/builtins/unset.c

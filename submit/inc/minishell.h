@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:10:26 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 19:16:56 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 21:59:51 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,19 +133,19 @@ void	exec_multiline(char *line, t_env **env_list);
 // exec_ast.c
 int		exec_ast(t_node *node, t_env **env_list, t_node *root);
 
-// exec_cmd.c
+// exec_cmd/exec_cmd.c
 int		exec_cmd(t_node *node, t_env **env_list, t_node *root);
 
-// exec_external.c
+// exec_external/exec_external.c
 int		exec_external(char **args, t_env **env_list, t_node *root);
 
-// get_exec_path.c
+// exec_external/get_exec_path.c
 char	*get_cmd_path(char *cmd, t_env *env_list);
 
 // pipe.c
 int		exec_pipeline(t_node *node, t_env **env_list, t_node *root);
 
-// redirect.c
+// exec_cmd/redirect.c
 int		apply_redirects(t_redirect *redirects);
 void	restore_fds(int saved_stdin, int saved_stdout);
 
@@ -161,28 +161,30 @@ char	*generate_tmp_filename(void);
 
 // expand.c
 void	expand_node(t_node *node, t_env *env_list);
-char	*append_char(char *str, char c);
 char	*expand_heredoc_line(char *line, t_env *env_list);
 
-// expand_args.c
+// args_expander/expand_args.c
 void	expand_args(t_node *node, t_env *env_list);
 
-// expand_args_utils.c
+// args_expander/expand_args_utils.c
+char	*append_char(char *str, char c);
 char	**insert_matches(char **args, int index,
 			char **matches, int match_count);
 
-// expand_redirects.c
+// redirects_expander/expand_redirects.c
 void	expand_redirects(t_node *node, t_env *env_list);
+
+// expand_utils.c
 int		has_unquoted_dollar(char *str);
 
-// expand_dollers_quotes.c
+// expand_string.c
 char	*expand_string(char *str, t_env *env_list,
 			int *has_wildcard);
 
-// wildcard.c
+// wildcard/wildcard.c
 char	**expand_wildcard(char *pattern);
 
-// wildcard_utils.c
+// wildcard/wildcard_utils.c
 int		match_pattern(char *pattern, char *str);
 void	sort_str_array(char **array, int count);
 

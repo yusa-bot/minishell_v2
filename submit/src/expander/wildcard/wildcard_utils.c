@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
 
 static int	match_step(char **pat, char **str, char **star, char **match);
 static void	swap_if_needed(char **array, int j);

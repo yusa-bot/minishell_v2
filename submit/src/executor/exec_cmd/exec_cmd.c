@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:04 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 18:45:35 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 21:34:15 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
 
 static int	is_builtin(char *cmd);
 static int	exec_builtin(char **args, t_env **env_list, t_node *root);

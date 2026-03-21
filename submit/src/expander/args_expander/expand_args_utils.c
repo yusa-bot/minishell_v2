@@ -6,11 +6,39 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 18:00:00 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 19:50:11 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 21:59:32 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
+
+// Free the original string and append one character to the end of the string
+char	*append_char(char *str, char c)
+{
+	char	*new_str;
+	int		len;
+	int		i;
+
+	if (!str)
+		return (NULL);
+	len = ft_strlen(str);
+	new_str = (char *)malloc(sizeof(char) * (len + 2));
+	if (!new_str)
+	{
+		free(str);
+		return (NULL);
+	}
+	i = 0;
+	while (i < len)
+	{
+		new_str[i] = str[i];
+		i++;
+	}
+	new_str[i] = c;
+	new_str[i + 1] = '\0';
+	free(str);
+	return (new_str);
+}
 
 // Insert all elements of the `matches` array into the original `args`
 char	**insert_matches(char **args, int index,

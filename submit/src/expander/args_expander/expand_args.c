@@ -6,11 +6,11 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 15:54:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 19:00:17 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 22:10:35 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
 
 static int	handle_expand_arg(t_node *node, int *i, char *expanded,
 				int has_wildcard);
@@ -92,6 +92,7 @@ static int	remove_empty_arg(t_node *node, int i, char *expanded)
 	return (1);
 }
 
+// case: VAR="a b c" and echo $VAR -> echo a b c
 static int	try_word_split(t_node *node, int *i, char *expanded)
 {
 	char	**splits;

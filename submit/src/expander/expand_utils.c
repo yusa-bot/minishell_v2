@@ -1,33 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand.c                                           :+:      :+:    :+:   */
+/*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/12 21:28:34 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 21:59:25 by ayusa            ###   ########.fr       */
+/*   Created: 2026/03/21 22:08:03 by ayusa             #+#    #+#             */
+/*   Updated: 2026/03/21 22:08:15 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-//  expand args[i] or redir->filename
-void	expand_node(t_node *node, t_env *env_list)
+int	has_unquoted_dollar(char *str)
 {
-	if (!node)
-		return ;
-	if (node->args)
-		expand_args(node, env_list);
-	expand_redirects(node, env_list);
-}
+	int	in_sq;
+	int	in_dq;
+	int	i;
 
-char	*expand_heredoc_line(char *line, t_env *env_list)
-{
-	int		has_wildcard;
-	char	*result;
-
-	result = expand_string(line, env_list, &has_wildcard);
-	free(line);
-	return (result);
+	in_sq = 0;
+	in_dq = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !in_dq)
+			in_sq = !in_sq;
+		else if (str[i] == '"' && !in_sq)
+			in_dq = !in_dq;
+		else if (str[i] == '$' && !in_sq && !in_dq)
+			return (1);
+		i++;
+	}
+	return (0);
 }

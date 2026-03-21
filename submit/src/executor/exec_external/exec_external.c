@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
 
 static void	exec_child(char **args, t_env **env_list, t_node *root);
 static void	child_cmd_not_found(char **args, t_env **env_list, t_node *root);
