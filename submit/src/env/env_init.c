@@ -60,7 +60,11 @@ t_env	*env_new(char *key, char *value)
 
 	new_node = (t_env *)malloc(sizeof(t_env));
 	if (!new_node)
+	{
+		free(key);
+		free(value);
 		return (NULL);
+	}
 	new_node->key = key;
 	new_node->value = value;
 	new_node->next = NULL;

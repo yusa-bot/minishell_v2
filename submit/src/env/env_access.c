@@ -37,12 +37,15 @@ void	set_env_value(t_env **env_list, char *key, char *value)
 	{
 		if (ft_strcmp(current->key, key) == 0)
 		{
-			if (current->value)
-				free(current->value);
+			new_value = NULL;
 			if (value)
-				current->value = ft_strdup(value);
-			else
-				current->value = NULL;
+			{
+				new_value = ft_strdup(value);
+				if (!new_value)
+					return ;
+			}
+			free(current->value);
+			current->value = new_value;
 			return ;
 		}
 		current = current->next;
