@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 13:30:22 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 19:17:00 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	read_prompt(t_env **env_list)
 	while (1)
 	{
 		set_signal_interactive();
-		line = readline("何か打ち込んでみろ! ");
+		line = readline(PROMPT);
 		if (line == NULL)
 		{
 			printf("exit\n");

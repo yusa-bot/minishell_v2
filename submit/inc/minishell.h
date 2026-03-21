@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:10:26 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 11:01:20 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 19:16:56 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # define EXIT_NOT_FOUND		127
 # define EXIT_SIGINT		130
 # define EXIT_SYNTAX_ERR	2
+# define PROMPT "何か打ち込んでみろッ！"
 
 # include "libft.h"
 # include <fcntl.h>
