@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:59 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 10:59:08 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 13:30:22 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,19 @@
 
 volatile sig_atomic_t	g_sig = 0;
 
-static void		read_prompt(t_env **env_list, struct termios *default_term);
+static void	read_prompt(t_env **env_list);
 
 // Save terminal information -> env list init -> read prompt -> status return
 int	main(int argc, char **argv, char **envp)
 {
 	t_env			*env_list;
 	int				exit_status;
-	struct termios	default_term;
 
 	(void)argc;
 	(void)argv;
 	rl_catch_signals = 0;
-	ft_memset(&default_term, 0, sizeof(default_term));
-	tcgetattr(STDIN_FILENO, &default_term);
 	env_list = env_init(envp);
-	read_prompt(&env_list, &default_term);
+	read_prompt(&env_list);
 	rl_clear_history();
 	exit_status = ft_atoi(get_env_value(env_list, "?"));
 	free_env(env_list);
@@ -37,13 +34,12 @@ int	main(int argc, char **argv, char **envp)
 }
 
 // read prompt -> exec_multiline
-static void	read_prompt(t_env **env_list, struct termios *default_term)
+static void	read_prompt(t_env **env_list)
 {
 	char	*line;
 
 	while (1)
 	{
-		tcsetattr(STDIN_FILENO, TCSANOW, default_term);
 		set_signal_interactive();
 		line = readline("何か打ち込んでみろ! ");
 		if (line == NULL)
