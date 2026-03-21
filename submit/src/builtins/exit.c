@@ -79,7 +79,8 @@ static int	ft_isoverflow(char *str)
 		digit = *str - '0';
 		if (sign == 1 && (res > (LLONG_MAX - digit) / 10))
 			return (1);
-		if (sign == -1 && (res > (-(LLONG_MIN + digit)) / 10))
+		if (sign == -1 && (res > LLONG_MAX / 10
+				|| (res == LLONG_MAX / 10 && digit > LLONG_MAX % 10 + 1)))
 			return (1);
 		res = res * 10 + digit;
 		str++;
