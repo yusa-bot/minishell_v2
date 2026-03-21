@@ -62,25 +62,22 @@ static int	ft_isnumeric(char *str)
 
 static int	ft_isoverflow(char *str)
 {
-	int			sign;
-	long long	res;
-	int			digit;
+	unsigned long long	res;
+	unsigned long long	limit;
+	int					digit;
 
-	sign = 1;
 	res = 0;
+	limit = (unsigned long long)LLONG_MAX;
 	if (*str == '+' || *str == '-')
 	{
 		if (*str == '-')
-			sign = -1;
+			limit = (unsigned long long)LLONG_MAX + 1;
 		str++;
 	}
 	while (*str)
 	{
 		digit = *str - '0';
-		if (sign == 1 && (res > (LLONG_MAX - digit) / 10))
-			return (1);
-		if (sign == -1 && (res > LLONG_MAX / 10
-				|| (res == LLONG_MAX / 10 && digit > LLONG_MAX % 10 + 1)))
+		if (res > (limit - digit) / 10)
 			return (1);
 		res = res * 10 + digit;
 		str++;
