@@ -99,7 +99,10 @@ static char	**append_match(char **matches, char *prefix,
 	}
 	new_array[i] = make_match_entry(prefix, new_str);
 	if (!new_array[i])
+	{
+		free(new_array);
 		return (NULL);
+	}
 	(*count)++;
 	new_array[*count] = NULL;
 	return (new_array);
