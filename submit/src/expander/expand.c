@@ -34,7 +34,10 @@ char	*append_char(char *str, char c)
 	len = ft_strlen(str);
 	new_str = (char *)malloc(sizeof(char) * (len + 2));
 	if (!new_str)
+	{
+		free(str);
 		return (NULL);
+	}
 	i = 0;
 	while (i < len)
 	{

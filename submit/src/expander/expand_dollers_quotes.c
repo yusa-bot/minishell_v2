@@ -39,6 +39,8 @@ char	*expand_string(char *str, t_env *env_list, int *has_wildcard)
 			res = handle_dollar(res, str, &i, env_list);
 		else if (ret == 0)
 			res = append_char(res, str[i++]);
+		if (!res)
+			return (NULL);
 	}
 	return (res);
 }
