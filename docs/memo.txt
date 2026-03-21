@@ -73,3 +73,42 @@ zennと交えてコード理解
 2.  **パイプにおけるリソース管理**: `exec_pipeline` においてファイル記述子（FD）がどのように管理されているか、また、リークやデッドロックを防ぐために親プロセスと子プロセスの両方ですべての FD を確実に閉じていることをどのように保証しているかを説明せよ。
 3.  **変数展開のロジック**: 展開プロセス、特に引用符の除去と環境変数の展開の順序をどのように処理しているかを説明せよ。
 4.  **シグナル状態の管理**: なぜシグナル処理にグローバル変数を選択したのか、また `rl_catch_signals = 0` の設定が `readline` との対話にどのように影響するかを説明せよ。
+
+---
+
+- AST
+
+<全体の流れ>
+parse_list()
+↓ 呼ぶ  ↑ 戻って処理
+parse_pipeline()
+↓ 呼ぶ  ↑ 戻って処理
+parse_command()
+   [単一コマンドに進む or subshellで再帰] に分岐
+      subshellの時: parse_listから再帰
+      NODE_CMDの時だけ、木の葉だから、先にnodeを作る
+         NODE_CMD: ここでparse_redirect
+            TK_HEREDOC: redir->quoted = 1 (デリミタ)
+
+1. left(コードだとnode)作る
+2. *tokens = (*tokens)->next; で classify token 飛ばす
+3. right作る
+4. node = new_node(type, node, right);
+
+---
+
+- heredoc
+parser時のredir->quotedの有無でデリミタのexpandするかを決定
+redir->filename = tmp_filename; で通常のredirectのようにexecできる
+
+---
+
+- pipe
+
+pipeは2つを子ロセスで実行 かつ fdを繋ぐ という2つの手法が入り組んでいる
+
+pipe(fd):
+	fd[0]:書(左), fd[1]:読(右) のプロセスを繋げる
+
+fork(): pids[0](左)の子プロ で fd[1] を書き込みにする -> |の左のコマンド exec_ast(node->left, env_list) を実行
+fork(): pids[1](右)の子プロ で fd[0] を読み込みにする -> |の右のコマンド exec_ast(node->right, env_list) を実行
