@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:43 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 19:53:41 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/21 20:28:24 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ t_token	*tokenize(char *line)
 	return (head);
 }
 
-// |, <, >, &, (, ) -> &&, ||, <<, >>
+// |, <, >, &, (, ) - if &' only return
 static t_token	*consume_operator(char **line_ptr)
 {
 	t_token_type	type;
