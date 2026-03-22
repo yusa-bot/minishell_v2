@@ -37,6 +37,8 @@
 # include <termios.h>
 # include <sys/ioctl.h>
 
+void	rl_replace_line(const char *text, int clear_undo);
+
 // Lexer ------------------------------------------------
 typedef enum e_token_type
 {
@@ -153,6 +155,7 @@ void	restore_fds(int saved_stdin, int saved_stdout);
 
 // heredoc.c
 int		process_heredoc(t_node *node, t_env *env_list);
+char	*read_heredoc_line(void);
 
 // generate_tmp_filename.c
 char	*generate_tmp_filename(void);

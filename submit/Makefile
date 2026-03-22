@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+         #
+#    By: fnakamur <fnakamur@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/15 15:34:32 by ayusa             #+#    #+#              #
-#    Updated: 2026/03/21 11:00:33 by ayusa            ###   ########.fr        #
+#    Updated: 2026/03/22 16:33:47 by fnakamur         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ SRCS = src/signal/signal.c src/signal/signal_heredoc.c \
 	src/executor/exec_line.c src/executor/exec_ast.c  src/executor/pipe.c  \
 	src/executor/exec_cmd/exec_cmd.c  src/executor/exec_cmd/redirect.c  \
 	src/executor/exec_external/exec_external.c  src/executor/exec_external/get_exec_path.c  \
-	src/heredoc/heredoc.c src/heredoc/generate_tmp_filename.c \
+	src/heredoc/heredoc.c src/heredoc/heredoc_utils.c src/heredoc/generate_tmp_filename.c \
 	src/env/env_init.c  src/env/env_util.c  src/env/env_access.c  \
 	src/builtins/cd.c  src/builtins/echo.c  src/builtins/env.c  src/builtins/exit.c  src/builtins/export.c  src/builtins/export_print.c  src/builtins/pwd.c  src/builtins/unset.c
 

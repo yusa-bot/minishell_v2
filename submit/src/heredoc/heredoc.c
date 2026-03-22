@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
+/*   By: fnakamur <fnakamur@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:10 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 21:18:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/22 16:34:08 by fnakamur         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ static void	heredoc_read_loop(t_redirect *redir, t_env *env_list, int fd)
 
 	while (1)
 	{
-		line = readline("ウラ> ");
+		ft_putstr_fd("ウラ> ", STDOUT_FILENO);
+		line = read_heredoc_line();
 		if (line == NULL
 			|| ft_strcmp(line, redir->filename) == 0)
 		{
