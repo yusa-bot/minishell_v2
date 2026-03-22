@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand_dollers_quotes.c                            :+:      :+:    :+:   */
+/*   expand_string.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:28:25 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 21:49:54 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/22 13:30:26 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ static char	*handle_dollar(char *res, char *str, int *i,
 	return (res);
 }
 
-// return value
+// return resolved value
 static char	*resolve_dollar_var(char *str, int *i, t_env *env_list)
 {
 	int		start;
