@@ -47,17 +47,17 @@ static int	ft_isnumeric(char *str)
 	i = 0;
 	if (!str || str[0] == '\0')
 		return (0);
+	while (str[i] == ' ' || str[i] == '\t')
+		i++;
 	if (str[i] == '+' || str[i] == '-')
 		i++;
-	if (str[i] == '\0')
+	if (!ft_isdigit(str[i]))
 		return (0);
-	while (str[i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (0);
+	while (ft_isdigit(str[i]))
 		i++;
-	}
-	return (1);
+	while (str[i] == ' ' || str[i] == '\t')
+		i++;
+	return (str[i] == '\0');
 }
 
 static int	ft_isoverflow(char *str)
@@ -68,6 +68,8 @@ static int	ft_isoverflow(char *str)
 
 	res = 0;
 	limit = (unsigned long long)LLONG_MAX;
+	while (*str == ' ' || *str == '\t')
+		str++;
 	if (*str == '+' || *str == '-')
 	{
 		if (*str == '-')
