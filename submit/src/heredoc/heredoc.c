@@ -57,8 +57,10 @@ static int	read_heredoc(t_redirect *redir, t_env *env_list,
 	pid_t	pid;
 	int		status;
 	char	*tmp_filename;
+	struct	termios  term;
 
 	tmp_filename = generate_tmp_filename();
+	tcgetattr(STDIN_FILENO, &term);
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid < 0)
@@ -66,6 +68,7 @@ static int	read_heredoc(t_redirect *redir, t_env *env_list,
 	if (pid == 0)
 		heredoc_child(redir, env_list, tmp_filename, root);
 	waitpid(pid, &status, 0);
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	return (heredoc_parent(redir, tmp_filename, status));
 }
 
