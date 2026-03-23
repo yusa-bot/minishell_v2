@@ -28,7 +28,7 @@ void	expand_args(t_node *node, t_env *env_list)
 	while (node->args[i])
 	{
 		expanded = expand_string(node->args[i],
-				env_list, &has_wildcard);
+				env_list, &has_wildcard, 0);
 		if (handle_expand_arg(node, &i, expanded, has_wildcard))
 			continue ;
 		free(node->args[i]);
