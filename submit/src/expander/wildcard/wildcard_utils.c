@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   wildcard_match.c                                   :+:      :+:    :+:   */
+/*   wildcard_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:58:05 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/18 17:05:05 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/23 18:37:47 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ static void	swap_if_needed(char **array, int j)
 {
 	char	*tmp;
 
-	if (ft_strcmp(array[j], array[j + 1]) > 0)
+	if (ft_strcmp_ci(array[j], array[j + 1]) > 0)
 	{
 		tmp = array[j];
 		array[j] = array[j + 1];
