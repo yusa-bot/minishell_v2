@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:33 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/23 20:20:09 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/18 20:16:50 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	exec_pipe_left(t_node *n, t_env **el, int fd[2], t_node *rt)
 	dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
 	status = exec_ast(n->left, el, rt);
-	cleanup_and_exit(status, n->left, *el);
+	cleanup_and_exit(status, rt, *el);
 }
 
 static void	exec_pipe_right(t_node *n, t_env **el, int fd[2], t_node *rt)
@@ -60,5 +60,5 @@ static void	exec_pipe_right(t_node *n, t_env **el, int fd[2], t_node *rt)
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
 	status = exec_ast(n->right, el, rt);
-	cleanup_and_exit(status, n->right, *el);
+	cleanup_and_exit(status, rt, *el);
 }
