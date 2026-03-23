@@ -60,11 +60,14 @@ static int	expand_redir_wildcard(t_redirect *redir, char *expanded)
 		redir->filename = new_filename;
 		return (0);
 	}
+	free_str_array(matches);
+	free(expanded);
+	if (count == 0)
+		return (0);
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(redir->filename, STDERR_FILENO);
 	ft_putstr_fd(": ambiguous redirect\n", STDERR_FILENO);
-	free_str_array(matches);
-	free(expanded);
+	redir->filename[0] = '\0';
 	return (1);
 }
 
