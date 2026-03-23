@@ -27,7 +27,7 @@ void	expand_redirects(t_node *node, t_env *env_list)
 		if (redir->type != TK_HEREDOC)
 		{
 			expanded = expand_string(
-					redir->filename, env_list, &has_wildcard, 0);
+					redir->filename, env_list, &has_wildcard);
 			if (has_wildcard
 				&& expand_redir_wildcard(redir, expanded))
 				return ;

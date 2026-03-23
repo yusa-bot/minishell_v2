@@ -179,7 +179,7 @@ int		has_unquoted_dollar(char *str);
 
 // expand_string.c
 char	*expand_string(char *str, t_env *env_list,
-			int *has_wildcard, int heredoc);
+			int *has_wildcard);
 
 // wildcard/wildcard.c
 char	**expand_wildcard(char *pattern);
