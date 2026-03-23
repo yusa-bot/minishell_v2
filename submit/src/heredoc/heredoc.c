@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:11:10 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 21:18:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/23 14:15:52 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ int	process_heredoc(t_node *node, t_env *env_list)
 static int	read_heredoc(t_redirect *redir, t_env *env_list,
 		t_node *root)
 {
-	pid_t	pid;
-	int		status;
-	char	*tmp_filename;
-	struct	termios  term;
+	pid_t			pid;
+	int				status;
+	char			*tmp_filename;
+	struct termios	term;
 
 	tmp_filename = generate_tmp_filename();
 	tcgetattr(STDIN_FILENO, &term);
