@@ -1,3 +1,6 @@
 [submodule "submit/libft"]
 	path = submit/libft
 	url = https://github.com/yusa-bot/libft
+[submodule "agentic-review"]
+	path = agentic-review
+	url = git@github.com:fujiki-1emon/agentic-review-minishell.git
