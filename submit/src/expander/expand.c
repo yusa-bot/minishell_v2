@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/12 21:28:34 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/23 21:22:07 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/23 21:30:51 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static char	*resolve_heredoc_var(char *str, int *i, t_env *env_list);
 static char	*expand_heredoc_dollar(char *res, char *str, int *i,
-			t_env *env_list);
+				t_env *env_list);
 
 //  expand args[i] or redir->filename
 void	expand_node(t_node *node, t_env *env_list)

@@ -6,16 +6,15 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:28:25 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/22 13:30:26 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/23 21:30:13 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 static int	process_expand_char(char *str, int *i, int *quotes,
-			int *has_wildcard);
-static char	*handle_dollar(char *res, char *str, int *i,
-			t_env *env_list);
+				int *has_wildcard);
+static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list);
 static char	*resolve_dollar_var(char *str, int *i, t_env *env_list);
 
 // Expand $ and quotes
