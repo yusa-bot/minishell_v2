@@ -27,7 +27,7 @@ char	*expand_heredoc_line(char *line, t_env *env_list)
 	int		has_wildcard;
 	char	*result;
 
-	result = expand_string(line, env_list, &has_wildcard);
+	result = expand_string(line, env_list, &has_wildcard, 1);
 	free(line);
 	return (result);
 }
