@@ -14,6 +14,7 @@
 
 static int	expand_redir_wildcard(t_redirect *redir, char *expanded);
 static void	handle_empty_redir(t_redirect *redir, char *expanded);
+static void	redir_ambiguous_error(t_redirect *redir);
 
 void	expand_redirects(t_node *node, t_env *env_list)
 {
@@ -27,7 +28,7 @@ void	expand_redirects(t_node *node, t_env *env_list)
 		if (redir->type != TK_HEREDOC)
 		{
 			expanded = expand_string(
-					redir->filename, env_list, &has_wildcard, 0);
+					redir->filename, env_list, &has_wildcard);
 			if (has_wildcard
 				&& expand_redir_wildcard(redir, expanded))
 				return ;
@@ -64,11 +65,16 @@ static int	expand_redir_wildcard(t_redirect *redir, char *expanded)
 	free(expanded);
 	if (count == 0)
 		return (0);
+	redir_ambiguous_error(redir);
+	return (1);
+}
+
+static void	redir_ambiguous_error(t_redirect *redir)
+{
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(redir->filename, STDERR_FILENO);
 	ft_putstr_fd(": ambiguous redirect\n", STDERR_FILENO);
 	redir->filename[0] = '\0';
-	return (1);
 }
 
 // ambiguous redirect
