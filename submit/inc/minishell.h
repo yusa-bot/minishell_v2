@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 22:10:26 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 21:59:51 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/24 22:36:16 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,9 @@ int		exec_pipeline(t_node *node, t_env **env_list, t_node *root);
 // exec_cmd/redirect.c
 int		apply_redirects(t_redirect *redirects);
 void	restore_fds(int saved_stdin, int saved_stdout);
+
+// exec_cmd/handle_redir_node.c
+int		handle_redir_node(t_redirect *current);
 
 // heredoc -----------------------------------------------
 
