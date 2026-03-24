@@ -12,13 +12,20 @@
 
 #include "../../inc/minishell.h"
 
-int	builtin_pwd(void)
+int	builtin_pwd(t_env **env_list)
 {
 	char	cwd[PATH_MAX];
+	char	*pwd_val;
 
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
 	{
 		ft_putendl_fd(cwd, STDOUT_FILENO);
+		return (0);
+	}
+	pwd_val = get_env_value(*env_list, "PWD");
+	if (pwd_val)
+	{
+		ft_putendl_fd(pwd_val, STDOUT_FILENO);
 		return (0);
 	}
 	perror("pwd");

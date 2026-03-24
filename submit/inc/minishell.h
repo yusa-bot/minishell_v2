@@ -105,7 +105,7 @@ int		builtin_env(t_env *env_list);
 int		builtin_exit(char **args, t_env **env_list, t_node *root);
 int		builtin_export(char **args, t_env **env_list);
 void	print_exported_env(t_env *env_list);
-int		builtin_pwd(void);
+int		builtin_pwd(t_env **env_list);
 int		builtin_unset(char **args, t_env **env_list);
 
 // env ---------------------------------------------------

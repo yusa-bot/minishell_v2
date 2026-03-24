@@ -83,7 +83,7 @@ static int	exec_builtin(char **args, t_env **env_list, t_node *root)
 	if (ft_strcmp(args[0], "cd") == 0)
 		return (builtin_cd(args, env_list));
 	if (ft_strcmp(args[0], "pwd") == 0)
-		return (builtin_pwd());
+		return (builtin_pwd(env_list));
 	if (ft_strcmp(args[0], "export") == 0)
 		return (builtin_export(args, env_list));
 	if (ft_strcmp(args[0], "unset") == 0)
