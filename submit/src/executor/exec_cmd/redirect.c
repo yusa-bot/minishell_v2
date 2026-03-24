@@ -15,6 +15,7 @@
 static int	handle_redir_node(t_redirect *current);
 static int	handle_input(t_redirect *redir);
 static int	handle_output(t_redirect *redir);
+static int	handle_rdwr(t_redirect *redir);
 
 int	apply_redirects(t_redirect *redirects)
 {
@@ -45,6 +46,11 @@ static int	handle_redir_node(t_redirect *current)
 		|| current->type == TK_REDIR_APPEND)
 	{
 		if (handle_output(current) < 0)
+			return (1);
+	}
+	else if (current->type == TK_REDIR_RDWR)
+	{
+		if (handle_rdwr(current) < 0)
 			return (1);
 	}
 	return (0);
@@ -85,6 +91,22 @@ static int	handle_output(t_redirect *redir)
 		return (-1);
 	}
 	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	return (0);
+}
+
+static int	handle_rdwr(t_redirect *redir)
+{
+	int	fd;
+
+	fd = open(redir->filename, O_RDWR | O_CREAT, 0644);
+	if (fd < 0)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		perror(redir->filename);
+		return (-1);
+	}
+	dup2(fd, STDIN_FILENO);
 	close(fd);
 	return (0);
 }
