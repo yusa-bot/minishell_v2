@@ -6,20 +6,19 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 16:28:25 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/22 13:30:26 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/23 21:30:13 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
 static int	process_expand_char(char *str, int *i, int *quotes,
-				int *has_wildcard, int heredoc);
-static char	*handle_dollar(char *res, char *str, int *i,
-				t_env *env_list);
+				int *has_wildcard);
+static char	*handle_dollar(char *res, char *str, int *i, t_env *env_list);
 static char	*resolve_dollar_var(char *str, int *i, t_env *env_list);
 
 // Expand $ and quotes
-char	*expand_string(char *str, t_env *env_list, int *has_wildcard, int heredoc)
+char	*expand_string(char *str, t_env *env_list, int *has_wildcard)
 {
 	char	*res;
 	int		i;
@@ -34,7 +33,7 @@ char	*expand_string(char *str, t_env *env_list, int *has_wildcard, int heredoc)
 		*has_wildcard = 0;
 	while (str[i] != '\0')
 	{
-		ret = process_expand_char(str, &i, quotes, has_wildcard, heredoc);
+		ret = process_expand_char(str, &i, quotes, has_wildcard);
 		if (ret == -1)
 			res = handle_dollar(res, str, &i, env_list);
 		else if (ret == 0)
@@ -47,15 +46,15 @@ char	*expand_string(char *str, t_env *env_list, int *has_wildcard, int heredoc)
 
 // Processing a single character
 static int	process_expand_char(char *str, int *i, int *quotes,
-		int *has_wildcard, int heredoc)
+		int *has_wildcard)
 {
-	if (!heredoc && str[*i] == '\'' && !quotes[1])
+	if (str[*i] == '\'' && !quotes[1])
 	{
 		quotes[0] = !quotes[0];
 		(*i)++;
 		return (1);
 	}
-	if (!heredoc && str[*i] == '\"' && !quotes[0])
+	if (str[*i] == '\"' && !quotes[0])
 	{
 		quotes[1] = !quotes[1];
 		(*i)++;
