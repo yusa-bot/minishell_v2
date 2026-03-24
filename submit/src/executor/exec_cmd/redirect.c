@@ -15,6 +15,8 @@
 static int	handle_redir_node(t_redirect *current);
 static int	handle_input(t_redirect *redir);
 static int	handle_output(t_redirect *redir);
+static int	is_heredoc_tmpfile(t_redirect *redir);
+static void	cleanup_pending_heredocs(t_redirect *redir);
 
 int	apply_redirects(t_redirect *redirects)
 {
@@ -24,7 +26,10 @@ int	apply_redirects(t_redirect *redirects)
 	while (current)
 	{
 		if (handle_redir_node(current) != 0)
+		{
+			cleanup_pending_heredocs(current);
 			return (1);
+		}
 		current = current->next;
 	}
 	return (0);
@@ -87,6 +92,27 @@ static int	handle_output(t_redirect *redir)
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
 	return (0);
+}
+
+static int	is_heredoc_tmpfile(t_redirect *redir)
+{
+	const char	*prefix;
+
+	prefix = "/tmp/.minishell_heredoc_";
+	return (redir
+		&& redir->type == TK_HEREDOC
+		&& redir->filename
+		&& ft_strncmp(redir->filename, prefix, ft_strlen(prefix)) == 0);
+}
+
+static void	cleanup_pending_heredocs(t_redirect *redir)
+{
+	while (redir)
+	{
+		if (is_heredoc_tmpfile(redir))
+			unlink(redir->filename);
+		redir = redir->next;
+	}
 }
 
 void	restore_fds(int saved_stdin, int saved_stdout)
