@@ -41,7 +41,10 @@ static void	read_prompt(t_env **env_list)
 	while (1)
 	{
 		set_signal_interactive();
-		line = readline(PROMPT);
+		if (isatty(STDIN_FILENO))
+			line = readline(PROMPT);
+		else
+			line = readline(NULL);
 		if (line == NULL)
 		{
 			ft_putendl_fd("exit", STDERR_FILENO);
