@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 17:30:58 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 19:29:43 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/26 13:44:02 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,15 @@ static void	child_cmd_not_found(char **args, t_env **env_list, t_node *root)
 static void	child_exec_failed(char **args, char *path, char **envp)
 {
 	struct stat	st;
+	int			saved_errno;
 
+	saved_errno = errno;
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(args[0], STDERR_FILENO);
 	if (stat(path, &st) == 0 && S_ISDIR(st.st_mode))
 		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+	else if (saved_errno == ENOEXEC)
+		ft_putstr_fd(": Exec format error\n", STDERR_FILENO);
 	else
 		ft_putstr_fd(": Permission denied\n", STDERR_FILENO);
 	free(path);
