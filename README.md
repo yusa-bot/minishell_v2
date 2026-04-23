@@ -77,6 +77,9 @@ make fclean
 
 - [JUNのブログ](https://jun-networks.hatenablog.com/entry/2021/07/02/034002)
 
+## Pre Research
+wrote: [minishell のための 知識](https://zenn.dev/ayusa/articles/22a73b6875639b)
+
 ## AI Usage
 
 In this project, AI (Claude Code, Gemini) was used for the following tasks:
