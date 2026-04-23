@@ -1,35 +1,82 @@
+<div align="center">
+  <a href="https://github.com/yusa-bot/minishell_v2/blob/master/docs/icon.png">
+    <img src="docs/icon.png" width="215" alt="minishell Logo" />
+  </a>
+  <h1>
+    <b>minishell</b>
+  </h1>
+</div>
+
 *This project has been created as part of the 42 curriculum by ayusa, fnakamur*
+
+> **Note:** このリポジトリは、課題として提出した成果物単体ではなく、**開発過程で書かれた設計メモ・試行コード・レビューログ・pre-review ツールまでを含む「開発プロセス込み」のリポジトリ**である。提出用のクリーンな実装だけを見たい場合は [submit-real/](submit-real/) 配下を参照。
+
+### Pre Research
+wrote: [minishellのための知識](https://zenn.dev/ayusa/articles/22a73b6875639b)
+
+## Table of Contents
+
+1. [Repository Layout](#repository-layout)
+2. [Description](#description)
+   - [Supported features](#supported-features)
+   - [implemented Built-in commands](#implemented-built-in-commands)
+3. [Instructions](#instructions)
+4. [Development logs & project explanation](#development-logs--project-explanation)
+   - [working/](#working)
+   - [algorithm memo](#algorithm-memo)
+   - [test](#test)
+     - [tester](#tester)
+     - [valgrind](#valgrind)
+   - [Agentic Review (pre-review pipeline)](#agentic-review-pre-review-pipeline)
+5. [Git / GitHub 運用](#git--github-運用)
+6. [Resources](#resources)
+   - [reference](#reference)
+   - [AI Usage](#ai-usage)
+
+# Repository Layout
+
+ルート直下の主なディレクトリは以下の通り。
+
+| Path | 内容 |
+|------|------|
+| [working/](working/) | 動作させるための初期実装コード |
+| [submit/](submit/) | working/ を基に、コード規約`norm`を遵守するため、コメントアウトの排除や関数分けに対応したver. |
+| [submit-real/](submit-real/) | 実際に提出するファイルのみを含んだsub module |
+| [agentic-review/](agentic-review/) | Gemini CLI を用いた`fnakamur`自作の pre-review パイプライン |
+| [docs/](docs/) | 管理用メモ等 |
+| [scripts/](scripts/) | 補助スクリプト |
 
 # Description
 
-A minimal Unix shell implementation in C that replicates core bash behavior.
+Unix シェルの中核的な bash 挙動を再現する、C 言語による最小限の実装である。
 
-The shell reads user input interactively via `readline`, parses it into an Abstract Syntax Tree (AST), and executes commands with proper handling of pipes, redirections, environment variables, and signals. The pipeline is composed of four stages: **Lexer → Parser → Expander → Executor**.
+このシェルは `readline` を介して対話的にユーザー入力を読み取り、抽象構文木 (AST) に解析した上で、パイプ・リダイレクト・環境変数・シグナルを適切に扱いながらコマンドを実行する。<br>
+パイプラインは **Lexer → Parser → Expander → Executor** の 4 段階で構成されている。
 
-**Supported features:**
+### Supported features
 - Pipes (`|`) and pipelines
 - Input/output redirections (`<`, `>`, `>>`, `<>`)
-- Heredoc (`<<`) with variable expansion (unless the delimiter is quoted)
+- Heredoc (`<<`) with variable expansion
 - Logical operators (`&&`, `||`) with correct precedence
 - Subshells via parentheses (`(...)`)
 - Variable expansion (`$VAR`, `$?`)
 - Wildcard expansion (`*`) in the current directory
-- Single quotes (prevent all expansion) and double quotes (allow `$` expansion)
+- Single quotes and double quotes
 - Command history (arrow keys)
 - Signal handling: `Ctrl+C` (SIGINT), `Ctrl+D` (EOF), `Ctrl+\` (SIGQUIT)
 
-**Built-in commands:**
+### implemented Built-in commands
 | Command | Description |
 |---------|-------------|
-| `echo [-n]` | Print arguments to stdout |
-| `cd [dir]` | Change working directory |
-| `pwd` | Print current working directory |
-| `export [name[=value]]` | Set or display exported environment variables |
-| `unset [name]` | Remove environment variables |
-| `env` | Display all environment variables |
-| `exit [n]` | Exit the shell with status `n` |
+| `echo [-n]` | 引数を標準出力に出力 |
+| `cd [dir]` | カレントディレクトリを変更 |
+| `pwd` | カレントディレクトリを表示 |
+| `export [name[=value]]` | エクスポート環境変数を設定または表示 |
+| `unset [name]` | 環境変数を削除 |
+| `env` | すべての環境変数を表示 |
+| `exit [n]` | ステータス `n` でシェルを終了 |
 
-# Instructions
+## Instructions
 
 **Requirements**
 
@@ -47,22 +94,23 @@ make
 ./minishell
 ```
 
-The shell launches with the prompt `minishell$`.
+The shell launches with the prompt `何か打ち込んでみろッ！`.
+(feat.モモンガ@ナガノ)
 
 **Usage examples**
 ```sh
-minishell$ echo "Hello, world!"
-minishell$ ls -la | grep ".c" | wc -l
-minishell$ cat < infile.txt > outfile.txt
-minishell$ mkdir /tmp/testdir && echo "created"
-minishell$ cat nonexistent.txt || echo "file not found"
-minishell$ false || true && echo "success"
-minishell$ export FOO=bar && echo $FOO
-minishell$ (echo hello; echo world) | cat
-minishell$ cat << EOF
-> line1
-> EOF
-minishell$ echo $?
+何か打ち込んでみろッ echo "Hello, world!"
+何か打ち込んでみろッ ls -la | grep ".c" | wc -l
+何か打ち込んでみろッ cat < infile.txt > outfile.txt
+何か打ち込んでみろッ mkdir /tmp/testdir && echo "created"
+何か打ち込んでみろッ cat nonexistent.txt || echo "file not found"
+何か打ち込んでみろッ false || true && echo "success"
+何か打ち込んでみろッ export FOO=bar && echo $FOO
+何か打ち込んでみろッ (echo hello; echo world) | cat
+何か打ち込んでみろッ cat << EOF
+ウラ> line1
+ウラ> EOF
+何か打ち込んでみろッ echo $?
 ```
 
 **Cleanup**
@@ -70,21 +118,127 @@ minishell$ echo $?
 make fclean
 ```
 
-# Resources
+# Development logs & project explanation
+
+## working/
+[working/file_architecture](working/file_architecture)に初期コードの関数architectureを明記。<br>
+プロトタイプ宣言をtree表示で管理することで全体を把握。
+
+## algorithm memo
+
+### AST
+```
+<全体の流れ>
+parse_list()
+↓ 呼ぶ  ↑ 戻って処理
+parse_pipeline()
+↓ 呼ぶ  ↑ 戻って処理
+parse_command()
+   [単一コマンドに進む or subshellで再帰] に分岐
+      subshellの時: parse_listから再帰
+      NODE_CMDの時だけ、木の葉だから、先にnodeを作る
+         NODE_CMD: ここでparse_redirect
+            TK_HEREDOC: redir->quoted = 1 (デリミタ)
+
+1. left(コードだとnode)作る
+2. *tokens = (*tokens)->next; で classify token 飛ばす
+3. right作る
+4. node = new_node(type, node, right);
+```
+
+### heredoc
+parser時のredir->quotedの有無でデリミタのexpandするかを決定<br>
+redir->filename = tmp_filename; で通常のredirectのようにexecできる
+
+
+### pipe
+
+```
+pipeは2つを子プロセスで実行 かつ fdを繋ぐ という2つの手法が入り組んでいる
+
+pipe(fd):
+    fd[0]:書(左), fd[1]:読(右) のプロセスを繋げる
+
+fork(): pids[0](左)の子プロセス で fd[1] を書き込みにする -> |の左のコマンド exec_ast(node->left, env_list) を実行
+fork(): pids[1](右)の子プロセス で fd[0] を読み込みにする -> |の右のコマンド exec_ast(node->right, env_list) を実行
+```
+
+### その他
+
+`working/---project---/` 配下に機能ごとの実装前メモを置き、理解を促進。
+
+- [ワイルドカードのexpand仕様](working/---project---/src/expander/_expand.c)
+- [t_node構造体へのparse格納仕様](working/---project---/src/parser/_ex_parser.c)
+- [signalの仕様](working/---project---/src/signal/_signal.c)
+
+## test
+
+### tester
+42生が自作したtesterを利用。
+
+[42_minishell_tester](https://github.com/nafuka11/42_minishell_tester.git)<br>
+[minishell_test](https://github.com/M2U7BF/minishell_test.git)<br>
+[minishell_tester](https://github.com/LucasKuhn/minishell_tester.git)
+
+### valgrind
+
+メモリリークの検出に使用。<br>
+readline内部のリークは免責されるため、[docs/minishell.supp](docs/minishell.supp)で、readlineのリークを除外。
+
+
+## Agentic Review (pre-review pipeline)
+
+提出前の品質を底上げするために、[agentic-review/](agentic-review/) というサブモジュール化した **`fnakamur`自作の pre-review パイプライン** を繰り返し回して開発を進めた。<br>
+42 のpeer evaluationを受ける前に、LLM エージェントに同等以上の厳しさで一次レビューをさせ、peer evaluationの品質を向上する目的もある。<br>
+(42では、課題のクリアを生徒同士のpeer evaluationのみで審査している。)
+
+#### 仕組み
+
+1. `docs/en.subject.pdf` (課題要件) と `docs/correction.pdf` (評価シート) を絶対的な仕様として読み込ませる。
+2. [agentic-review/GEMINI.ja.md](agentic-review/GEMINI.ja.md) で **「非常に厳格なAggressive Reviewer」** というペルソナを与え、Gemini CLI (`@google/gemini-cli`) で起動する。
+3. エージェントは以下を自動で実行する:
+   - **禁止関数の静的監査**: `Allowed Functions` / `Forbidden Functions` リストを PDF から抽出し、違反を即 FAIL にする
+   - **破壊的テスト**: NULL 引数・境界値・異常入力・valgrind による 1 バイトリークまで追及
+   - **説明要求リストの生成**: 非自明な実装判断 (所有権、プロセス制御、パース処理、エッジケース) に対して「なぜそう書いたか」をレビュイー側に答えさせる質問項目を抽出
+   - **correction.pdf 項目ごとのセクション化された Markdown レポート**を `outputs/report.ja.md` に生成
+4. 結果は [agentic-review/reports/](agentic-review/reports/) にバージョン別に蓄積し、次回のagentic-review時にこのdirを参照させ、testの重複を防いだ。
+
+#### 技術的に工夫した点
+
+- **PDF を直接仕様源にする**: 課題 PDF (`subject.pdf`, `correction.pdf`) をそのままレビュー基準として食わせることで、人間がルールを書き写す過程で情報が劣化するのを防いでいる。
+- **ペルソナで妥協を封じる**: 「『動くから』は説明として認めない」などの制約を `GEMINI.ja.md` に明文化し、甘い合格判定が出ないように縛った。
+- **レビュー履歴をサブモジュール化**: 本体リポジトリから分離することで、レビュー用環境 (Node.js v20 系, Gemini CLI, 認証情報) と実装本体の依存を混ぜずに済むようにした。
+- **校舎 PC でも再現可能**: `scripts/update_node.sh` で古い Node.js を v20/v22 系に更新し、`/tmp/.agent` で完結させて認証情報を片付け時に一括で削除できるようにした。
+
+
+## Git / GitHub 運用
+
+- **GitHub**: testやAgentic Reviewで見つかった問題点をissueで管理し、優先度をlabelで表現することで対応是非を決定。
+- **Git submodule**: 他課題で共通に利用するリポジトリを分離。
+
+
+## Resources
+
+### reference
 - [低レイヤを知りたい人のためのCコンパイラ作成入門](https://www.sigbus.info/compilerbook#%E7%94%9F%E6%88%90%E8%A6%8F%E5%89%87%E3%81%AB%E3%82%88%E3%82%8B%E6%96%87%E6%B3%95%E3%81%AE%E5%AE%9A%E7%BE%A9)
 
 - [minishellで学んだこと](https://zenn.dev/khanadat/articles/79b570722a65f4)
 
 - [JUNのブログ](https://jun-networks.hatenablog.com/entry/2021/07/02/034002)
 
-## Pre Research
-wrote: [minishell のための 知識](https://zenn.dev/ayusa/articles/22a73b6875639b)
+### AI Usage
 
-## AI Usage
+このプロジェクトでは、以下の用途で AI (Claude Code, Gemini) を利用した:
 
-In this project, AI (Claude Code, Gemini) was used for the following tasks:
-- Generating diverse test cases and edge-case prompts to verify that each shell feature (redirections, heredoc, wildcard, subshell) behaved correctly
-- Providing sample usage of permitted library functions (e.g., `readline`, `tcgetattr`, `waitpid`) to clarify their interfaces before writing the actual implementation
-- Norminette compliance review: checking that function lengths, variable counts, and formatting rules were respected during refactoring
-- Receiving a wide variety of shell prompts to understand the features required by the assignment
-- Obtaining simple sample code for permitted functions and running it hands-on to build understanding
+#### 実装前
+- Claude Codeで使用許可関数一覧のmanを叩き、関数の仕様理解
+- 各使用許可関数のインターフェースを把握する目的で、[サンプルコード](https://github.com/yusa-bot/minishell_v2/blob/master/working/sample_code.c)を生成
+
+- 課題で要求される機能を理解するために、多種多様なシェルプロンプトを生成
+
+#### test
+- シェルの各機能 (リダイレクト、ヒアドキュメント、ワイルドカード、サブシェル) が正しく動作することを検証するため、多様なテストケースやエッジケースのプロンプトを生成 ([log](https://github.com/yusa-bot/minishell_v2/blob/master/docs/claude_log.txt))
+
+- Norminette準拠のレビュー: リファクタリング時に関数の長さ、変数の数、フォーマットのルールが守られているかを確認
+
+- 本README.mdの作成援助
