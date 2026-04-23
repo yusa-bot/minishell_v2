@@ -6,7 +6,7 @@
 #    By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/03/15 15:34:32 by ayusa             #+#    #+#              #
-#    Updated: 2026/03/21 11:00:33 by ayusa            ###   ########.fr        #
+#    Updated: 2026/03/24 22:37:02 by ayusa            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ SRCS = src/signal/signal.c src/signal/signal_heredoc.c \
 	src/expander/redirects_expander/expand_redirects.c  \
 	src/expander/wildcard/wildcard.c  src/expander/wildcard/wildcard_utils.c  \
 	src/executor/exec_line.c src/executor/exec_ast.c  src/executor/pipe.c  \
-	src/executor/exec_cmd/exec_cmd.c  src/executor/exec_cmd/redirect.c  \
+	src/executor/exec_cmd/exec_cmd.c  src/executor/exec_cmd/redirect.c src/executor/exec_cmd/handle_redir_node.c \
 	src/executor/exec_external/exec_external.c  src/executor/exec_external/get_exec_path.c  \
 	src/heredoc/heredoc.c src/heredoc/generate_tmp_filename.c \
 	src/env/env_init.c  src/env/env_util.c  src/env/env_access.c  \

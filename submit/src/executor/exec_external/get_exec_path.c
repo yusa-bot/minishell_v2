@@ -6,7 +6,7 @@
 /*   By: ayusa <ayusa@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 17:39:34 by ayusa             #+#    #+#             */
-/*   Updated: 2026/03/21 16:34:37 by ayusa            ###   ########.fr       */
+/*   Updated: 2026/03/27 10:41:09 by ayusa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ static char	*try_exec_path(char *cmd, char *path_env, size_t len)
 	free(dir);
 	full_path = ft_strjoin(tmp, cmd);
 	free(tmp);
-	if (full_path && access(full_path, X_OK) == 0)
+	if (full_path && access(full_path, F_OK) == 0)
 		return (full_path);
 	free(full_path);
 	return (NULL);
