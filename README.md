@@ -192,23 +192,7 @@ readline内部のリークは免責されるため、[docs/minishell.supp](docs/
 42 のpeer evaluationを受ける前に、LLM エージェントに同等以上の厳しさで一次レビューをさせ、peer evaluationの品質を向上する目的もある。<br>
 (42では、課題のクリアを生徒同士のpeer evaluationのみで審査している。)
 
-#### 仕組み
-
-1. `docs/en.subject.pdf` (課題要件) と `docs/correction.pdf` (評価シート) を絶対的な仕様として読み込ませる。
-2. [agentic-review/GEMINI.ja.md](agentic-review/GEMINI.ja.md) で **「非常に厳格なAggressive Reviewer」** というペルソナを与え、Gemini CLI (`@google/gemini-cli`) で起動する。
-3. エージェントは以下を自動で実行する:
-   - **禁止関数の静的監査**: `Allowed Functions` / `Forbidden Functions` リストを PDF から抽出し、違反を即 FAIL にする
-   - **破壊的テスト**: NULL 引数・境界値・異常入力・valgrind による 1 バイトリークまで追及
-   - **説明要求リストの生成**: 非自明な実装判断 (所有権、プロセス制御、パース処理、エッジケース) に対して「なぜそう書いたか」をレビュイー側に答えさせる質問項目を抽出
-   - **correction.pdf 項目ごとのセクション化された Markdown レポート**を `outputs/report.ja.md` に生成
-4. 結果は [agentic-review/reports/](agentic-review/reports/) にバージョン別に蓄積し、次回のagentic-review時にこのdirを参照させ、testの重複を防いだ。
-
-#### 技術的に工夫した点
-
-- **PDF を直接仕様源にする**: 課題 PDF (`subject.pdf`, `correction.pdf`) をそのままレビュー基準として食わせることで、人間がルールを書き写す過程で情報が劣化するのを防いでいる。
-- **ペルソナで妥協を封じる**: 「『動くから』は説明として認めない」などの制約を `GEMINI.ja.md` に明文化し、甘い合格判定が出ないように縛った。
-- **レビュー履歴をサブモジュール化**: 本体リポジトリから分離することで、レビュー用環境 (Node.js v20 系, Gemini CLI, 認証情報) と実装本体の依存を混ぜずに済むようにした。
-- **校舎 PC でも再現可能**: `scripts/update_node.sh` で古い Node.js を v20/v22 系に更新し、`/tmp/.agent` で完結させて認証情報を片付け時に一括で削除できるようにした。
+課題PDF等を仕様源として Gemini CLI に「Aggressive Reviewer」ペルソナで静的監査・破壊的テスト・説明要求リスト生成までを自動実行し、Markdown レポートとして蓄積する。<br>
 
 
 ## Git / GitHub 運用
