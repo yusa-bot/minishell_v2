@@ -95,7 +95,6 @@ make
 ```
 
 The shell launches with the prompt `何か打ち込んでみろッ！`.
-(feat.モモンガ@ナガノ)
 
 **Usage examples**
 ```sh
