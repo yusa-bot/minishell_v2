@@ -192,7 +192,7 @@ readline内部のリークは免責されるため、[docs/minishell.supp](docs/
 42 のpeer evaluationを受ける前に、LLM エージェントに同等以上の厳しさで一次レビューをさせ、peer evaluationの品質を向上する目的もある。<br>
 (42では、課題のクリアを生徒同士のpeer evaluationのみで審査している。)
 
-課題PDF等を仕様源として Gemini CLI に「Aggressive Reviewer」ペルソナで静的監査・破壊的テスト・説明要求リスト生成までを自動実行し、Markdown レポートとして蓄積する。<br>
+課題PDF等を仕様源として Gemini CLI に「Aggressive Reviewer」ペルソナで静的監査・破壊的テスト・説明要求リスト生成までを自動実行し、Markdown レポートとして蓄積し、以降のpre-reviewやコード修正に利用。
 
 
 ## Git / GitHub 運用
