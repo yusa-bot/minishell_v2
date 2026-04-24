@@ -9,7 +9,7 @@
 
 *This project has been created as part of the 42 curriculum by ayusa, fnakamur*
 
-> **Note:** このリポジトリは、課題として提出した成果物単体ではなく、**開発過程で書かれた設計メモ・試行コード・レビューログ・pre-review ツールまでを含む「開発プロセス込み」のリポジトリ**である。提出用のクリーンな実装だけを見たい場合は [submit-real/](submit-real/) 配下を参照。
+> **Note:** このリポジトリは、課題として提出した成果物単体ではなく、**開発過程で書かれた設計メモ・試行コード・レビューログ・pre-review ツールまでを含む「開発プロセス込み」のリポジトリ**である。提出用のクリーンな実装のみは [submit-real/](submit-real/) 配下を参照。
 
 ### Pre Research
 wrote: [minishellのための知識](https://zenn.dev/ayusa/articles/22a73b6875639b)
